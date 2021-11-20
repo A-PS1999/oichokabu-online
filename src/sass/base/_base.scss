@@ -1,0 +1,18 @@
+*,
+*::after,
+*::before {
+	margin: 0;
+	padding: 0;
+	/* inheriting box-sizing from body better practice for styling components */
+	box-sizing: inherit;
+}
+
+html {
+	/* root font size set at % is best practice */
+	/* defines what one rem is */
+	font-size: 62.5%;
+}
+
+body {
+	box-sizing: border-box;
+}
