@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { registerUser, userSelector } from '../store/userSlice.js';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import Navbar from './Navbar.js';
+import Navbar from './Navbar/Navbar.js';
 
 export default function SignUp() {
 	

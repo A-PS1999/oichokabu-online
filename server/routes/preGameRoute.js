@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const checkLoggedIn = require('./middleware/checkLoggedIn');
+const checkGameHost = require('./middleware/checkGameHost');
 
 const { PreGame: PreGameDB } = require('../db/api');
 const { Lobby: LobbySockets, PreGameLobby: PreGameSockets } = require('../sockets');
@@ -48,7 +49,7 @@ router.post('/api/pregame-lobby/:gameId/leave-game', checkLoggedIn, (request, re
 	}
 );
 
-router.post('/api/pregame-lobby/:gameId/start-game', checkLoggedIn, (request, response) => {
+router.post('/api/pregame-lobby/:gameId/start-game', checkLoggedIn, checkGameHost, (request, response) => {
 	const { gameId } = request.params;
 	const { userId, username } = response.locals.user;
 	return PreGameDB.setGameReady(gameId)

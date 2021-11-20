@@ -1,0 +1,46 @@
+.navbar {
+	display: flex;
+	background-color: #751452;
+	justify-content: space-between;
+	align-items: flex-start;
+	box-shadow: 0 0.1rem 0.1rem 0.1rem rgba(0,0,0,.2);
+	
+	&__link {
+		text-decoration: none;
+		padding: 1rem;
+		color: #000;
+		list-style: none;
+		
+		&:first-child {
+			font-size: 2rem;
+			color: #fcfcf2;
+			margin-top: -0.2rem;
+		}
+		
+		&:not(:first-child) {
+			margin: 0.7rem 1rem 0.7rem;
+			background: rgb(253, 254, 255);
+			border-radius: 1rem;
+			transition: all .2s;
+			
+			&:hover	{
+				transform: translateY(-0.3rem);
+				
+				&::after {
+					transform: scaleX(1.4) scaleY(1.6);
+					opacity: 0;
+				}
+			}
+			
+			&:active,
+			&:focus {
+				transform: translateY(-0.1rem);
+			}
+		}
+	}
+}
+
+.sign-up {
+	position: absolute;
+	right: 5.5rem;
+}
