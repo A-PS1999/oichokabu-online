@@ -1,0 +1,26 @@
+header {
+	margin: 5rem 38rem 5rem;
+	background: #BC002D; // Japanese flag red
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 20rem;
+	width: 20rem;
+	clip-path: circle(50% at 50% 50%);
+}
+
+.header-text-box {
+	text-align: center;
+	margin: auto;
+}
+
+.header-link {
+	text-decoration: none;
+	color: #fff;
+	border-bottom: 1px solid transparent;
+	transition: all .1s;
+	
+	&:hover {
+		border-bottom: 1px solid white;
+	}
+}

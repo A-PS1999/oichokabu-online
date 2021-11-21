@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { loginUser, userSelector } from '../store/userSlice.js';
-import Navbar from './Navbar/Navbar.js';
+import { loginUser, userSelector } from '../../store/userSlice.js';
+import Navbar from '../Navbar/Navbar.js';
 
 export default function Login() {
 	

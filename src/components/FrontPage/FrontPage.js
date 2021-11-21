@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Navbar from './Navbar/Navbar.js';
+import './FrontPage.scss';
+import Navbar from '../Navbar/Navbar.js';
  
 export default function FrontPage() {
 	
@@ -9,12 +10,12 @@ export default function FrontPage() {
 			<Navbar />
 			<div>
 				<header>
-					<div className="header__text-box">
+					<div className="header-text-box">
 						<h1 className="heading-primary">
-							Oicho-Kabu Online
+							Oicho Kabu Online
 						</h1>
-						<Link to="/register">
-							<div>Sign up now!</div>
+						<Link to="/register" className="header-link">
+							Sign up now!
 						</Link>
 					</div>
 				</header>

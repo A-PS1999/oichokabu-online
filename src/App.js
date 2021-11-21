@@ -2,9 +2,9 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { store } from './store/store.js';
 import './App.scss';
-import FrontPage from './components/FrontPage.js';
-import SignUp from './components/SignUp.js';
-import Login from './components/Login.js';
+import FrontPage from './components/FrontPage/FrontPage.js';
+import SignUp from './components/SignUp/SignUp.js';
+import Login from './components/Login/Login.js';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 export default function App() {
