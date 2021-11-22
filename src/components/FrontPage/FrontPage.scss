@@ -1,12 +1,15 @@
+@use "./../../sass/abstracts/variables" as var;
+
 header {
-	margin: 5rem 38rem 5rem;
-	background: #BC002D; // Japanese flag red
+	margin: auto;
+	background: var.$japan-red;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	height: 20rem;
 	width: 20rem;
 	clip-path: circle(50% at 50% 50%);
+	margin-bottom: 4rem;
 }
 
 .header-text-box {
@@ -16,11 +19,109 @@ header {
 
 .header-link {
 	text-decoration: none;
-	color: #fff;
+	color: var.$color-white;
 	border-bottom: 1px solid transparent;
 	transition: all .1s;
+	font-size: 1.2rem;
 	
 	&:hover {
 		border-bottom: 1px solid white;
 	}
+}
+
+.section-about {
+	text-align: center;
+	margin: auto;
+	max-width: 36rem;
+	
+	&__subheading {
+		margin-top: 1rem;
+		margin-bottom: 1rem;
+		font-weight: 700;
+		font-size: 1.1rem;
+	}
+	
+	&__link {
+		text-decoration: none;
+		display: inline-block;
+		color: var.$color-white;
+		padding: 1rem;
+		background: var.$japan-red;
+		border-radius: 2rem;
+		margin-bottom: 3rem;
+		transition: all .2s;
+		
+		&:hover {
+			transform: translateY(-0.3rem);
+			box-shadow: 0 1rem 2rem rgba(var.$color-black, .2);
+			
+			&::after {
+				transform: scaleX(1.4) scaleY(1.6);
+				opacity: 0;
+			}
+		}
+		
+		&:active,
+		&:focus {
+			transform: translateY(-0.1rem);
+			box-shadow: 0 0.5rem 1rem rgba(var.$color-black, .2);
+		}
+	}
+}
+
+.section-trivia {
+	background: var.$light-grey;
+	padding: 4rem;
+	display: grid;
+	text-align: center;
+	
+	&__heading {
+		margin-bottom: 1.5rem;
+	}
+}
+
+.card {
+	-moz-perspective: 150rem;
+	perspective: 150rem;
+	justify-self: center;
+	width: 19rem;
+	
+	&__inner {
+		display: grid;
+		transition: all .8s ease;
+		transform-style: preserve-3d;
+	}
+	
+	&__side {
+		grid-area: 1/1;
+		width: 100%;
+		backface-visibility: hidden;
+		box-shadow: 0 1.5rem 4rem rgba(var.$color-black, .15);
+		
+		&--back {
+			transform: rotateY(180deg);
+			background: var.$color-black;
+			display: inline-grid;
+		}
+	}
+	
+	&__back-container {
+		transform: translate(-50%, -50%);
+		color: var.$color-white;
+		align-self: center;
+		font-size: 1.1rem;
+		justify-self: center;
+		text-align: center;
+		transform: translate(0.1rem);
+		max-width: 17rem;
+	}
+	
+	&:hover &__inner {
+		transform: rotateY(-180deg);
+	}
+}
+
+img {
+	width: 100%;
+	object-fit: contain;
 }
