@@ -16,3 +16,14 @@ html {
 body {
 	box-sizing: border-box;
 }
+
+#app {
+	display: flex;
+	flex-direction: column;
+}
+
+html,
+body, 
+#app {
+	height: 100%;
+}

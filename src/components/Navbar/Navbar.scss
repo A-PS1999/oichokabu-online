@@ -1,10 +1,12 @@
+@use "./../../sass/abstracts/variables" as var;
+
 nav {
 	padding-bottom: 4rem;
 }
 
 .navbar {
 	display: flex;
-	background-color: #751452;
+	background-color: var.$header-footer-color;
 	justify-content: space-between;
 	align-items: flex-start;
 	box-shadow: 0 0.1rem 0.1rem 0.1rem rgba(0,0,0,.2);
@@ -12,19 +14,19 @@ nav {
 	&__link {
 		text-decoration: none;
 		padding: 1rem;
-		color: #000;
+		color: var.$color-black;
 		list-style: none;
 		
 		&:first-child {
 			font-size: 2rem;
 			font-weight: 700;
-			color: #fff;
+			color: var.$color-white;
 			margin-top: -0.2rem;
 		}
 		
 		&:not(:first-child) {
 			margin: 0.7rem 1rem 0.7rem;
-			background: rgb(253, 254, 255);
+			background: var.$color-white;
 			border-radius: 1rem;
 			transition: all .2s;
 			

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './FrontPage.scss';
 import Navbar from '../Navbar/Navbar.js';
+import Footer from '../Footer/Footer.js';
  
 export default function FrontPage() {
 	
@@ -63,6 +64,7 @@ export default function FrontPage() {
 					</section>
 				</main>
 			</div>
+			<Footer />
 		</>
 	)
 }

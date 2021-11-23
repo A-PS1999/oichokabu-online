@@ -4,6 +4,7 @@ import { registerUser, userSelector } from '../../store/userSlice.js';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import Navbar from '../Navbar/Navbar.js';
+import Footer from '../Footer/Footer.js';
 
 export default function SignUp() {
 	
@@ -43,6 +44,7 @@ export default function SignUp() {
 					</div>
 				</main>
 			</div>
+			<Footer />
 		</>
 	)
 }

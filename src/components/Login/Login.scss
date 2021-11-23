@@ -1,0 +1,49 @@
+@use "./../../sass/abstracts/variables" as var;
+
+.form-container {
+	display: flex;
+	justify-content: center;
+}
+
+.login-heading {
+	margin-bottom: 1.5rem;
+	font-size: 2rem;
+	text-align: center;
+}
+
+.login-form {
+	background-color: var.$japan-red;
+	padding: 3rem;
+	max-width: 30rem;
+	border-radius: 3rem;
+}
+
+input {
+	display: block;
+	margin-bottom: 1.5rem;
+	font-size: 1.3rem;
+	width: 20rem;
+	padding: 1rem;
+	border: 0;
+	border-radius: 1rem;
+	font-family: inherit;
+	
+	&:focus {
+		outline: none;
+	}
+}
+
+button {
+	appearance: none;
+	border: 2px solid white;
+	padding: 1rem;
+	color: var.$color-white;
+	font-size: 1.2rem;
+	border-radius: 1rem;
+	background-color: transparent;
+	
+	&:hover {
+		background-color: var.$color-white;
+		color: var.$color-black;
+	}
+}
