@@ -5,17 +5,18 @@
 	justify-content: center;
 }
 
-.login-heading {
+.signup-heading {
 	margin-bottom: 1.5rem;
 	font-size: 2rem;
 	text-align: center;
 }
 
-.login-form {
+.signup-form {
 	background-color: var.$japan-red;
 	padding: 3rem;
 	max-width: 30rem;
 	border-radius: 3rem;
+	margin-bottom: 5rem;
 	box-shadow: 0 1.5rem 4rem rgba(var.$color-black, .2);
 }
 
