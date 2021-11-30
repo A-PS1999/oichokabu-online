@@ -18,6 +18,21 @@
 	border-radius: 3rem;
 	margin-bottom: 5rem;
 	box-shadow: 0 1.5rem 4rem rgba(var.$color-black, .2);
+	
+	&__button {
+		appearance: none;
+		border: 2px solid white;
+		padding: 1rem;
+		color: var.$color-white;
+		font-size: 1.2rem;
+		border-radius: 1rem;
+		background-color: transparent;
+		
+		&:hover {
+			background-color: var.$color-white;
+			color: var.$color-black;
+		}
+	}
 }
 
 input {
@@ -32,20 +47,5 @@ input {
 	
 	&:focus {
 		outline: none;
-	}
-}
-
-button {
-	appearance: none;
-	border: 2px solid white;
-	padding: 1rem;
-	color: var.$color-white;
-	font-size: 1.2rem;
-	border-radius: 1rem;
-	background-color: transparent;
-	
-	&:hover {
-		background-color: var.$color-white;
-		color: var.$color-black;
 	}
 }

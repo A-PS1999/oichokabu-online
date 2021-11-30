@@ -5,12 +5,14 @@ import './App.scss';
 import FrontPage from './components/FrontPage/FrontPage.js';
 import SignUp from './components/SignUp/SignUp.js';
 import Login from './components/Login/Login.js';
+import ToastPortal from './components/Toast/ToastPortal.js';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 export default function App() {
 	
 	return (
 		<Provider store={store}>
+		<ToastPortal />
 			<Router>
 				<Switch>
 					<Route exact path="/" component={FrontPage} />

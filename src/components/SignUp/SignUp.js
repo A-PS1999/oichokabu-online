@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { registerUser, userSelector } from '../../store/userSlice.js';
 import { useHistory } from 'react-router-dom';
+import { toastActions } from '../../store/toastSlice.js';
 import { useForm } from 'react-hook-form';
 import './SignUp.scss'
 import Navbar from '../Navbar/Navbar.js';
@@ -12,7 +13,7 @@ export default function SignUp() {
 	let history = useHistory();
 	const dispatch = useDispatch();
 	const { register, handleSubmit } = useForm();
-	const { isFetching, isSuccessful, isError, errorMessage } = useSelector(userSelector);
+	const { isSuccessful, isError, errorMessage } = useSelector(userSelector);
 	
 	const submitData = (data) => {
 		dispatch(registerUser(data))
@@ -23,9 +24,12 @@ export default function SignUp() {
 			history.push("/");
 		}
 		if (isError) {
-			
+			dispatch(toastActions.createToast({
+				message: errorMessage,
+				type: "error",
+			}));
 		}
-	}, [isSuccessful, isError]);
+	}, [isSuccessful, isError, history, dispatch]);
 	
 	return (
 		<>
@@ -40,7 +44,7 @@ export default function SignUp() {
 									<input {...register("email", { required: true })} placeholder="E-Mail" />
 									<input {...register("password", { required: true })} placeholder="Password" />
 									<input {...register("confirmPassword", { required: true })} placeholder="Confirm Password" />
-									<button type="submit">Submit</button>
+									<button className="signup-form__button" type="submit">Submit</button>
 							</form>
 						</div>
 					</div>

@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { loginUser, userSelector } from '../../store/userSlice.js';
+import { toastActions } from '../../store/toastSlice.js';
 import Navbar from '../Navbar/Navbar.js';
 import Footer from '../Footer/Footer.js';
 import './Login.scss';
@@ -12,7 +13,7 @@ export default function Login() {
 	let history = useHistory();
 	const dispatch = useDispatch();
 	const { register, handleSubmit } = useForm();
-	const { isFetching, isSuccessful, isError, errorMessage } = useSelector(userSelector);
+	const { isSuccessful, isError, errorMessage } = useSelector(userSelector);
 	
 	const submitData = (data) => {
 		dispatch(loginUser(data))
@@ -23,9 +24,12 @@ export default function Login() {
 			history.push("/");
 		}
 		if (isError) {
-			
+			dispatch(toastActions.createToast({
+				message: errorMessage,
+				type: "error",
+			}));
 		}
-	}, [isSuccessful, isError])
+	}, [isSuccessful, isError, history, dispatch])
 	
 	return (
 		<>
@@ -38,7 +42,7 @@ export default function Login() {
 							<form onSubmit={handleSubmit(submitData)}>
 									<input {...register("username", { required: true })} placeholder="Username" />
 									<input {...register("password", { required: true })} placeholder="Password" />
-									<button type="submit">Submit</button>
+									<button className="login-form__button" type="submit">Submit</button>
 							</form>
 						</div>
 					</div>
