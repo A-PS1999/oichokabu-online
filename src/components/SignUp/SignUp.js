@@ -42,8 +42,8 @@ export default function SignUp() {
 							<form onSubmit={handleSubmit(submitData)}>
 									<input {...register("username", { required: true })} placeholder="Username" />
 									<input {...register("email", { required: true })} placeholder="E-Mail" />
-									<input {...register("password", { required: true })} placeholder="Password" />
-									<input {...register("confirmPassword", { required: true })} placeholder="Confirm Password" />
+									<input {...register("password", { required: true })} placeholder="Password" type="password" />
+									<input {...register("confirmPassword", { required: true })} placeholder="Confirm Password" type="password" />
 									<button className="signup-form__button" type="submit">Submit</button>
 							</form>
 						</div>

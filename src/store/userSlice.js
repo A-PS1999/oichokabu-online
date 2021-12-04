@@ -10,10 +10,10 @@ export const registerUser = createAsyncThunk(
 			}
 			
 			const response = await API.post('/register', { username, email, password })
-			let data = response.data;
+			let { auth } = response.data;
 		
 			if (response.status === 200) {
-				return { ...data, username: username, email: email, password: password }
+				return { ...auth, username: username, email: email, password: password }
 			} else {
 				throw thunkAPI.rejectWithValue(response.status)
 			}
@@ -60,9 +60,9 @@ export const userSlice = createSlice({
 		builder.addCase(registerUser.fulfilled, (state, action) => {
 			state.isFetching = false;
 			state.isSuccessful = true;
-			state.username = action.payload.user.username;
-			state.email = action.payload.user.email;
-			state.password = action.payload.user.password;
+			state.username = action.payload.username;
+			state.email = action.payload.email;
+			state.password = action.payload.password;
 		})
 		builder.addCase(registerUser.pending, (state) => {
 			state.isFetching = true;
@@ -75,8 +75,8 @@ export const userSlice = createSlice({
 		builder.addCase(loginUser.fulfilled, (state, action) => {
 			state.isFetching = false;
 			state.isSuccessful = true;
-			state.username = action.payload.user.username;
-			state.password = action.payload.user.password;
+			state.username = action.payload.username;
+			state.password = action.payload.password;
 		})
 		builder.addCase(loginUser.pending, (state) => {
 			state.isPending = true;

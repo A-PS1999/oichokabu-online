@@ -41,7 +41,7 @@ export default function Login() {
 						<div className="login-form">
 							<form onSubmit={handleSubmit(submitData)}>
 									<input {...register("username", { required: true })} placeholder="Username" />
-									<input {...register("password", { required: true })} placeholder="Password" />
+									<input {...register("password", { required: true })} placeholder="Password" type="password" />
 									<button className="login-form__button" type="submit">Submit</button>
 							</form>
 						</div>

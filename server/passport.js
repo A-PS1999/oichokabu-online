@@ -13,26 +13,27 @@ const checkPassword = function(user, password) {
 	});
 };
 
-passport.serializeUser((user, done) => done(null, user.id));
+passport.serializeUser((user, done) => done(null, user.user_id));
 
 passport.deserializeUser((id, done) => 
 	Auth.findById(id)
-	.then(user => done(null, user))
+	    .then(user => done(null, user))
 );
 
 passport.use(new LocalStrategy(
 	function(username, password, done) {
 		Auth.findbyUsername(username)
-		.then(user => {
-			if (user) {
-				return checkPassword(user, password)
-				.then(user => done(null, user));
-			} else {
-				return done(null, false, { message: 'Username is incorrect' });
-			}
-		})
-	}
-));
+		    .then(user => {
+				if (user) {
+					return checkPassword(user, password)
+						.then(user => done(null, user));
+				} else {
+					return done(null, false, { message: 'Username is incorrect' });
+				}
+			})
+		}
+	)
+);
 
 const authRedirects = {
 	successRedirect: '/lobby',

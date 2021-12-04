@@ -1,14 +1,10 @@
-if (process.env.NODE_ENV !== 'production') {
-	require('dotenv').config();
-}
-
 const path = require('path');
 const express = require('express');
+const cors = require('cors');
 const app = express();
-const db = require('./db');
 const session = require('./db/session');
 const { passport } = require('./passport');
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () => 	
 	console.log(`Listening on port ${PORT}`)
@@ -17,19 +13,19 @@ const server = app.listen(PORT, () =>
 const io = require('socket.io')(server);
 require('./sockets')(io);
 
-db.sync().then(() => console.log("Database synced"));
+app.use(cors());
 
 // get cards as static images
 app.use(express.static(path.join(__dirname, '..', 'public/cards')));
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 app.use(session);
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/api', require('./routes'));
+app.use(require('./routes'));
 
 app.get('*', function(req, res, next) {
 	res.sendFile(path.join(__dirname, '..', 'public/index.html'));

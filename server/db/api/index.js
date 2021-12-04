@@ -1,8 +1,8 @@
 const db = require('../models');
-const initAuth = require('./auth.js');
-const initLobby = require('./lobby.js');
-const initPreGame = require('./pregame.js');
-const initGame = require('./game.js');
+const initAuth = require('./auth');
+const initLobby = require('./lobby');
+const initPreGame = require('./pregame');
+const initGame = require('./game');
 
 module.exports = {
 	Auth: initAuth(db),
