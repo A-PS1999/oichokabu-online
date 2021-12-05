@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { registerUser, userSelector } from '../../store/userSlice.js';
+import { userStateReset as clearState } from '../../store/userSlice.js';
+import { toggleLoggedIn as setLoggedIn } from '../../store/userSlice.js';
 import { useHistory } from 'react-router-dom';
 import { toastActions } from '../../store/toastSlice.js';
 import { useForm } from 'react-hook-form';
@@ -21,6 +23,8 @@ export default function SignUp() {
 	
 	useEffect(() => {
 		if (isSuccessful) {
+			dispatch(clearState());
+			dispatch(setLoggedIn());
 			history.push("/");
 		}
 		if (isError) {
@@ -28,8 +32,9 @@ export default function SignUp() {
 				message: errorMessage,
 				type: "error",
 			}));
+			dispatch(clearState());
 		}
-	}, [isSuccessful, isError, history, dispatch]);
+	}, [isSuccessful, isError, history, dispatch, errorMessage]);
 	
 	return (
 		<>

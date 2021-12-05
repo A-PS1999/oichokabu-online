@@ -41,20 +41,43 @@ export const loginUser = createAsyncThunk(
 	}
 );
 
+export const logoutUser = createAsyncThunk(
+	"users/logout",
+	async (_, thunkAPI) => {
+		try {
+			const response = await API.post('/log-out');
+			if (response.status === 200) {
+				return null;
+			}
+		} catch (error) {
+			return thunkAPI.rejectWithValue(error.message)
+		}
+	}
+);
+
+const initialUserSliceState = () => ({
+	username: "",
+	email: "",
+	password: "",
+	confirmPassword: "",
+	isLoggedIn: false,
+	isFetching: false,
+	isSuccessful: false,
+	isError: false,
+	errorMessage: "",
+})
+
 export const userSlice = createSlice({
 	name: 'user',
-	initialState: {
-		username: "",
-		email: "",
-		password: "",
-		confirmPassword: "",
-		isFetching: false,
-		isSuccessful: false,
-		isError: false,
-		errorMessage: "",
-	},
+	initialState: initialUserSliceState(),
 	reducers: {
-		
+		userStateReset: (state) => initialUserSliceState(),
+		toggleLoggedIn(state) {
+			return {
+				...state,
+				isLoggedIn: !state.isLoggedIn
+			}
+		}
 	},
 	extraReducers: (builder) => {
 		builder.addCase(registerUser.fulfilled, (state, action) => {
@@ -86,7 +109,19 @@ export const userSlice = createSlice({
 			state.isError = true;
 			state.errorMessage = action.payload;
 		})
+		builder.addCase(logoutUser.fulfilled, (state) => {
+			state.isLoggedIn = false;
+		})
+		builder.addCase(logoutUser.pending, (state) => {
+			state.isFetching = true;
+		})
+		builder.addCase(logoutUser.rejected, (state, action) => {
+			state.isFetching = false;
+			state.isError = true;
+			state.errorMessage = action.payload;
+		})
 	},
 });
 
+export const { userStateReset, toggleLoggedIn } = userSlice.actions;
 export const userSelector = state => state.user;

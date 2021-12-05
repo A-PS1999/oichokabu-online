@@ -7,15 +7,19 @@ const { Auth } = require('../db/api');
 router.post('/api/register', async (request, response) => {
 	const { username, email, password } = request.body;
 	
-	return Auth.addUser(username, email, password)
-	.then(user => request.login(user, error => {
-		if (error) {
-			throw error;
-		}
+	try {
+		return Auth.addUser(username, email, password)
+		.then(user => request.login(user, error => {
+			if (error) {
+				throw error;
+			}
 		
-		const { password, ...auth } = user.dataValues;
-		return response.json({ auth });
-	}));
+			const { password, ...auth } = user.dataValues;
+			return response.json({ auth });
+		}));
+	} catch (error) {
+		response.status(403).send({ error: new Error('Username or email already in use.') });
+	}
 });
 
 router.post('/api/log-in', (request, response) => {
