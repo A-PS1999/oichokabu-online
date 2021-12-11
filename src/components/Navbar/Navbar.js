@@ -35,6 +35,9 @@ export default function Navbar() {
 					isLoggedIn 
 					?
 					<>
+						<Link to="/lobby" className="navbar__link lobby-button">
+							Lobby
+						</Link>
 						<Link to="/" onClick={async () => {await dispatch(logoutUser())}} className="navbar__link">
 							<li>Log Out</li>
 						</Link>

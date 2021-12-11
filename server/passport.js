@@ -13,7 +13,7 @@ const checkPassword = function(user, password) {
 	});
 };
 
-passport.serializeUser((user, done) => done(null, user.user_id));
+passport.serializeUser((user, done) => done(null, user.id));
 
 passport.deserializeUser((id, done) => 
 	Auth.findById(id)

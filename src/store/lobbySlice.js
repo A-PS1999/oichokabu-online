@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import LobbyAPI from '../services/api-functions.js';
+import { LobbyAPI } from '../services/api-functions.js';
 
 export const fetchGames = createAsyncThunk(
 	"lobby/fetchGames",
@@ -42,7 +42,7 @@ const initialLobbyState = () => ({
 	isFetching: false,
 	isError: false,
 	errorMessage: "",
-	rooms: {},
+	rooms: [],
 })
 
 export const lobbySlice = createSlice({

@@ -13,7 +13,10 @@ const server = app.listen(PORT, () =>
 const io = require('socket.io')(server);
 require('./sockets')(io);
 
-app.use(cors());
+app.use(cors({
+	origin: process.env.DEV_ORIGIN,
+	credentials: true,
+}));
 
 // get cards as static images
 app.use(express.static(path.join(__dirname, '..', 'public/cards')));

@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { loginUser, userSelector } from '../../store/userSlice.js';
+import { userStateReset as clearState } from '../../store/userSlice.js';
+import { toggleLoggedIn as setLoggedIn } from '../../store/userSlice.js';
 import { toastActions } from '../../store/toastSlice.js';
 import Navbar from '../Navbar/Navbar.js';
 import Footer from '../Footer/Footer.js';
@@ -21,7 +23,9 @@ export default function Login() {
 	
 	useEffect(() => {
 		if (isSuccessful) {
-			history.push("/");
+			dispatch(clearState());
+			dispatch(setLoggedIn());
+			history.push("/lobby");
 		}
 		if (isError) {
 			dispatch(toastActions.createToast({
@@ -29,7 +33,7 @@ export default function Login() {
 				type: "error",
 			}));
 		}
-	}, [isSuccessful, isError, history, dispatch])
+	}, [isSuccessful, isError, history, dispatch, errorMessage])
 	
 	return (
 		<>

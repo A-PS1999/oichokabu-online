@@ -25,7 +25,7 @@ export default function SignUp() {
 		if (isSuccessful) {
 			dispatch(clearState());
 			dispatch(setLoggedIn());
-			history.push("/");
+			history.push("/lobby");
 		}
 		if (isError) {
 			dispatch(toastActions.createToast({
@@ -58,4 +58,4 @@ export default function SignUp() {
 			<Footer />
 		</>
 	)
-}
+};
