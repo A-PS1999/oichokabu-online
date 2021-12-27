@@ -55,6 +55,22 @@ export const logoutUser = createAsyncThunk(
 	}
 );
 
+export const getSessID = createAsyncThunk(
+	"users/getSessId",
+	async (_, thunkAPI) => {
+		try {
+			const response = await API.post('/get-session')
+			if (response.status === 200 && response.data.result.sid != null) {
+				return null;
+			} else {
+				throw thunkAPI.rejectWithValue(response.status)
+			}
+		} catch (error) {
+			return thunkAPI.rejectWithValue(error.message)
+		}
+	}
+)
+
 const initialUserSliceState = () => ({
 	username: "",
 	email: "",
@@ -111,6 +127,7 @@ export const userSlice = createSlice({
 		})
 		builder.addCase(logoutUser.fulfilled, (state) => {
 			state.isLoggedIn = false;
+			state.isSuccessful = true;
 		})
 		builder.addCase(logoutUser.pending, (state) => {
 			state.isFetching = true;
@@ -119,6 +136,16 @@ export const userSlice = createSlice({
 			state.isFetching = false;
 			state.isError = true;
 			state.errorMessage = action.payload;
+		})
+		builder.addCase(getSessID.fulfilled, (state) => {
+			state.isFetching = false;
+			state.isLoggedIn = true;
+		})
+		builder.addCase(getSessID.pending, (state) => {
+			state.isFetching = true;
+		})
+		builder.addCase(getSessID.rejected, (state, action) => {
+			state.isFetching = false;
 		})
 	},
 });

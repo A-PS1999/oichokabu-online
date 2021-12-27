@@ -4,6 +4,23 @@ const nodemailer = require('nodemailer');
 
 const { Auth } = require('../db/api');
 
+router.post('/api/get-session', async (request, response) => {
+	if (request.session) {
+		const userSessId = request.session.id;
+		
+		try {
+			return Auth.findSessionById(userSessId)
+			.then(result => {
+				return response.json({ result });
+			})
+		} catch (error) {
+			response.status(403).send({ error: new Error('No session found for that ID.') })
+		}
+	} else {
+		return response.status(418).send({ message: "No session or ID available." })
+	}
+});
+
 router.post('/api/register', async (request, response) => {
 	const { username, email, password } = request.body;
 	
@@ -45,6 +62,7 @@ router.post('/api/log-in', (request, response) => {
 
 router.post('/api/log-out', (request, response) => {
 	request.logout();
+	request.session.destroy();
 	response.sendStatus(200);
 	return null;
 })

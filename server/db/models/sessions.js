@@ -4,16 +4,16 @@ module.exports = (sequelize, Sequelize) => {
 	return sequelize.define(
 		'sessions',
 		{
-			session_id: {
+			sid: {
 				type: Sequelize.STRING,
 				allowNull: false,
 				primaryKey: true,
 			},
-			session: {
+			sess: {
 				type: Sequelize.JSON,
 				allowNull: false,
 			},
-			expires: {
+			expire: {
 				type: Sequelize.DATE,
 				allowNull: false,
 			},

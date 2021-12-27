@@ -35,9 +35,9 @@ const addSession = db => (session_id, sess, expiry) =>
 		expiry,
 	});
 	
-const removeSession = db => session_id => db.sessions.destroy({ where: { session_id } });
+const removeSession = db => sid => db.sessions.destroy({ where: { sid } });
 
-const findSessionById = db => session_id => db.sessions.findOne({ where: { session_id } });
+const findSessionById = db => sid => db.sessions.findOne({ where: { sid } });
 
 module.exports = db => ({
 	addUser: addUser(db),
