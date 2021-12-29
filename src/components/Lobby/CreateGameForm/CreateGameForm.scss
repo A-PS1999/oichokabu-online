@@ -1,0 +1,97 @@
+@use "./../../../sass/abstracts/variables" as var;
+
+.game-form {
+    display: block;
+    padding: 0.5rem;
+
+    &__heading {
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    &__slider-heading {
+        text-align: center;
+    }
+
+    &__room-name {
+        background-color: var.$light-grey;
+        margin-bottom: 1rem;
+    }
+
+    &__radio-group {
+        display: flex;
+        flex-direction: column;
+
+        &-label {
+            margin-bottom: 0.2rem;
+            font-weight: 700;
+        }
+    }
+
+    &__radio-subgroup {
+        display: grid;
+        grid-template-columns: 1rem;
+        gap: 0.5rem;
+        justify-items: center;
+        justify-content: space-evenly;
+
+        &:focus-within {
+            color: var.$japan-red;
+        }
+
+        &-input {
+            appearance: none;
+            margin: 0;
+            border-radius: 50%;
+            border: .5rem solid var.$japan-red;
+            width: 2rem;
+            height: 2rem;
+            padding: 0;
+            display: grid;
+            place-content: center;
+
+            &::before {
+                content: "";
+                border-radius: 50%;
+                width: .65rem;
+                height: .65rem;
+                transform: scale(0);
+                transition: .12s transform ease-in-out;
+                box-shadow: inset 1rem 1rem var.$japan-red;
+            }
+
+            &:checked::before {
+                transform: scale(1);
+            }
+        }
+    }
+
+    &__button {
+        display: block;
+        text-align: center;
+        transition: all .2s;
+        appearance: none;
+        margin: 0 auto;
+        padding: 1rem;
+        border: none;
+        color: var.$color-white;
+        background-color: var.$japan-red;
+        border-radius: 1rem;
+        box-shadow: 0px 2px 5px 1px rgba(0,0,0,0.38);
+
+        &:hover {
+            cursor: pointer;
+            transform: translateY(-0.3rem);
+            box-shadow: 0px 4px 8px 2px rgba(0,0,0,0.28);
+            
+            &::after {
+                transform: scaleX(1.2) scaleY(1.2);
+            }
+        }
+
+        &:active,
+        &:focus {
+            transform: translateY(-0.1rem);
+        }
+    }
+}

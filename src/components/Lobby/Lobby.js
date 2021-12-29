@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import './Lobby.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { lobbySelector, fetchGames } from '../../store/lobbySlice.js';
 import { lobbyStateReset as clearState } from '../../store/lobbySlice.js';
@@ -38,7 +39,7 @@ export default function Lobby() {
 						<h3>Create or join a game!</h3>
 					</div>
 					<div>
-						<button onClick={async () => {dispatch(modalActions.toggleModal)}}>
+						<button onClick={async () => { await dispatch(modalActions.toggleModal()) }}>
 							Create Game
 						</button>
 					</div>

@@ -1,10 +1,21 @@
 import React, { useEffect } from 'react';
+import './CreateGameForm.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { lobbySelector, createNewGame } from '../../../store/lobbySlice.js';
 import { lobbyStateReset as clearState } from '../../../store/lobbySlice.js';
 import { toastActions } from '../../../store/toastSlice.js';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import Slider from 'react-input-slider';
+
+function SliderWatched({ control }) {
+	const sliderValue = useWatch({
+		control,
+		name: "turn-max",
+		defaultValue: 12
+	});
+
+	return <div className='game-form__slider-heading'>Max turns: {sliderValue}</div>
+}
 
 export default function CreateGameForm() {
 	
@@ -32,35 +43,55 @@ export default function CreateGameForm() {
 	
 	return (
 		<>
-			<div>
+			<div className='game-form'>
+				<h2 className="game-form__heading">Create a new game</h2>
 				<form onSubmit={handleSubmit(submitData)}>
-					<input {...register("roomName", { required: true })} placeholder="Room Name" />
-					<div>
-						<input 
-							{...register("playerCap")}
-							type="radio"
-							name="player-cap"
-							value="2"
-						/>
-						<input 
-							{...register("playerCap")}
-							type="radio"
-							name="player-cap"
-							value="3"
-						/>
-						<input 
-							{...register("playerCap")}
-							type="radio"
-							name="player-cap"
-							value="4"
-						/>
-						<input 
-							{...register("playerCap")}
-							type="radio"
-							name="player-cap"
-							value="5"
-						/>
+					<input {...register("roomName", { required: true })} placeholder="Room Name" className="game-form__room-name"/>
+					<h3 className='game-form__heading'>Player Cap</h3>
+					<div className="game-form__radio-group">
+						<label className='game-form__radio-group-label game-form__radio-subgroup'>
+							<input 
+								{...register("playerCap")}
+								type="radio"
+								name="player-cap"
+								value="2"
+								className="game-form__radio-subgroup-input"
+							/>
+							2
+						</label>
+						<label className='game-form__radio-group-label game-form__radio-subgroup'>
+							<input 
+								{...register("playerCap")}
+								type="radio"
+								name="player-cap"
+								value="3"
+								className="game-form__radio-subgroup-input"
+							/>
+							3
+						</label>
+						<label className='game-form__radio-group-label game-form__radio-subgroup'>
+							<input 
+								{...register("playerCap")}
+								type="radio"
+								name="player-cap"
+								value="4"
+								className="game-form__radio-subgroup-input"
+							/>
+							4
+						</label>
+						<label className='game-form__radio-group-label game-form__radio-subgroup'>
+							<input 
+								{...register("playerCap")}
+								type="radio"
+								name="player-cap"
+								value="5"
+								className="game-form__radio-subgroup-input"
+							/>
+							5
+						</label>
 					</div>
+					<h3 className='game-form__heading'>Game Turns</h3>
+					<SliderWatched control={control} />
 					<Controller
 						control={control}
 						name="turn-max"
@@ -73,10 +104,19 @@ export default function CreateGameForm() {
 								xstep={1}
 								onChange={({ x }) => onChange(x)}
 								x={value}
+								styles={{
+									active: {
+										backgroundColor: '#BC002D'
+									},
+									track: {
+										marginBottom: '1.3rem',
+										width: '292px'
+									}
+								}}
 							/>
 						)}
 					/>
-					<button type="submit">Create Game</button>
+					<button type="submit" className='game-form__button'>Create Game</button>
 				</form>
 			</div>
 		</>
