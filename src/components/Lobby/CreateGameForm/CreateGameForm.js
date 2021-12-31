@@ -5,12 +5,13 @@ import { lobbySelector, createNewGame } from '../../../store/lobbySlice.js';
 import { lobbyStateReset as clearState } from '../../../store/lobbySlice.js';
 import { toastActions } from '../../../store/toastSlice.js';
 import { useForm, Controller, useWatch } from 'react-hook-form';
+import { GameFormRadioGroup } from '../GameFormRadioButtons/GameFormRadioGroup';
 import Slider from 'react-input-slider';
 
 function SliderWatched({ control }) {
 	const sliderValue = useWatch({
 		control,
-		name: "turn-max",
+		name: "turnMax",
 		defaultValue: 12
 	});
 
@@ -53,7 +54,7 @@ export default function CreateGameForm() {
 							<input 
 								{...register("playerCap")}
 								type="radio"
-								name="player-cap"
+								name="playerCap"
 								value="2"
 								className="game-form__radio-subgroup-input"
 							/>
@@ -63,7 +64,7 @@ export default function CreateGameForm() {
 							<input 
 								{...register("playerCap")}
 								type="radio"
-								name="player-cap"
+								name="playerCap"
 								value="3"
 								className="game-form__radio-subgroup-input"
 							/>
@@ -73,7 +74,7 @@ export default function CreateGameForm() {
 							<input 
 								{...register("playerCap")}
 								type="radio"
-								name="player-cap"
+								name="playerCap"
 								value="4"
 								className="game-form__radio-subgroup-input"
 							/>
@@ -83,7 +84,7 @@ export default function CreateGameForm() {
 							<input 
 								{...register("playerCap")}
 								type="radio"
-								name="player-cap"
+								name="playerCap"
 								value="5"
 								className="game-form__radio-subgroup-input"
 							/>
@@ -94,7 +95,7 @@ export default function CreateGameForm() {
 					<SliderWatched control={control} />
 					<Controller
 						control={control}
-						name="turn-max"
+						name="turnMax"
 						defaultValue={12}
 						render={({ field: { value, onChange } }) => (
 							<Slider

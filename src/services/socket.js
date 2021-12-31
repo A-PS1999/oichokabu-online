@@ -1,3 +1,6 @@
-import io from 'socket.io-client';
+const io = require("socket.io-client");
 
-export default let socket = io(window.location.origin);
+export const socket = io(process.env.API_ORIGIN, {
+    withCredentials: true,
+    autoConnect: true
+})

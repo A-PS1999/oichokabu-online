@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const session = require('./db/session');
+const sockets = require('./sockets');
 const { passport } = require('./passport');
 const PORT = process.env.PORT || 5000;
 
@@ -10,13 +11,18 @@ const server = app.listen(PORT, () =>
 	console.log(`Listening on port ${PORT}`)
 );
 
-const io = require('socket.io')(server);
-require('./sockets')(io);
-
 app.use(cors({
 	origin: process.env.DEV_ORIGIN,
 	credentials: true,
 }));
+
+const io = require('socket.io')(server, {
+	cors: {
+		origin: process.env.DEV_ORIGIN,
+		methods: ["GET", "POST"],
+		credentials: true
+	}
+});
 
 // get cards as static images
 app.use(express.static(path.join(__dirname, '..', 'public/cards')));
@@ -24,6 +30,11 @@ app.use(express.static(path.join(__dirname, '..', 'public/cards')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(session);
+app.sockets = sockets;
+
+io.use((socket, next) => {
+	session(socket.request, {}, next);
+});
 
 app.use(passport.initialize());
 app.use(passport.session());

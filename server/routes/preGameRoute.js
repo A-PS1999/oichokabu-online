@@ -11,7 +11,7 @@ router.get('/api/pregame-lobby/:gameId/player-info', (request, response) =>
 		.catch(error => response.json({ error })),
 );
 
-router.get('/api/pregame-lobby/:gameId/game-status', checkLoggedIn, (request, response) =>
+router.get('/api/pregame-lobby/:gameId/player-status', checkLoggedIn, (request, response) =>
 	PreGameDB.getPlayerStatuses(request.params.gameId)
 		.then(result => response.json(result))
 		.catch(error => response.json({ error })),

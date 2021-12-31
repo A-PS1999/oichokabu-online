@@ -5,9 +5,17 @@ import { lobbySelector, fetchGames } from '../../store/lobbySlice.js';
 import { lobbyStateReset as clearState } from '../../store/lobbySlice.js';
 import { toastActions } from '../../store/toastSlice.js';
 import { modalActions } from '../../store/modalSlice.js';
+import { PregameAPI } from '../../services/api-functions.js';
 import Navbar from '../Navbar/Navbar.js';
 import Modal from '../Modal/Modal.js';
 import CreateGameForm from './CreateGameForm/CreateGameForm.js';
+
+async function getRoomPlayers(roomId) {
+	const { data: pregameInfo } = await PregameAPI.getPlayerInfo(roomId);
+	let playerCount = pregameInfo.Players.length;
+
+	return playerCount;
+}
 
 export default function Lobby() {
 	
@@ -49,6 +57,9 @@ export default function Lobby() {
 							<React.Fragment key={room.game_id}>
 								<div>
 									<h3>{room.room_name}</h3>
+									<div>{room.status}</div>
+									<div>Players: {getRoomPlayers(room.game_id)}/{room.player_cap}</div>
+									<button>Join Game</button>
 								</div>
 							</React.Fragment>
 						)
