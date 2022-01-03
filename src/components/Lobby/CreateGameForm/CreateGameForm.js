@@ -5,7 +5,7 @@ import { lobbySelector, createNewGame } from '../../../store/lobbySlice.js';
 import { lobbyStateReset as clearState } from '../../../store/lobbySlice.js';
 import { toastActions } from '../../../store/toastSlice.js';
 import { useForm, Controller, useWatch } from 'react-hook-form';
-import { GameFormRadioGroup } from '../GameFormRadioButtons/GameFormRadioGroup';
+import GameFormRadioGroup from './GameFormRadioButtons/GameFormRadioGroup';
 import Slider from 'react-input-slider';
 
 function SliderWatched({ control }) {
@@ -49,48 +49,17 @@ export default function CreateGameForm() {
 				<form onSubmit={handleSubmit(submitData)}>
 					<input {...register("roomName", { required: true })} placeholder="Room Name" className="game-form__room-name"/>
 					<h3 className='game-form__heading'>Player Cap</h3>
-					<div className="game-form__radio-group">
-						<label className='game-form__radio-group-label game-form__radio-subgroup'>
-							<input 
-								{...register("playerCap")}
-								type="radio"
-								name="playerCap"
-								value="2"
-								className="game-form__radio-subgroup-input"
+					<Controller
+						control={control}
+						name="playerCap"
+						defaultValue={null}
+						render={({ field: { onChange, value } }) => (
+							<GameFormRadioGroup
+								onChange={onChange}
+								value={value}
 							/>
-							2
-						</label>
-						<label className='game-form__radio-group-label game-form__radio-subgroup'>
-							<input 
-								{...register("playerCap")}
-								type="radio"
-								name="playerCap"
-								value="3"
-								className="game-form__radio-subgroup-input"
-							/>
-							3
-						</label>
-						<label className='game-form__radio-group-label game-form__radio-subgroup'>
-							<input 
-								{...register("playerCap")}
-								type="radio"
-								name="playerCap"
-								value="4"
-								className="game-form__radio-subgroup-input"
-							/>
-							4
-						</label>
-						<label className='game-form__radio-group-label game-form__radio-subgroup'>
-							<input 
-								{...register("playerCap")}
-								type="radio"
-								name="playerCap"
-								value="5"
-								className="game-form__radio-subgroup-input"
-							/>
-							5
-						</label>
-					</div>
+						)}
+					/>
 					<h3 className='game-form__heading'>Game Turns</h3>
 					<SliderWatched control={control} />
 					<Controller
