@@ -1,1 +1,51 @@
 @use "./../../sass/abstracts/variables" as var;
+
+.lobby-head {
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-areas: 'left center right';
+    padding-bottom: 2.5rem;
+    border-bottom: 2px solid var.$light-grey;
+
+    &__text {
+        text-align: center;
+        grid-area: center;
+
+        &__title {
+            font-size: 2rem;
+        }
+    }
+
+    &__button-container {
+        grid-area: right;
+        background-color: var.$light-grey;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        box-shadow: 0px 5px 15px 1px rgba(0,0,0,0.37);
+    }
+
+    &__button {
+        appearance: none;
+        border: none;
+        transition: all .2s;
+        border-radius: 1rem;
+        background-color: var.$japan-red;
+        color: var.$color-white;
+        padding: 1rem;
+        font-size: 1.2rem;
+        box-shadow: 0px 7px 15px -4px rgba(0,0,0,0.6);
+
+        &:hover {
+            cursor: pointer;
+            transform: translateY(-0.3rem);
+            box-shadow: 0px 13px 15px -4px rgba(0,0,0,0.6);
+        }
+
+        &:active,
+        &:focus {
+            transform: translateY(-0.1rem);
+        }
+    }
+}

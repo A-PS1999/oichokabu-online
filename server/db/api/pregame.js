@@ -1,5 +1,5 @@
 const getPlayers = db => game_id =>
-	db.ok_games.findbyPk(game_id, {
+	db.ok_games.findByPk(game_id, {
 		include: [
 			{
 				model: db.ok_players,

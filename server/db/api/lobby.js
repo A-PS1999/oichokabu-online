@@ -9,7 +9,7 @@ const findOngoingGames = db => () =>
 		},
 	});
 	
-const addGame = db => (player_userid, room_name, player_cap) =>
+const addGame = db => (player_userid, room_name, player_cap, turn_max) =>
 	db.ok_games.create({ room_name, player_cap, turn_max, status: 'open' }).then(game => 
 		Promise.resolve(
 			db.ok_players.create({

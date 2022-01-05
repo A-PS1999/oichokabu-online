@@ -6,10 +6,10 @@ export const fetchGames = createAsyncThunk(
 	async (_, thunkAPI) => {
 		try {
 			const response = await LobbyAPI.getGames();
-			let { games } = response.data;
+			let games = response.data;
 		
 			if (response.status === 200) {
-				return { games }
+				return games;
 			} else {
 				throw thunkAPI.rejectWithValue(response.status)
 			}
@@ -71,7 +71,7 @@ export const lobbySlice = createSlice({
 		})
 		builder.addCase(createNewGame.fulfilled, (state, action) => {
 			state.isFetching = false;
-			state.rooms = state.rooms.concat(action.payload)
+			state.rooms = { ...state, rooms: { ...state.rooms, ...action.payload } };
 		})
 		builder.addCase(createNewGame.pending, (state) => {
 			state.isFetching = true;

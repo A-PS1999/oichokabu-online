@@ -42,23 +42,25 @@ export default function Lobby() {
 			</Modal>
 			<div>
 				<main>
-					<div className="lobby-heading">
-						<h2>Lobby</h2>
-						<h3>Create or join a game!</h3>
-					</div>
-					<div>
-						<button onClick={async () => { await dispatch(modalActions.toggleModal()) }}>
-							Create Game
-						</button>
-					</div>
+					<section className="lobby-head">
+						<div className="lobby-head__text">
+							<h1 className="lobby-head__text__title">Lobby</h1>
+							<h2>Create or join a game!</h2>
+						</div>
+						<div className="lobby-head__button-container">
+							<button className="lobby-head__button" onClick={async () => { await dispatch(modalActions.toggleModal()) }}>
+								Create Game
+							</button>
+						</div>
+					</section>
 					<div>
 					{rooms.length > 0 ? rooms.map((room, index) => {
 						return(
 							<React.Fragment key={room.game_id}>
 								<div>
 									<h3>{room.room_name}</h3>
-									<div>{room.status}</div>
-									<div>Players: {getRoomPlayers(room.game_id)}/{room.player_cap}</div>
+									<div>{room.status.toUpperCase()}</div>
+									<div>Players: {room.player_cap}</div>
 									<button>Join Game</button>
 								</div>
 							</React.Fragment>

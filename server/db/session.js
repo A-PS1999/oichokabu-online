@@ -6,8 +6,8 @@ const mySecret = process.env.SESSION_SECRET;
 const session = express_session({
 	store: new pgSession({ tableName: 'sessions' }),
 	secret: mySecret,
-	resave: true,
-	saveUninitialized: true,
+	resave: false,
+	saveUninitialized: false,
 	cookie: { maxAge: 10 * 60 * 60 * 24 },
 });
 
