@@ -53,15 +53,24 @@ export default function Lobby() {
 							</button>
 						</div>
 					</section>
-					<div>
+					<section className="lobby-body">
 					{rooms.length > 0 ? rooms.map((room, index) => {
 						return(
 							<React.Fragment key={room.game_id}>
-								<div>
-									<h3>{room.room_name}</h3>
-									<div>{room.status.toUpperCase()}</div>
-									<div>Players: {room.player_cap}</div>
-									<button>Join Game</button>
+								<div className="lobby-body__room">
+									<h3 className="lobby-body__room__room-name">{room.room_name}</h3>
+									{room.status === 'open' &&
+										<div className="lobby-body__room__room-status--open">{room.status.toUpperCase()}</div>
+									}
+									{room.status === 'started' || room.status === 'running' ? 
+										<div className="lobby-body__room__room-status--ongoing">{room.status.toUpperCase()}</div>
+										: null
+									}
+									{room.status === 'ended' &&
+										<div className="lobby-body__room__room-status--ended">{room.status.toUpperCase()}</div>
+									}
+									<div className="lobby-body__room__player-text">Players: {room.player_cap}</div>
+									<button className="lobby-body__room__button">Join Game</button>
 								</div>
 							</React.Fragment>
 						)
@@ -72,7 +81,7 @@ export default function Lobby() {
 						</div>
 					</>
 					}
-					</div>
+					</section>
 				</main>
 			</div>
 		</>

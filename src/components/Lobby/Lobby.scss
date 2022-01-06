@@ -7,7 +7,8 @@
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-areas: 'left center right';
     padding-bottom: 2.5rem;
-    border-bottom: 2px solid var.$light-grey;
+    border-bottom: 1px solid var.$light-grey;
+    margin-bottom: 2rem;
 
     &__text {
         text-align: center;
@@ -46,6 +47,92 @@
         &:active,
         &:focus {
             transform: translateY(-0.1rem);
+        }
+    }
+}
+
+.lobby-body {
+    padding: 3rem;
+    color: var.$color-white;
+    background-color: var.$light-grey;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    margin-bottom: 2rem;
+    border-radius: 1rem;
+    max-width: 65%;
+    margin: auto;
+
+    &__room {
+        background-color: var.$purple;
+        border-radius: 1rem;
+        padding: 2rem;
+        display: grid;
+        grid-template-columns: 30rem 1fr 15%;
+        box-shadow: 1px 13px 15px 1px rgba(0,0,0,0.28);
+
+        &__room-name {
+            font-size: 2rem;
+        }
+
+        &__room-status {
+            &--open {
+                grid-column: 3 / 4;
+                padding: 1rem;
+                font-weight: 700;
+                font-size: 1.3rem;
+                border-radius: 1rem;
+                background-color: var.$color-green;
+                text-align: center;
+            }
+
+            &--ongoing {
+                grid-column: 3 / 4;
+                padding: 1rem;
+                font-weight: 700;
+                font-size: 1.3rem;
+                border-radius: 1rem;
+                background-color: var.$color-orange;
+                text-align: center;
+            }
+
+            &--ended {
+                grid-column: 3 / 4;
+                padding: 1rem;
+                font-weight: 700;
+                font-size: 1.3rem;
+                border-radius: 1rem;
+                background-color: var.$japan-red;
+                text-align: center;
+            }
+        }
+
+        &__player-text {
+            font-size: 1.2rem;
+            grid-column: -2 / -1;
+            align-content: center;
+        }
+
+        &__button {
+            appearance: none;
+            border: none;
+            border-radius: 1rem;
+            background-color: var.$color-white;
+            color: var.$color-black;
+            padding: 1rem;
+            transition: all .2s;
+            font-size: 1.5rem;
+            max-width: 40%;
+            grid-row: 2 / 3;
+
+            &:hover {
+                cursor: pointer;
+                transform: translateY(-0.3rem);
+            }
+
+            &:active,
+            &:focus {
+                transform: translateY(-0.1rem);
+            }
         }
     }
 }
