@@ -18,6 +18,7 @@ passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser((id, done) => 
 	Auth.findById(id)
 	    .then(user => done(null, user))
+		.catch(error => done(error, {})),
 );
 
 passport.use(new LocalStrategy(
@@ -26,11 +27,13 @@ passport.use(new LocalStrategy(
 		    .then(user => {
 				if (user) {
 					return checkPassword(user, password)
-						.then(user => done(null, user));
+						.then(user => done(null, user))
+						.catch(error => done(null, false, error.message));
 				} else {
 					return done(null, false, { message: 'Username is incorrect' });
 				}
 			})
+			.catch(error => done(null, false, error.message))
 		}
 	)
 );

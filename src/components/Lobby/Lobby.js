@@ -5,26 +5,23 @@ import { lobbySelector, fetchGames } from '../../store/lobbySlice.js';
 import { lobbyStateReset as clearState } from '../../store/lobbySlice.js';
 import { toastActions } from '../../store/toastSlice.js';
 import { modalActions } from '../../store/modalSlice.js';
-import { PregameAPI } from '../../services/api-functions.js';
+import { socket } from '../../services/socket.js';
 import Navbar from '../Navbar/Navbar.js';
 import Modal from '../Modal/Modal.js';
 import CreateGameForm from './CreateGameForm/CreateGameForm.js';
-
-async function getRoomPlayers(roomId) {
-	const { data: pregameInfo } = await PregameAPI.getPlayerInfo(roomId);
-	let playerCount = pregameInfo.Players.length;
-
-	return playerCount;
-}
 
 export default function Lobby() {
 	
 	const dispatch = useDispatch();
 	const { isError, errorMessage, rooms } = useSelector(lobbySelector);
-	
+
 	useEffect(() => {
+		socket.on('connect', () => {
+			console.log(socket.id);
+			console.log(socket);
+		});
 		dispatch(fetchGames());
-		
+
 		if (isError) {
 			dispatch(toastActions.createToast({
 				message: errorMessage,
@@ -33,7 +30,7 @@ export default function Lobby() {
 			dispatch(clearState());
 		}
 	}, [dispatch, errorMessage, isError])
-	
+
 	return (
 		<>
 			<Navbar />
@@ -54,7 +51,7 @@ export default function Lobby() {
 						</div>
 					</section>
 					<section className="lobby-body">
-					{rooms.length > 0 ? rooms.map((room, index) => {
+					{rooms.length > 0 ? rooms.map((room) => {
 						return(
 							<React.Fragment key={room.game_id}>
 								<div className="lobby-body__room">
@@ -77,7 +74,7 @@ export default function Lobby() {
 					})
 					: <>
 						<div>
-							<h2>Looks like there aren't any rooms.</h2>
+							<h2 className="lobby-body__noroom-text">Looks like there aren't any rooms.</h2>
 						</div>
 					</>
 					}

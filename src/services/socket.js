@@ -1,6 +1,12 @@
-const io = require("socket.io-client");
+import { io } from "socket.io-client";
+import { serverAddress } from "../settings";
 
-export const socket = io(process.env.API_ORIGIN, {
+export let socket = io(serverAddress, {
     withCredentials: true,
-    autoConnect: true
-})
+    autoConnect: true,
+});
+
+export const refreshSocketConnection = () => {
+    socket.close();
+    socket = io.connect(serverAddress, { withCredentials: true, forceNew: true });
+}

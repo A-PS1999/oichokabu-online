@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import API from '../services/api.js';
+import { API, refreshSocketConnection } from '../services';
 
 export const registerUser = createAsyncThunk(
 	"users/registerUser",
@@ -13,6 +13,7 @@ export const registerUser = createAsyncThunk(
 			let { auth } = response.data;
 		
 			if (response.status === 200) {
+				refreshSocketConnection();
 				return { ...auth, username: username, email: email, password: password }
 			} else {
 				throw thunkAPI.rejectWithValue(response.status)
@@ -31,6 +32,7 @@ export const loginUser = createAsyncThunk(
 			let data = response.data;
 			
 			if (response.status === 200) {
+				refreshSocketConnection();
 				return data
 			} else {
 				throw thunkAPI.rejectWithValue(response.status)

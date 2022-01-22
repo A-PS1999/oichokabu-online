@@ -31,7 +31,6 @@ export default function CreateGameForm() {
 	useEffect(() => {
 		if (isSuccessful) {
 			dispatch(clearState())
-			console.log("New game room created")
 		}
 		if (isError) {
 			dispatch(toastActions.createToast({
