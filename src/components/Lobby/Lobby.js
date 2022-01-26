@@ -5,10 +5,10 @@ import { lobbySelector, fetchGames } from '../../store/lobbySlice.js';
 import { lobbyStateReset as clearState } from '../../store/lobbySlice.js';
 import { toastActions } from '../../store/toastSlice.js';
 import { modalActions } from '../../store/modalSlice.js';
-import { socket } from '../../services/socket.js';
 import Navbar from '../Navbar/Navbar.js';
 import Modal from '../Modal/Modal.js';
 import CreateGameForm from './CreateGameForm/CreateGameForm.js';
+import { socket } from '../../services';
 
 export default function Lobby() {
 	
@@ -16,11 +16,10 @@ export default function Lobby() {
 	const { isError, errorMessage, rooms } = useSelector(lobbySelector);
 
 	useEffect(() => {
-		socket.on('connect', () => {
-			console.log(socket.id);
-			console.log(socket);
-		});
 		dispatch(fetchGames());
+		socket.on('connect', () => {
+			console.log(socket)
+		})
 
 		if (isError) {
 			dispatch(toastActions.createToast({

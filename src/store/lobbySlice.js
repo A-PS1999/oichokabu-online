@@ -38,7 +38,6 @@ export const createNewGame = createAsyncThunk(
 );
 
 const initialLobbyState = () => ({
-	isSuccessful: false,
 	isFetching: false,
 	isError: false,
 	errorMessage: "",

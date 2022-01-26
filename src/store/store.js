@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { LobbyMiddleware } from './middleware/lobbyMiddleware';
 import { userSlice } from './userSlice';
 import { lobbySlice } from './lobbySlice';
 import { toastSlice } from './toastSlice';
@@ -11,4 +12,5 @@ export const store = configureStore({
 		modal: modalSlice.reducer,
 		lobby: lobbySlice.reducer,
 	},
+	middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(LobbyMiddleware),
 })
