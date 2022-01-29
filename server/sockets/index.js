@@ -22,7 +22,6 @@ const gameSockets = new Map();
 
 io.on('connection', socket => {
 	try {
-		console.log(`Socket connection: ${socket.id}`)
 		if (socket.request.session.passport) {
 			const { user: userId } = socket.request.session.passport;
 			lobbySockets.set(userId, socket);

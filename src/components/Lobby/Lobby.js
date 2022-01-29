@@ -8,17 +8,23 @@ import { modalActions } from '../../store/modalSlice.js';
 import Navbar from '../Navbar/Navbar.js';
 import Modal from '../Modal/Modal.js';
 import CreateGameForm from './CreateGameForm/CreateGameForm.js';
-import { socket } from '../../services';
+import { PregameAPI, socket } from '../../services';
+import { useNavigate } from 'react-router-dom';
 
 export default function Lobby() {
 	
 	const dispatch = useDispatch();
+	let navigate = useNavigate();
 	const { isError, errorMessage, rooms } = useSelector(lobbySelector);
 
 	useEffect(() => {
 		dispatch(fetchGames());
-		socket.on('connect', () => {
-			console.log(socket)
+		socket.on('lobby:create-game', () => {
+			dispatch(fetchGames())
+		});
+		socket.on('lobby:join-game', (data) => {
+			const gameId = parseInt(data.gameId, 10);
+			navigate(`/pregame-lobby/${gameId}`);
 		})
 
 		if (isError) {
@@ -28,7 +34,7 @@ export default function Lobby() {
 			}));
 			dispatch(clearState());
 		}
-	}, [dispatch, errorMessage, isError])
+	}, [dispatch, errorMessage, isError, navigate])
 
 	return (
 		<>
@@ -66,7 +72,9 @@ export default function Lobby() {
 										<div className="lobby-body__room__room-status--ended">{room.status.toUpperCase()}</div>
 									}
 									<div className="lobby-body__room__player-text">Players: {room.player_cap}</div>
-									<button className="lobby-body__room__button">Join Game</button>
+									<button className="lobby-body__room__button" onClick={() => PregameAPI.postEnterLobby(room.game_id)}>
+										Join Game
+									</button>
 								</div>
 							</React.Fragment>
 						)

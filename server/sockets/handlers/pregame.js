@@ -1,4 +1,7 @@
 const enterLobby = (lobbySockets, preGameSockets) => (gameId, userId) => {
+	if (undefined === preGameSockets.get(gameId)) {
+		preGameSockets.set(gameId, new Map())
+	}
 	preGameSockets.get(gameId).set(userId, lobbySockets.get(userId));
 	preGameSockets.get(gameId).forEach(clientSocket =>
 		clientSocket.emit(`pregame-lobby:${gameId}:enter-game`, gameId)

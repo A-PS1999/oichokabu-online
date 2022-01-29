@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { registerUser, userSelector } from '../../store/userSlice.js';
 import { userStateReset as clearState } from '../../store/userSlice.js';
 import { toggleLoggedIn as setLoggedIn } from '../../store/userSlice.js';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toastActions } from '../../store/toastSlice.js';
 import { useForm } from 'react-hook-form';
 import './SignUp.scss'
@@ -12,7 +12,7 @@ import Footer from '../Footer/Footer.js';
 
 export default function SignUp() {
 	
-	let history = useHistory();
+	let navigate = useNavigate();
 	const dispatch = useDispatch();
 	const { register, handleSubmit } = useForm();
 	const { isSuccessful, isError, errorMessage } = useSelector(userSelector);
@@ -25,7 +25,7 @@ export default function SignUp() {
 		if (isSuccessful) {
 			dispatch(clearState());
 			dispatch(setLoggedIn());
-			history.push("/lobby");
+			navigate("/lobby");
 		}
 		if (isError) {
 			dispatch(toastActions.createToast({
@@ -34,7 +34,7 @@ export default function SignUp() {
 			}));
 			dispatch(clearState());
 		}
-	}, [isSuccessful, isError, history, dispatch, errorMessage]);
+	}, [isSuccessful, isError, dispatch, navigate, errorMessage]);
 	
 	return (
 		<>

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { userSelector, logoutUser, getSessID } from '../../store/userSlice.js';
 import { userStateReset as clearState } from '../../store/userSlice.js';
@@ -8,7 +8,6 @@ import './Navbar.scss';
 
 export default function Navbar() {
 	
-	let history = useHistory();
 	const { isLoggedIn, isSuccessful, isError, errorMessage } = useSelector(userSelector);
 	const dispatch = useDispatch();
 
@@ -29,7 +28,7 @@ export default function Navbar() {
 			}));
 			dispatch(clearState());
 		}
-	}, [history, dispatch, isSuccessful, isError, errorMessage])
+	}, [dispatch, isSuccessful, isError, errorMessage])
 	
 	return (
 		<nav>

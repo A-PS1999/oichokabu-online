@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { loginUser, userSelector } from '../../store/userSlice.js';
 import { userStateReset as clearState } from '../../store/userSlice.js';
 import { toggleLoggedIn as setLoggedIn } from '../../store/userSlice.js';
@@ -12,7 +12,7 @@ import './Login.scss';
 
 export default function Login() {
 	
-	let history = useHistory();
+	let navigate = useNavigate();
 	const dispatch = useDispatch();
 	const { register, handleSubmit } = useForm();
 	const { isSuccessful, isError, errorMessage } = useSelector(userSelector);
@@ -25,7 +25,7 @@ export default function Login() {
 		if (isSuccessful) {
 			dispatch(clearState());
 			dispatch(setLoggedIn());
-			history.push("/lobby");
+			navigate("/lobby");
 		}
 		if (isError) {
 			dispatch(toastActions.createToast({
@@ -33,7 +33,7 @@ export default function Login() {
 				type: "error",
 			}));
 		}
-	}, [isSuccessful, isError, history, dispatch, errorMessage])
+	}, [isSuccessful, isError, dispatch, navigate, errorMessage])
 	
 	return (
 		<>

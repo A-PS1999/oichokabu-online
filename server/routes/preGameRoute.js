@@ -20,7 +20,7 @@ router.get('/api/pregame-lobby/:gameId/player-status', checkLoggedIn, (request, 
 router.post('/api/pregame-lobby/:gameId/join-lobby', checkLoggedIn, (request, response) => {
 	const { gameId } = request.params;
 	const { userId } = response.locals.user;
-	PreGameLobby.enterLobby(gameId, userId);
+	PreGameSockets.enterLobby(gameId, userId);
 	return response.sendStatus(204);
 });
 
@@ -42,7 +42,7 @@ router.post('/api/pregame-lobby/:gameId/leave-game', checkLoggedIn, (request, re
 	return PreGameDB.exitGame(gameId, userId)
 		.then(result => {
 			LobbySockets.leaveGame(gameId, userId, username);
-			PreGameLobby.leaveGame(gameId, userId, username);
+			PreGameSockets.leaveGame(gameId, userId, username);
 			return response.json(result);
 		})
 		.catch(error => response.json({ error }));
