@@ -19,14 +19,15 @@ router.get('/api/pregame-lobby/:gameId/player-status', checkLoggedIn, (request, 
 
 router.post('/api/pregame-lobby/:gameId/join-lobby', checkLoggedIn, (request, response) => {
 	const { gameId } = request.params;
-	const { userId } = response.locals.user;
+	const userId = response.locals.user.id;
 	PreGameSockets.enterLobby(gameId, userId);
 	return response.sendStatus(204);
 });
 
 router.post('/api/pregame-lobby/:gameId/join-game', checkLoggedIn, (request, response) => {
 	const { gameId } = request.params;
-	const { userId, username } = response.locals.user;
+	const userId = response.locals.user.id;
+	const username = response.locals.user.username;
 	return PreGameDB.joinGame(gameId, userId)
 		.then(result => {
 			LobbySockets.joinGame(gameId, userId, username);

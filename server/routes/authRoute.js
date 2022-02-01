@@ -51,7 +51,7 @@ router.post('/api/log-in', (request, response) => {
 			}
 		}).then(user => request.login(user, error => {
 			if (error) {
-				throw error;
+				return error;
 			}
 			
 			const { password, ...auth } = user.dataValues;

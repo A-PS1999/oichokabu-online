@@ -42,7 +42,7 @@ module.exports = (sequelize, Sequelize) => {
 	);
 	games.associate = db => {
 		games.hasMany(db.ok_players, {
-			as: 'game_players',
+			as: 'Players',
 			foreignKey: 'player_gameid'
 		});
 		games.belongsToMany(db.ok_users, {

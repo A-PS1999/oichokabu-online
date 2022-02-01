@@ -11,7 +11,7 @@ module.exports = (sequelize, Sequelize) => {
 			},
 			player_userid: {
 				type: Sequelize.INTEGER,
-				references: { model: 'ok_users', key: 'user_id' },
+				references: { model: 'ok_users', key: 'id' },
 			},
 			player_gameid: {
 				type: Sequelize.INTEGER,

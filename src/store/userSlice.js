@@ -125,7 +125,7 @@ export const userSlice = createSlice({
 		builder.addCase(loginUser.rejected, (state, action) => {
 			state.isFetching = false;
 			state.isError = true;
-			state.errorMessage = action.payload;
+			state.errorMessage = `${action.payload}: Username or password may be incorrect.`;
 		})
 		builder.addCase(logoutUser.fulfilled, (state) => {
 			state.isLoggedIn = false;

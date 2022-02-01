@@ -3,7 +3,7 @@ import { PregameAPI } from '../services';
 
 export const fetchPlayerInfo = createAsyncThunk(
     "pregame/fetchPlayerInfo",
-    async ({ gameID }, thunkAPI) => {
+    async (gameID, thunkAPI) => {
         try {
             const response = await PregameAPI.getPlayerInfo(gameID);
             let { result } = response.data;
@@ -21,13 +21,13 @@ export const fetchPlayerInfo = createAsyncThunk(
 
 export const fetchPlayerStatuses = createAsyncThunk(
     "pregame/fetchPlayerStatuses",
-    async ({ gameID }, thunkAPI) => {
+    async (gameID, thunkAPI) => {
         try {
             const response = await PregameAPI.getPlayerStatuses(gameID);
-            let { result } = response.data;
+            let result = response.data;
 
             if (response.status === 200) {
-                return { result }
+                return result
             } else {
                 throw thunkAPI.rejectWithValue(response.status);
             }

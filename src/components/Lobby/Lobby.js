@@ -19,8 +19,10 @@ export default function Lobby() {
 
 	useEffect(() => {
 		dispatch(fetchGames());
-		socket.on('lobby:create-game', () => {
+		socket.on('lobby:create-game', (data) => {
+			const gameId = parseInt(data.gameId, 10);
 			dispatch(fetchGames())
+			navigate(`/pregame-lobby/${gameId}`, { state: { game_id: gameId } });
 		});
 		socket.on('lobby:join-game', (data) => {
 			const gameId = parseInt(data.gameId, 10);
@@ -72,7 +74,7 @@ export default function Lobby() {
 										<div className="lobby-body__room__room-status--ended">{room.status.toUpperCase()}</div>
 									}
 									<div className="lobby-body__room__player-text">Players: {room.player_cap}</div>
-									<button className="lobby-body__room__button" onClick={() => PregameAPI.postEnterLobby(room.game_id)}>
+									<button className="lobby-body__room__button" onClick={() => PregameAPI.postJoinGame(room.game_id)}>
 										Join Game
 									</button>
 								</div>

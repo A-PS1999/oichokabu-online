@@ -39,11 +39,11 @@ module.exports = (sequelize, Sequelize) => {
 	);
 	users.associate = db => {
 		users.hasMany(db.ok_players, {
-			as: 'user_playerids',
+			as: 'Players',
 			foreignKey: 'player_userid',
 		});
 		users.belongsToMany(db.ok_games, {
-			as: 'user_games',
+			as: 'Games',
 			through: db.ok_players,
 			foreignKey: 'player_userid',
 		});
