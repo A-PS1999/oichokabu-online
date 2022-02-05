@@ -1,0 +1,123 @@
+@use "./../../sass/abstracts/variables" as var;
+
+.pregame-head {
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    grid-template-columns: 1fr 30% 1fr;
+    grid-template-rows: 10rem 5.5rem;
+    padding-bottom: 4rem;
+    grid-template-areas: 
+        'top-left top-center top-right'
+        'btm-left btm-center btm-right';
+
+    &__title {
+        font-size: 3rem;
+        text-align: center;
+        grid-area: top-center;
+    }
+
+    &__subheading {
+        font-weight: 700;
+        color: var.$color-white;
+        font-size: 1.5rem;
+        padding: 2rem;
+        border-radius: 1rem;
+        background-color: var.$japan-red;
+        box-shadow: 0px 4px 9px 1px rgba(0,0,0,0.55);
+
+        &--playercount {
+            @extend .pregame-head__subheading;
+            grid-area: btm-right;
+            justify-self: start;
+        }
+
+        &--turncap {
+            @extend .pregame-head__subheading;
+            grid-area: btm-left;
+            justify-self: end;
+        }
+    }
+}
+
+.pregame-body {
+    background-color: var.$purple;
+    padding: 3rem 15rem 3rem;
+}
+
+.players-container {
+    background-color: var.$color-white;
+    padding: 2rem;
+    margin-bottom: 2.5rem;
+    border-radius: 1rem;
+    max-width: 65%;
+    margin: auto;
+
+    &__heading {
+        margin-bottom: 1rem;
+    }
+
+    &__player {
+        display: grid;
+        justify-items: center;
+        align-items: center;
+        grid-template-columns: 3rem 30% 3rem;
+        grid-template-rows: 2rem 1fr;
+        grid-template-areas: 'empty-1 empty-2 ready-head'
+                             'host-icon username ready-status';
+        border: 2px solid var.$japan-red;
+        border-radius: 1rem;
+        padding: 1.3rem;
+
+        &__username {
+            font-size: 2rem;
+            justify-self: start;
+            margin-left: 1.5rem;
+            grid-area: username;
+        }
+
+        &__ready-heading {
+            grid-area: ready-head;
+        }
+    }
+}
+
+.player-icon {
+    width: 3rem;
+
+    &--host {
+        @extend .player-icon;
+        grid-area: host-icon;
+    }
+
+    &--status {
+        @extend .player-icon;
+        grid-area: ready-status;
+    }
+}
+
+.pregame-options {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: space-evenly;
+
+    &__button {
+        appearance: none;
+        border: none;
+        border-radius: 1rem;
+        background-color: var.$color-white;
+        color: var.$color-black;
+        padding: 1rem;
+        transition: all .2s;
+
+        &:hover {
+            cursor: pointer;
+            transform: translateY(-0.3rem);
+        }
+
+        &:active,
+        &:focus {
+            transform: translateY(-0.1rem);
+        }
+    }
+}
