@@ -15,6 +15,7 @@ export default function PregameLobby() {
     const { playerInfo, playerStatuses, isError, errorMessage } = useSelector(pregameSelector);
 
     useEffect(() => {
+        PregameAPI.postEnterLobby(location.state.game_id);
         dispatch(fetchPlayerStatuses(location.state.game_id));
         dispatch(fetchPlayerInfo(location.state.game_id));
 
@@ -34,7 +35,7 @@ export default function PregameLobby() {
                 type: "error",
             }));
         }
-    }, [dispatch])
+    }, [dispatch, isError, errorMessage, navigate, location.state.game_id])
 
     return (
         <>
@@ -74,6 +75,9 @@ export default function PregameLobby() {
                         <div className="pregame-options">
                             <button className="pregame-options__button" onClick={() => PregameAPI.postReadyStatus(location.state.game_id)}>
                                 Toggle Ready
+                            </button>
+                            <button className="pregame-options__button--start" onClick={() => console.log("PLACEHOLDER")}>
+                                Start Game
                             </button>
                             <button className="pregame-options__button" onClick={() => PregameAPI.postLeaveGame(location.state.game_id)}>
                                 Leave Game

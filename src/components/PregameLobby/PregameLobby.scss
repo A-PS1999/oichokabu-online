@@ -119,5 +119,11 @@
         &:focus {
             transform: translateY(-0.1rem);
         }
+
+        &--start {
+            @extend .pregame-options__button;
+            background-color: var.$japan-red;
+            color: var.$color-white;
+        }
     }
 }

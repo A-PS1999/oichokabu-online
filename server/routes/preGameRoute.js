@@ -40,14 +40,15 @@ router.post('/api/pregame-lobby/:gameId/join-game', checkLoggedIn, (request, res
 
 router.post('/api/pregame-lobby/:gameId/leave-game', checkLoggedIn, checkGamePlayer, (request, response) => {
 	const { gameId } = request.params;
-	const { userId, username } = response.locals.user;
+	const userId = response.locals.user.id;
+	const username = response.locals.user.username;
 	return PreGameDB.exitGame(gameId, userId)
 		.then(result => {
 			LobbySockets.leaveGame(gameId, userId, username);
 			PreGameSockets.leaveGame(gameId, userId, username);
 			return response.json(result);
 		})
-		.catch(error => response.json({ error }));
+		.catch(error => console.log(error));
 	}
 );
 
@@ -72,7 +73,8 @@ router.post('/api/pregame-lobby/:gameId/start-game', checkLoggedIn, checkGameHos
 
 router.post('/api/pregame-lobby/:gameId/toggle-ready', checkLoggedIn, checkGamePlayer, (request, response) => {
 	const { gameId } = request.params;
-	const { userId, username } = response.locals.user;
+	const userId = response.locals.user.id;
+	const username = response.locals.user.username;
 	return PreGameDB.togglePlayerReady(gameId, userId).then(result => {
 		if (result[1].ready) {
 			PreGameSockets.playerReady(gameId, userId, username);
@@ -82,7 +84,7 @@ router.post('/api/pregame-lobby/:gameId/toggle-ready', checkLoggedIn, checkGameP
 		
 		return response.json(result);
 	})
-	.catch(error => response.json({ error }));
+	.catch(error => console.log(error));
 });
 
 module.exports = router;

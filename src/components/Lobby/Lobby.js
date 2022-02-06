@@ -21,7 +21,8 @@ export default function Lobby() {
 		dispatch(fetchGames());
 		socket.on('lobby:create-game', (data) => {
 			const gameId = parseInt(data.gameId, 10);
-			dispatch(fetchGames())
+			dispatch(fetchGames());
+			dispatch(modalActions.toggleModal());
 			navigate(`/pregame-lobby/${gameId}`, { state: { 
 				game_id: gameId, 
 				room_name: data.roomName,
@@ -31,7 +32,12 @@ export default function Lobby() {
 		});
 		socket.on('lobby:join-game', (data) => {
 			const gameId = parseInt(data.gameId, 10);
-			navigate(`/pregame-lobby/${gameId}`);
+			navigate(`/pregame-lobby/${gameId}`, { state: {
+				game_id: gameId, 
+				room_name: data.roomName,
+				player_cap: data.playerCap,
+				turn_limit: data.turnMax
+			}});
 		})
 
 		if (isError) {

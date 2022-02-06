@@ -102,7 +102,7 @@ const accessPlayerReady = db => (player_gameid, player_userid) =>
 	});
 	
 const togglePlayerReady = db => (player_gameid, player_userid) =>
-	accessPlayerReady(player_gameid, player_userid).then(result =>
+	accessPlayerReady(db)(player_gameid, player_userid).then(result =>
 		db.ok_players.update(
 		{ ready: !result.ready },
 		{
