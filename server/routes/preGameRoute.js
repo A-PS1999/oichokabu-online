@@ -34,7 +34,7 @@ router.post('/api/pregame-lobby/:gameId/join-game', checkLoggedIn, (request, res
 			LobbySockets.joinGame(gameId, userId, username);
 			return response.json(result);
 		})
-		.catch(error => response.json({ error }));
+		.catch(error => console.log(error));
 	}
 );
 

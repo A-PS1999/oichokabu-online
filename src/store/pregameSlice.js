@@ -6,10 +6,10 @@ export const fetchPlayerInfo = createAsyncThunk(
     async (gameID, thunkAPI) => {
         try {
             const response = await PregameAPI.getPlayerInfo(gameID);
-            let { result } = response.data;
+            let result = response.data;
 
             if (response.status === 200) {
-                return { result }
+                return result;
             } else {
                 throw thunkAPI.rejectWithValue(response.status);
             }
@@ -27,7 +27,7 @@ export const fetchPlayerStatuses = createAsyncThunk(
             let result = response.data;
 
             if (response.status === 200) {
-                return result
+                return result;
             } else {
                 throw thunkAPI.rejectWithValue(response.status);
             }

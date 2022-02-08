@@ -8,7 +8,7 @@ const getPlayers = db => game_id =>
 				include: [
 					{
 						model: db.ok_users,
-						as: 'User',
+						as: 'user',
 						attributes: ['id', 'username'],
 					},
 				],

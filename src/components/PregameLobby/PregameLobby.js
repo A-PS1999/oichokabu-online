@@ -20,14 +20,11 @@ export default function PregameLobby() {
         dispatch(fetchPlayerInfo(location.state.game_id));
 
         socket.on(`pregame-lobby:${location.state.game_id}:player-ready`, () => {
-            dispatch(fetchPlayerStatuses(location.state.game_id))
-        })
+            dispatch(fetchPlayerStatuses(location.state.game_id));
+        });
         socket.on(`pregame-lobby:${location.state.game_id}:player-unready`, () => {
-            dispatch(fetchPlayerStatuses(location.state.game_id))
-        })
-        socket.on(`pregame-lobby:${location.state.game_id}:leave-game`, () => {
-            navigate("/lobby");
-        })
+            dispatch(fetchPlayerStatuses(location.state.game_id));
+        });
 
         if (isError) {
             dispatch(toastActions.createToast({
@@ -43,9 +40,9 @@ export default function PregameLobby() {
             <div>
                 <main>
                     <section className="pregame-head">
-                        <h1 className="pregame-head__title">{location.state.room_name}</h1>
-                        <div className="pregame-head__subheading--playercount">Players: {playerStatuses.length}/{location.state.player_cap}</div>
-                        <div className="pregame-head__subheading--turncap">Game turn limit: {location.state.turn_limit} turns</div>
+                        <h1 className="pregame-head__title">{playerInfo.room_name}</h1>
+                        <div className="pregame-head__subheading--playercount">Players: {playerStatuses.length}/{playerInfo.player_cap}</div>
+                        <div className="pregame-head__subheading--turncap">Game turn limit: {playerInfo.turn_max} turns</div>
                     </section>
                     <section className="pregame-body">
                         <div className="players-container">
