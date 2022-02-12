@@ -1,8 +1,12 @@
 const router = require('express').Router();
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
+const checkLoggedIn = require('./middleware/checkLoggedIn');
+const sendUserId = require('./middleware/sendUserId');
 
 const { Auth } = require('../db/api');
+
+router.get('/api/get-user-id', checkLoggedIn, sendUserId);
 
 router.post('/api/get-session', async (request, response) => {
 	if (request.session) {

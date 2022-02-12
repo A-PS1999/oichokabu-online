@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import './Lobby.scss';
 import { useSelector, useDispatch } from 'react-redux';
-import { lobbySelector, fetchGames } from '../../store/lobbySlice.js';
+import { lobbySelector, fetchGames, fetchUserId } from '../../store/lobbySlice.js';
 import { lobbyStateReset as clearState } from '../../store/lobbySlice.js';
 import { toastActions } from '../../store/toastSlice.js';
 import { modalActions } from '../../store/modalSlice.js';
@@ -15,23 +15,34 @@ export default function Lobby() {
 	
 	const dispatch = useDispatch();
 	let navigate = useNavigate();
-	const { isError, errorMessage, rooms } = useSelector(lobbySelector);
+	const { isError, errorMessage, rooms, userId } = useSelector(lobbySelector);
+
+	useEffect(() => {
+		dispatch(fetchUserId())
+	}, [dispatch])
 
 	useEffect(() => {
 		dispatch(fetchGames());
 		socket.on('lobby:create-game', (data) => {
 			const gameId = parseInt(data.gameId, 10);
 			dispatch(fetchGames());
-			dispatch(modalActions.toggleModal());
-			navigate(`/pregame-lobby/${gameId}`, { state: { 
-				game_id: gameId
-			}});
+
+			if (userId === data.userId) {
+				navigate(`/pregame-lobby/${gameId}`, { state: { 
+					game_id: gameId,
+					user_id: userId
+				}});
+			}
 		});
 		socket.on('lobby:join-game', (data) => {
 			const gameId = parseInt(data.gameId, 10);
-			navigate(`/pregame-lobby/${gameId}`, { state: {
-				game_id: gameId
-			}});
+
+			if (userId === data.userId) {
+				navigate(`/pregame-lobby/${gameId}`, { state: {
+					game_id: gameId,
+					user_id: userId
+				}});
+			}
 		})
 
 		if (isError) {
@@ -41,7 +52,7 @@ export default function Lobby() {
 			}));
 			dispatch(clearState());
 		}
-	}, [dispatch, errorMessage, isError, navigate])
+	}, [dispatch, errorMessage, isError, navigate, userId])
 
 	return (
 		<>
@@ -78,8 +89,8 @@ export default function Lobby() {
 									{room.status === 'ended' &&
 										<div className="lobby-body__room__room-status--ended">{room.status.toUpperCase()}</div>
 									}
-									<div className="lobby-body__room__player-text">Players: {room.player_cap}</div>
-									<button className="lobby-body__room__button" onClick={() => PregameAPI.postJoinGame(room.game_id)}>
+									<div className="lobby-body__room__player-text">Players: {room.Players.length}/{room.player_cap}</div>
+									<button className="lobby-body__room__button" onClick={() => PregameAPI.postJoinGame(room.game_id)} disabled={room.Players.length === room.player_cap}>
 										Join Game
 									</button>
 								</div>

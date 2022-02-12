@@ -1,5 +1,9 @@
 import API from './api';
 
+export const UserAPI = {
+	getUserId: () => API.get('/get-user-id', {})
+}
+
 export const LobbyAPI = {
 	getGames: () => API.get('/lobby/lobbies', {}),
 	postNewGame: (roomName, playerCap, turnMax) => API.post('/lobby/create-game', { roomName, playerCap, turnMax }),

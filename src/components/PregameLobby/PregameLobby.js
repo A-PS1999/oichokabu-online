@@ -19,12 +19,24 @@ export default function PregameLobby() {
         dispatch(fetchPlayerStatuses(location.state.game_id));
         dispatch(fetchPlayerInfo(location.state.game_id));
 
+        socket.on(`pregame-lobby:${location.state.game_id}:enter-game`, () => {
+            dispatch(fetchPlayerStatuses(location.state.game_id));
+        })
         socket.on(`pregame-lobby:${location.state.game_id}:player-ready`, () => {
             dispatch(fetchPlayerStatuses(location.state.game_id));
         });
         socket.on(`pregame-lobby:${location.state.game_id}:player-unready`, () => {
             dispatch(fetchPlayerStatuses(location.state.game_id));
         });
+        socket.on(`pregame-lobby:${location.state.game_id}:leave-game`, (data) => {
+            dispatch(fetchPlayerStatuses(location.state.game_id));
+            if (location.state.user_id === data.userId) {
+                navigate("/lobby");
+            }
+            if (playerStatuses.length === 0) {
+                navigate("/lobby");
+            }
+        })
 
         if (isError) {
             dispatch(toastActions.createToast({
@@ -32,7 +44,7 @@ export default function PregameLobby() {
                 type: "error",
             }));
         }
-    }, [dispatch, isError, errorMessage, navigate, location.state.game_id])
+    }, [dispatch, isError, errorMessage, navigate, location.state.game_id, location.state.user_id, playerStatuses.length])
 
     return (
         <>

@@ -73,40 +73,33 @@
         display: grid;
         grid-template-columns: 30rem 1fr 15%;
         box-shadow: 1px 13px 15px 1px rgba(0,0,0,0.28);
+        margin-bottom: 2.5rem;
 
         &__room-name {
             font-size: 2rem;
         }
 
         &__room-status {
+            grid-column: 3 / 4;
+            padding: 1rem;
+            font-weight: 700;
+            font-size: 1.3rem;
+            border-radius: 1rem;
+            text-align: center;
+
             &--open {
-                grid-column: 3 / 4;
-                padding: 1rem;
-                font-weight: 700;
-                font-size: 1.3rem;
-                border-radius: 1rem;
+                @extend .lobby-body__room__room-status;
                 background-color: var.$color-green;
-                text-align: center;
             }
 
             &--ongoing {
-                grid-column: 3 / 4;
-                padding: 1rem;
-                font-weight: 700;
-                font-size: 1.3rem;
-                border-radius: 1rem;
+                @extend .lobby-body__room__room-status;
                 background-color: var.$color-orange;
-                text-align: center;
             }
 
             &--ended {
-                grid-column: 3 / 4;
-                padding: 1rem;
-                font-weight: 700;
-                font-size: 1.3rem;
-                border-radius: 1rem;
+                @extend .lobby-body__room__room-status;
                 background-color: var.$japan-red;
-                text-align: center;
             }
         }
 

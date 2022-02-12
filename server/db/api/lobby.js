@@ -7,6 +7,11 @@ const findOngoingGames = db => () =>
 				},
 			],
 		},
+		include: {
+			model: db.ok_players,
+			as: 'Players',
+			attributes: ['player_id', 'player_gameid']
+		},
 	});
 	
 const addGame = db => (player_userid, room_name, player_cap, turn_max) =>
