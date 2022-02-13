@@ -125,6 +125,10 @@
             @extend .pregame-options__button;
             background-color: var.$japan-red;
             color: var.$color-white;
+
+            &:disabled {
+                background-color: var.$dark-grey;
+            }
         }
     }
 }

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { loginUser, userSelector } from '../../store/userSlice.js';
 import { userStateReset as clearState } from '../../store/userSlice.js';
 import { toggleLoggedIn as setLoggedIn } from '../../store/userSlice.js';
@@ -49,6 +49,9 @@ export default function Login() {
 									<button className="login-form__button" type="submit">Submit</button>
 							</form>
 						</div>
+					</div>
+					<div className="forgot-password-link">
+						Forgotten your password? <Link to={"/forgot-password"}>Click here</Link>
 					</div>
 				</main>
 			</div>

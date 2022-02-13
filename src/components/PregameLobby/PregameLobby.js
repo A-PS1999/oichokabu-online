@@ -28,15 +28,6 @@ export default function PregameLobby() {
         socket.on(`pregame-lobby:${location.state.game_id}:player-unready`, () => {
             dispatch(fetchPlayerStatuses(location.state.game_id));
         });
-        socket.on(`pregame-lobby:${location.state.game_id}:leave-game`, (data) => {
-            dispatch(fetchPlayerStatuses(location.state.game_id));
-            if (location.state.user_id === data.userId) {
-                navigate("/lobby");
-            }
-            if (playerStatuses.length === 0) {
-                navigate("/lobby");
-            }
-        })
 
         if (isError) {
             dispatch(toastActions.createToast({
@@ -44,7 +35,28 @@ export default function PregameLobby() {
                 type: "error",
             }));
         }
-    }, [dispatch, isError, errorMessage, navigate, location.state.game_id, location.state.user_id, playerStatuses.length])
+    }, [dispatch, isError, errorMessage, navigate, location.state.game_id, location.state.user_id])
+
+    useEffect(() => {
+        socket.on(`pregame-lobby:${location.state.game_id}:leave-game`, (data) => {
+            dispatch(fetchPlayerStatuses(location.state.game_id));
+            if (location.state.user_id === data.userId) {
+                navigate("/lobby");
+            }
+        })
+    }, [dispatch, playerStatuses, playerStatuses.length, location.state.user_id, navigate, location.state.game_id])
+
+    const determineGameStartable = () => {
+        let numReadyPlayers = 0;
+
+        playerStatuses.forEach(playerStatus => {
+            if (playerStatus.Players[0].ready) {
+                numReadyPlayers++;
+            }
+        });
+
+        return numReadyPlayers === playerInfo.player_cap;
+    };
 
     return (
         <>
@@ -85,7 +97,7 @@ export default function PregameLobby() {
                             <button className="pregame-options__button" onClick={() => PregameAPI.postReadyStatus(location.state.game_id)}>
                                 Toggle Ready
                             </button>
-                            <button className="pregame-options__button--start" onClick={() => console.log("PLACEHOLDER")}>
+                            <button className="pregame-options__button--start" disabled={!determineGameStartable()} onClick={() => PregameAPI.postGameStart(location.state.game_id)}>
                                 Start Game
                             </button>
                             <button className="pregame-options__button" onClick={() => PregameAPI.postLeaveGame(location.state.game_id)}>

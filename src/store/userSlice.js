@@ -57,6 +57,21 @@ export const logoutUser = createAsyncThunk(
 	}
 );
 
+export const submitForgotPassword = createAsyncThunk(
+	"users/resetPassword",
+	async ({ email }, thunkAPI) => {
+		try {
+			const response = await API.post('/forgot-password', { email })
+
+			if (response.status === 200) {
+				return null;
+			}
+		} catch (error) {
+			return thunkAPI.rejectWithValue(error.message)
+		}
+	}
+);
+
 export const getSessID = createAsyncThunk(
 	"users/getSessId",
 	async (_, thunkAPI) => {
@@ -139,6 +154,18 @@ export const userSlice = createSlice({
 			state.isError = true;
 			state.errorMessage = action.payload;
 		})
+		builder.addCase(submitForgotPassword.fulfilled, (state) => {
+			state.isFetching = false;
+			state.isSuccessful = true;
+		})
+		builder.addCase(submitForgotPassword.pending, (state) => {
+			state.isFetching = true;
+		})
+		builder.addCase(submitForgotPassword.rejected, (state, action) => {
+			state.isError = true;
+			state.isFetching = false;
+			state.errorMessage = action.payload;
+		})
 		builder.addCase(getSessID.fulfilled, (state) => {
 			state.isFetching = false;
 			state.isLoggedIn = true;
@@ -146,7 +173,7 @@ export const userSlice = createSlice({
 		builder.addCase(getSessID.pending, (state) => {
 			state.isFetching = true;
 		})
-		builder.addCase(getSessID.rejected, (state, action) => {
+		builder.addCase(getSessID.rejected, (state) => {
 			state.isFetching = false;
 		})
 	},
