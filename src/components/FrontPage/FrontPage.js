@@ -48,9 +48,7 @@ export default function FrontPage() {
 						<div className="card">
 							<div className="card__inner">
 								<div className="card__side card__side--front">
-									<div>
-										<img src="/cards/card1.jpg" alt="card" />
-									</div>
+									<img src="/cards/card1.jpg" alt="card" />
 								</div>
 								<div className="card__side card__side--back">
 									<div className="card__back-container">

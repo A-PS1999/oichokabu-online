@@ -58,12 +58,12 @@ export const logoutUser = createAsyncThunk(
 );
 
 export const submitForgotPassword = createAsyncThunk(
-	"users/resetPassword",
+	"users/sendPasswordResetEmail",
 	async ({ email }, thunkAPI) => {
 		try {
 			const response = await API.post('/forgot-password', { email })
 
-			if (response.status === 200) {
+			if (response.status === 204) {
 				return null;
 			}
 		} catch (error) {
@@ -71,6 +71,40 @@ export const submitForgotPassword = createAsyncThunk(
 		}
 	}
 );
+
+export const resetPassword = createAsyncThunk(
+	"users/resetPassword",
+	async ({ token, password, confirmPassword }, thunkAPI) => {
+		try {
+			if (password !== confirmPassword) {
+				throw thunkAPI.rejectWithValue("Password entries do not match");
+			}
+
+			const response = await API.post(`/reset-password/${token}`, { password });
+
+			if (response.status === 201) {
+				return null;
+			}
+		} catch (error) {
+			return thunkAPI.rejectWithValue(error.message);
+		}
+	}
+)
+
+export const verifyResetPassword = createAsyncThunk(
+	"users/verifyResetPassword",
+	async ({ token }, thunkAPI) => {
+		try {
+			const response = await API.get(`/reset-password/${token}`);
+
+			if (response.status === 201) {
+				return null;
+			}
+		} catch (error) {
+			return thunkAPI.rejectWithValue(error.message);
+		}
+	}
+)
 
 export const getSessID = createAsyncThunk(
 	"users/getSessId",
@@ -164,6 +198,29 @@ export const userSlice = createSlice({
 		builder.addCase(submitForgotPassword.rejected, (state, action) => {
 			state.isError = true;
 			state.isFetching = false;
+			state.errorMessage = action.payload;
+		})
+		builder.addCase(resetPassword.fulfilled, (state) => {
+			state.isSuccessful = true;
+			state.isFetching = false;
+		})
+		builder.addCase(resetPassword.pending, (state) => {
+			state.isFetching = true;
+		})
+		builder.addCase(resetPassword.rejected, (state, action) => {
+			state.isFetching = false;
+			state.isError = true;
+			state.errorMessage = action.payload;
+		})
+		builder.addCase(verifyResetPassword.fulfilled, (state) => {
+			state.isFetching = false;
+		})
+		builder.addCase(verifyResetPassword.pending, (state) => {
+			state.isFetching = true;
+		})
+		builder.addCase(verifyResetPassword.rejected, (state, action) => {
+			state.isFetching = false;
+			state.isError = true;
 			state.errorMessage = action.payload;
 		})
 		builder.addCase(getSessID.fulfilled, (state) => {

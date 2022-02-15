@@ -135,7 +135,7 @@ router.post('/api/forgot-password', checkNotLoggedIn, (request, response) => {
 					})
 			})
 		})
-		.catch(error => response.status(500).send({ error }));
+		.catch(error => response.sendStatus(500).send({ error }));
 });
 
 router.get("/api/reset-password/:sessionId", checkNotLoggedIn, (request, response) => {

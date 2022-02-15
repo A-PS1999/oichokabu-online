@@ -28,11 +28,11 @@ const findPlayer = db => (player_gameid, player_userid) =>
 		},
 	});
 	
-const addSession = db => (session_id, sess, expiry) =>
+const addSession = db => (sid, sess, expire) =>
 	db.sessions.create({
-		session_id,
+		sid,
 		sess,
-		expiry,
+		expire,
 	});
 	
 const removeSession = db => sid => db.sessions.destroy({ where: { sid } });
