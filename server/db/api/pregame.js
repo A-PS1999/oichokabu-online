@@ -18,7 +18,7 @@ const getPlayers = db => game_id =>
 	
 const getPlayerStatuses = db => player_gameid =>
 	db.ok_users.findAll({
-		attributes: ['id', 'username'],
+		attributes: ['id', 'username', 'user_chips'],
 		include: [
 			{
 				model: db.ok_players,

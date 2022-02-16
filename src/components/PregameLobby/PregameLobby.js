@@ -76,6 +76,7 @@ export default function PregameLobby() {
                                     <React.Fragment key={playerStatus.id}>
                                         <div className="players-container__player">
                                             <h3 className="players-container__player__username">{playerStatus.username}</h3>
+                                            <div className="players-container__player__chipcount">Chips: {playerStatus.user_chips}</div>
                                             {playerStatus.Players[0].host ? (<img className="player-icon--host" src="/crown.svg" alt="Host" />) : null}
                                             <div className="players-container__player__ready-heading">Ready?</div>
                                             {playerStatus.Players[0].ready ? 

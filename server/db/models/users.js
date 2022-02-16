@@ -32,6 +32,11 @@ module.exports = (sequelize, Sequelize) => {
 				type: Sequelize.STRING,
 				allowNull: false,
 			},
+			user_chips: {
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				defaultValue: 10000,
+			}
 		},
 		{
 			timestamps: false,
