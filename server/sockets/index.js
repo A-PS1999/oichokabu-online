@@ -1,6 +1,6 @@
 const io = require('socket.io')();
 const session = require('../db/session');
-const { LobbyHandler, PreGameHandler } = require('./handlers');
+const { LobbyHandler, PreGameHandler, GameHandler } = require('./handlers');
 
 const init = server => {
 	io.use(({ request }, next) => {
@@ -38,6 +38,7 @@ io.on('connection', socket => {
 
 module.exports = {
 	init,
+	Game: GameHandler(lobbySockets, gameSockets),
 	Lobby: LobbyHandler(lobbySockets),
 	PreGameLobby: PreGameHandler(lobbySockets, preGameSockets),
 };
