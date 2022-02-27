@@ -200,3 +200,5 @@ export const kabufudaDeck = [
         src: "/cards/card10.jpg"
     },
 ]
+
+export default kabufudaDeck;

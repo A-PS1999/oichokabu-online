@@ -18,3 +18,8 @@ export const PregameAPI = {
 	postGameStart: gameId => API.post(`/pregame-lobby/${gameId}/start-game`, {}),
 	postReadyStatus: gameId => API.post(`/pregame-lobby/${gameId}/toggle-ready`),
 }
+
+export const GameAPI = {
+	getPlayerAuth: gameId => API.get(`/game/${gameId}/authenticate-player`, {}),
+	postUpdateChips: newChips => API.post('/game/update-player-chips', { newChips }),
+}

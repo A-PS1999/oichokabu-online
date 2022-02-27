@@ -4,6 +4,7 @@ import { lobbySlice } from './lobbySlice';
 import { toastSlice } from './toastSlice';
 import { modalSlice } from './modalSlice';
 import { pregameSlice } from './pregameSlice';
+import { gameSlice } from './gameSlice';
 
 export const store = configureStore({
 	reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
 		modal: modalSlice.reducer,
 		lobby: lobbySlice.reducer,
 		pregame: pregameSlice.reducer,
+		game: gameSlice.reducer,
 	},
 })

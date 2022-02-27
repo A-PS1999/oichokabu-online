@@ -1,6 +1,6 @@
 const getUserIdsAndUsernames = db => game_id =>
 	db.ok_games.findByPk(game_id).then(game =>
-		game.getUsers({ attributes: ['user_id', 'username'] })
+		game.getUsers({ attributes: ['user_id', 'username', 'user_chips'] })
 	);
 
 const removePlayer = db => (player_gameid, player_userid) =>

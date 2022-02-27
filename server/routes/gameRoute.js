@@ -2,16 +2,19 @@ const router = require('express').Router();
 const { Game: GameSockets } = require('../sockets');
 const { Game: GameDB } = require('../db/api');
 const checkLoggedIn = require('./middleware/checkLoggedIn');
+const checkGamePlayer = require('./middleware/checkGamePlayer');
+const sendUserId = require('./middleware/sendUserId');
 
-router.post('/api/:game-id/join', checkLoggedIn, (request, response) => {
+router.get('/api/game/:gameId/authenticate-player', checkLoggedIn, checkGamePlayer, sendUserId);
+
+router.post('/api/game/:gameId/join', checkLoggedIn, (request, response) => {
     const { gameId } = request.params;
     const id = response.locals.user.id;
-    const username = response.locals.user.username;
-    GameSockets.join(gameId, id, username);
+    GameSockets.setGameSockets(gameId, id);
     response.sendStatus(204);
 });
 
-router.post('/api/update-player-chips', checkLoggedIn, (request, response) => {
+router.post('/api/game/update-player-chips', checkLoggedIn, (request, response) => {
     const { newChips } = request.params;
     const id = response.locals.user.id;
 
