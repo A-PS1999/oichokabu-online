@@ -16,11 +16,10 @@ const initialGameState = () => ({
 
 export const fetchPlayerAuth = createAsyncThunk(
     "game/fetchPlayerAuth",
-    async ({ gameId }, thunkAPI) => {
+    async (gameId, thunkAPI) => {
         try {
             const response = await GameAPI.getPlayerAuth(gameId);
             let playerData = response.data;
-            console.log(playerData)
 
             if (response.status === 200) {
                 return playerData;

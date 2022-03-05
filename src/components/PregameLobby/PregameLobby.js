@@ -28,12 +28,6 @@ export default function PregameLobby() {
         socket.on(`pregame-lobby:${location.state.game_id}:player-unready`, () => {
             dispatch(fetchPlayerStatuses(location.state.game_id));
         });
-        socket.on(`pregame-lobby:${location.state.game_id}:start-game`, () => {
-            navigate(`/game/${location.state.game_id}`, { state: {
-                game_id: location.state.game_id,
-                player_data: playerStatuses,
-            }});
-        })
 
         if (isError) {
             dispatch(toastActions.createToast({
@@ -41,7 +35,7 @@ export default function PregameLobby() {
                 type: "error",
             }));
         }
-    }, [dispatch, isError, errorMessage, navigate, location.state.game_id, location.state.user_id, playerStatuses])
+    }, [dispatch, isError, errorMessage, navigate, location.state.game_id])
 
     useEffect(() => {
         socket.on(`pregame-lobby:${location.state.game_id}:leave-game`, (data) => {
@@ -51,6 +45,15 @@ export default function PregameLobby() {
             }
         })
     }, [dispatch, location.state.user_id, navigate, location.state.game_id])
+
+    useEffect(() => {
+        socket.on(`pregame-lobby:${location.state.game_id}:start-game`, () => {
+            navigate(`/game/${location.state.game_id}`, { state: {
+                game_id: location.state.game_id,
+                player_data: playerStatuses,
+            }});
+        })
+    }, [navigate, playerStatuses, location.state.game_id])
 
     const determineGameStartable = () => {
         let numReadyPlayers = 0;

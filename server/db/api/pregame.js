@@ -63,8 +63,8 @@ const exitGame = db => (player_gameid, player_userid) =>
 	
 const setGameStarted = db => game_id => db.ok_games.update({ status: 'started' }, { where: { game_id } });
 
-const setGameReady = db => id =>
-	db.ok_games.findOne({ where: { id } }).then(game =>
+const setGameReady = db => game_id =>
+	db.ok_games.findOne({ where: { game_id } }).then(game =>
 		game.getPlayers().then(players => {
 			if (players.length < game.player_cap) {
 				return {
@@ -73,7 +73,7 @@ const setGameReady = db => id =>
 				};
 			}
 			let readyPlayers = 0;
-			for (let i = 0; i < readyPlayers; i++) {
+			for (let i = 0; i < players.length; i++) {
 				if (players[i].ready) {
 					readyPlayers++;
 				}

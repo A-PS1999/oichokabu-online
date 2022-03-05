@@ -14,6 +14,12 @@ router.post('/api/game/:gameId/join', checkLoggedIn, (request, response) => {
     response.sendStatus(204);
 });
 
+router.get(`/api/game/:gameId/get-deck`, checkLoggedIn, (request, response) => {
+    const { gameId } = request.params;
+    GameDB.getDeck(gameId)
+        .then(result => response.send(result))
+})
+
 router.post('/api/game/update-player-chips', checkLoggedIn, (request, response) => {
     const { newChips } = request.params;
     const id = response.locals.user.id;

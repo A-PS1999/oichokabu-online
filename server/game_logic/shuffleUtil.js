@@ -1,4 +1,4 @@
-export function shuffleDeck(cardsDeck) {
+function shuffleDeck(cardsDeck) {
     let currentIndex = cardsDeck.length, randomIndex;
 
     while (currentIndex !== 0) {
@@ -9,4 +9,8 @@ export function shuffleDeck(cardsDeck) {
     }
 
     return cardsDeck;
+}
+
+module.exports = {
+    shuffleDeck
 }

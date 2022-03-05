@@ -1,4 +1,4 @@
-export const kabufudaDeck = [
+const kabufudaDeck = [
     {
         id: 1,
         value: 1,
@@ -201,4 +201,6 @@ export const kabufudaDeck = [
     },
 ]
 
-export default kabufudaDeck;
+module.exports = {
+    kabufudaDeck
+}

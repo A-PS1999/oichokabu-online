@@ -2,8 +2,10 @@ const router = require('express').Router();
 const checkLoggedIn = require('./middleware/checkLoggedIn');
 const checkGamePlayer = require('./middleware/checkGamePlayer');
 const checkGameHost = require('./middleware/checkGameHost');
+const { kabufudaDeck, shuffleDeck } = require('../game_logic');
 
 const { PreGame: PreGameDB } = require('../db/api');
+const { Game: GameDB } = require('../db/api');
 const { Lobby: LobbySockets, PreGameLobby: PreGameSockets } = require('../sockets');
 
 router.get('/api/pregame-lobby/:gameId/player-info', (request, response) =>
@@ -52,12 +54,15 @@ router.post('/api/pregame-lobby/:gameId/leave-game', checkLoggedIn, checkGamePla
 	}
 );
 
-router.post('/api/pregame-lobby/:gameId/start-game', checkLoggedIn, checkGameHost, (request, response) => {
+router.post('/api/pregame-lobby/:gameId/start-game', checkLoggedIn, checkGamePlayer, checkGameHost, (request, response) => {
 	const { gameId } = request.params;
-	const { userId, username } = response.locals.user;
+	const userId = response.locals.user.id;
+	const username = response.locals.user.username;
+	const gameDeck = shuffleDeck(kabufudaDeck);
 	return PreGameDB.setGameReady(gameId)
 		.then(result => {
 			if (result.ready) {
+				GameDB.setDeck(gameId, gameDeck);
 				return PreGameDB.setGameStarted(gameId).then(result => {
 					LobbySockets.startGame(gameId, userId, username);
 					PreGameSockets.startGame(gameId, userId, username);
