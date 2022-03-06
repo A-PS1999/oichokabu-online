@@ -35,6 +35,15 @@ module.exports = (sequelize, Sequelize) => {
 				max: 24
 			},
 		},
+		bet_max: {
+			type: Sequelize.INTEGER,
+			allowNull: false,
+			defaultValue: 500,
+			validate: {
+				min: 500,
+				max: 1000000
+			},
+		},
 		game_deck: {
 			type: Sequelize.ARRAY(Sequelize.JSON),
 			allowNull: false,

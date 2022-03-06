@@ -8,14 +8,24 @@ import { useForm, Controller, useWatch } from 'react-hook-form';
 import GameFormRadioGroup from './GameFormRadioButtons/GameFormRadioGroup';
 import Slider from 'react-input-slider';
 
-function SliderWatched({ control }) {
-	const sliderValue = useWatch({
+function TurnMaxWatched({ control }) {
+	const turnMaxValue = useWatch({
 		control,
 		name: "turnMax",
 		defaultValue: 12
 	});
 
-	return <div className='game-form__slider-heading'>Max turns: {sliderValue}</div>
+	return <div className='game-form__slider-heading'>Max turns: {turnMaxValue}</div>
+}
+
+function BetMaxWatched({ control }) {
+	const betMaxValue = useWatch({
+		control,
+		name: "betMax",
+		defaultValue: 500
+	});
+
+	return <div className='game-form__slider-heading'>Max bet: {betMaxValue}</div>
 }
 
 export default function CreateGameForm() {
@@ -60,7 +70,7 @@ export default function CreateGameForm() {
 						)}
 					/>
 					<h3 className='game-form__heading'>Game Turns</h3>
-					<SliderWatched control={control} />
+					<TurnMaxWatched control={control} />
 					<Controller
 						control={control}
 						name="turnMax"
@@ -71,6 +81,32 @@ export default function CreateGameForm() {
 								xmax={24}
 								xmin={6}
 								xstep={1}
+								onChange={({ x }) => onChange(x)}
+								x={value}
+								styles={{
+									active: {
+										backgroundColor: '#BC002D'
+									},
+									track: {
+										marginBottom: '1.3rem',
+										width: '292px'
+									}
+								}}
+							/>
+						)}
+					/>
+					<h3 className='game-form__heading'>Max bet per round</h3>
+					<BetMaxWatched control={control} />
+					<Controller 
+						control={control}
+						name="betMax"
+						defaultValue={500}
+						render={({ field: { value, onChange } }) => (
+							<Slider 
+								axis={"x"}
+								xmax={10000}
+								xmin={500}
+								xstep={100}
 								onChange={({ x }) => onChange(x)}
 								x={value}
 								styles={{

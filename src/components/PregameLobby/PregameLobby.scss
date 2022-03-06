@@ -37,6 +37,11 @@
             grid-area: btm-left;
             justify-self: end;
         }
+
+        &--betcap {
+            @extend .pregame-head__subheading;
+            grid-area: btm-center;
+        }
     }
 }
 

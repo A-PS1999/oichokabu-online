@@ -96,6 +96,8 @@ export default function Lobby() {
 										<div className="lobby-body__room__room-status--ended">{room.status.toUpperCase()}</div>
 									}
 									<div className="lobby-body__room__player-text">Players: {room.Players.length}/{room.player_cap}</div>
+									<div className="lobby-body__room__turn-text">Max Rounds: {room.turn_max}</div>
+									<div className="lobby-body__room__bet-text">Max Bet: {room.bet_max}</div>
 									<button className="lobby-body__room__button" onClick={() => PregameAPI.postJoinGame(room.game_id)} disabled={room.Players.length === room.player_cap}>
 										Join Game
 									</button>

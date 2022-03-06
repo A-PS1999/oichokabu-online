@@ -6,6 +6,7 @@ const initialGameState = () => ({
     turnMax: null,
     betMax: 500,
     Players: [],
+    cardSelections: [],
     isPickDealer: true,
     currentDealer: null,
     playerId: null,
@@ -36,8 +37,9 @@ export const gameSlice = createSlice({
     name: 'game',
     initialState: initialGameState(),
     reducers: {
-        setPlayers(state, action) {
-            state.Players = action.payload;
+        setGameValues(state, action) {
+            state.Players = action.payload.player_data;
+            state.turnMax = action.payload.turn_max;
         }
     },
     extraReducers: (builder) => {
@@ -57,4 +59,4 @@ export const gameSlice = createSlice({
 })
 
 export const gameSelector = state => state.game;
-export const { setPlayers } = gameSlice.actions;
+export const { setGameValues } = gameSlice.actions;

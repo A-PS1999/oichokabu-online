@@ -51,9 +51,10 @@ export default function PregameLobby() {
             navigate(`/game/${location.state.game_id}`, { state: {
                 game_id: location.state.game_id,
                 player_data: playerStatuses,
+                turn_max: playerInfo.turn_max,
             }});
         })
-    }, [navigate, playerStatuses, location.state.game_id])
+    }, [navigate, playerStatuses, location.state.game_id, playerInfo.turn_max])
 
     const determineGameStartable = () => {
         let numReadyPlayers = 0;
@@ -76,6 +77,7 @@ export default function PregameLobby() {
                         <h1 className="pregame-head__title">{playerInfo.room_name}</h1>
                         <div className="pregame-head__subheading--playercount">Players: {playerStatuses.length}/{playerInfo.player_cap}</div>
                         <div className="pregame-head__subheading--turncap">Game turn limit: {playerInfo.turn_max} turns</div>
+                        <div className="pregame-head__subheading--betcap">Max bet per round: {playerInfo.bet_max}</div>
                     </section>
                     <section className="pregame-body">
                         <div className="players-container">

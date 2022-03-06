@@ -1,4 +1,4 @@
-const createGame = sockets => (gameId, userId, username, roomName, playerCap, turnMax) =>
+const createGame = sockets => (gameId, userId, username, roomName, playerCap, turnMax, betMax) =>
 	sockets.forEach(clientSocket => 
 		clientSocket.emit('lobby:create-game', {
 				gameId,
@@ -6,7 +6,8 @@ const createGame = sockets => (gameId, userId, username, roomName, playerCap, tu
 				username,
 				roomName,
 				playerCap,
-				turnMax
+				turnMax,
+				betMax
 		}),
 	);
 	

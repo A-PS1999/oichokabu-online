@@ -102,8 +102,20 @@
 
         &__player-text {
             font-size: 1.2rem;
-            grid-column: -2 / -1;
-            align-content: center;
+            grid-column: 2 / 3;
+            grid-row: 1 / 2;
+            text-align: end;
+            margin-right: 1rem;
+        }
+
+        &__turn-text {
+            grid-column: -1 / -2;
+            text-align: center;
+        }
+
+        &__bet-text {
+            @extend .lobby-body__room__turn-text;
+            margin: -2rem;
         }
 
         &__button {

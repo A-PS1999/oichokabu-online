@@ -39,9 +39,9 @@ export const fetchGames = createAsyncThunk(
 
 export const createNewGame = createAsyncThunk(
 	"lobby/createNewGame",
-	async ({roomName, playerCap, turnMax}, thunkAPI) => {
+	async ({roomName, playerCap, turnMax, betMax}, thunkAPI) => {
 		try {
-			const response = await LobbyAPI.postNewGame(roomName, playerCap, turnMax);
+			const response = await LobbyAPI.postNewGame(roomName, playerCap, turnMax, betMax);
 			let { game } = response.data;
 			
 			if (response.status === 200) {
