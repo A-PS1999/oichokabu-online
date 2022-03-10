@@ -58,6 +58,10 @@ export default function Lobby() {
 			dispatch(clearState());
 			navigate("/log-in");
 		}
+		return () => {
+			socket.off('lobby:create-game');
+			socket.off('lobby:join-game');
+		}
 	}, [dispatch, errorMessage, isError, navigate, userId])
 
 	return (

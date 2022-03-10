@@ -14,6 +14,15 @@ router.post('/api/game/:gameId/join', checkLoggedIn, (request, response) => {
     response.sendStatus(204);
 });
 
+router.post('/api/game/:gameId/pickdealer-card-selected', checkLoggedIn, checkGamePlayer, (request, response) => {
+    const { gameId } = request.params;
+    const cardValue = request.body.cardVal;
+    const cardId = request.body.cardId;
+    const userId = response.locals.user.id;
+    GameSockets.pickDealerCardSelected(gameId, userId, cardId, cardValue);
+    response.sendStatus(204);
+})
+
 router.get(`/api/game/:gameId/get-deck`, checkLoggedIn, (request, response) => {
     const { gameId } = request.params;
     GameDB.getDeck(gameId)

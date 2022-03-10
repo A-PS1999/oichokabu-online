@@ -3,11 +3,12 @@ import { GameAPI } from '../services';
 
 const initialGameState = () => ({
     currentTurn: 1,
-    turnMax: null,
+    turnMax: 12,
     betMax: 500,
     Players: [],
     cardSelections: [],
     isPickDealer: true,
+    hasClicked: false,
     currentDealer: null,
     playerId: null,
     isFetching: false,
@@ -40,7 +41,17 @@ export const gameSlice = createSlice({
         setGameValues(state, action) {
             state.Players = action.payload.player_data;
             state.turnMax = action.payload.turn_max;
-        }
+            state.betMax = action.payload.bet_max;
+        },
+        setCardSelection(state, action) {
+            state.cardSelections.push(action.payload);
+        },
+        setHasClicked(state) {
+            return {
+                ...state,
+                hasClicked: !state.hasClicked,
+            }
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(fetchPlayerAuth.fulfilled, (state, action) => {
@@ -59,4 +70,4 @@ export const gameSlice = createSlice({
 })
 
 export const gameSelector = state => state.game;
-export const { setGameValues } = gameSlice.actions;
+export const { setGameValues, setCardSelection, setHasClicked } = gameSlice.actions;

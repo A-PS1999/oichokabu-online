@@ -8,32 +8,37 @@ import { socket, GameAPI } from '../../services';
 import './Game.scss';
 import Card from './Card/Card.js';
 
+const handlePickDealerCardSelection = (gameId, cardId, cardVal) => {
+    GameAPI.pickDealerCardSelected(gameId, cardId, cardVal)
+}
+
 export default function Game() {
 
     let navigate = useNavigate();
     const dispatch = useDispatch();
     const location = useLocation();
     const [deck, setDeck] = useState([]);
-    const { isPickDealer, Players, isError, errorMessage } = useSelector(gameSelector);
+    const { isPickDealer, Players, cardSelections, isError, errorMessage } = useSelector(gameSelector);
 
     useEffect(() => {
-        dispatch(fetchPlayerAuth(location.state.game_id));
         const dataToDispatch = {
             player_data: location.state.player_data,
-            turn_max: location.state.turn_max
+            turn_max: location.state.turn_max,
+            bet_max: location.state.bet_max
         }
         dispatch(setGameValues(dataToDispatch))
-    }, [dispatch, location.state.game_id, location.state.player_data, location.state.turn_max])
+    }, [dispatch, location.state.game_id, location.state.player_data, location.state.turn_max, location.state.bet_max])
 
     useEffect(() => {
         GameAPI.postJoinGame(location.state.game_id);
+        dispatch(fetchPlayerAuth(location.state.game_id));
 
         const fetchDeck = async (gameId) => {
             const deckResult = await GameAPI.getDeck(gameId);
             setDeck(deckResult.data);
         }
         fetchDeck(location.state.game_id);
-    }, [location.state.game_id, setDeck])
+    }, [dispatch, location.state.game_id, setDeck])
 
     useEffect(() => {
         if (isError) {
@@ -54,9 +59,15 @@ export default function Game() {
                 <div className='pickdealer-container__card-container'>
                     {deck.length > 0 ? deck.slice(0, Players.length).map(card => {
                         return (
-                            <React.Fragment key={card.id}>
-                                <Card src={card.src} value={card.value} id={card.id} isHidden={true} />
-                            </React.Fragment>
+                            <Card 
+                                key={card.id}
+                                src={card.src}
+                                game_id={location.state.game_id} 
+                                value={card.value} 
+                                id={card.id} 
+                                defaultVisibility={true} 
+                                func={handlePickDealerCardSelection} 
+                            />
                         )
                     })
                     : <>

@@ -35,6 +35,11 @@ export default function PregameLobby() {
                 type: "error",
             }));
         }
+        return () => {
+            socket.off(`pregame-lobby:${location.state.game_id}:enter-game`);
+            socket.off(`pregame-lobby:${location.state.game_id}:player-ready`);
+            socket.off(`pregame-lobby:${location.state.game_id}:player-unready`);
+        }
     }, [dispatch, isError, errorMessage, navigate, location.state.game_id])
 
     useEffect(() => {
@@ -44,6 +49,9 @@ export default function PregameLobby() {
                 navigate("/lobby");
             }
         })
+        return () => {
+            socket.off(`pregame-lobby:${location.state.game_id}:leave-game`);
+        }
     }, [dispatch, location.state.user_id, navigate, location.state.game_id])
 
     useEffect(() => {
@@ -52,9 +60,13 @@ export default function PregameLobby() {
                 game_id: location.state.game_id,
                 player_data: playerStatuses,
                 turn_max: playerInfo.turn_max,
+                bet_max: playerInfo.bet_max,
             }});
         })
-    }, [navigate, playerStatuses, location.state.game_id, playerInfo.turn_max])
+        return () => {
+            socket.off(`pregame-lobby:${location.state.game_id}:start-game`);
+        }
+    }, [navigate, playerStatuses, location.state.game_id, playerInfo.turn_max, playerInfo.bet_max])
 
     const determineGameStartable = () => {
         let numReadyPlayers = 0;
