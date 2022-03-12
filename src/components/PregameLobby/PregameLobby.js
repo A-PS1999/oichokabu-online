@@ -19,15 +19,12 @@ export default function PregameLobby() {
         dispatch(fetchPlayerStatuses(location.state.game_id));
         dispatch(fetchPlayerInfo(location.state.game_id));
 
-        socket.on(`pregame-lobby:${location.state.game_id}:enter-game`, () => {
+        const pregameSocketHandler = () => {
             dispatch(fetchPlayerStatuses(location.state.game_id));
-        })
-        socket.on(`pregame-lobby:${location.state.game_id}:player-ready`, () => {
-            dispatch(fetchPlayerStatuses(location.state.game_id));
-        });
-        socket.on(`pregame-lobby:${location.state.game_id}:player-unready`, () => {
-            dispatch(fetchPlayerStatuses(location.state.game_id));
-        });
+        }
+        socket.on(`pregame-lobby:${location.state.game_id}:enter-game`, pregameSocketHandler)
+        socket.on(`pregame-lobby:${location.state.game_id}:player-ready`, pregameSocketHandler);
+        socket.on(`pregame-lobby:${location.state.game_id}:player-unready`, pregameSocketHandler);
 
         if (isError) {
             dispatch(toastActions.createToast({
@@ -36,35 +33,37 @@ export default function PregameLobby() {
             }));
         }
         return () => {
-            socket.off(`pregame-lobby:${location.state.game_id}:enter-game`);
-            socket.off(`pregame-lobby:${location.state.game_id}:player-ready`);
-            socket.off(`pregame-lobby:${location.state.game_id}:player-unready`);
+            socket.off(`pregame-lobby:${location.state.game_id}:enter-game`, pregameSocketHandler);
+            socket.off(`pregame-lobby:${location.state.game_id}:player-ready`, pregameSocketHandler);
+            socket.off(`pregame-lobby:${location.state.game_id}:player-unready`, pregameSocketHandler);
         }
     }, [dispatch, isError, errorMessage, navigate, location.state.game_id])
 
     useEffect(() => {
-        socket.on(`pregame-lobby:${location.state.game_id}:leave-game`, (data) => {
+        const leaveGameSocketHandler = (data) => {
             dispatch(fetchPlayerStatuses(location.state.game_id));
             if (location.state.user_id === data.userId) {
                 navigate("/lobby");
             }
-        })
+        }
+        socket.on(`pregame-lobby:${location.state.game_id}:leave-game`, leaveGameSocketHandler)
         return () => {
-            socket.off(`pregame-lobby:${location.state.game_id}:leave-game`);
+            socket.off(`pregame-lobby:${location.state.game_id}:leave-game`, leaveGameSocketHandler);
         }
     }, [dispatch, location.state.user_id, navigate, location.state.game_id])
 
     useEffect(() => {
-        socket.on(`pregame-lobby:${location.state.game_id}:start-game`, () => {
+        const startGameSocketHandler = () => {
             navigate(`/game/${location.state.game_id}`, { state: {
                 game_id: location.state.game_id,
                 player_data: playerStatuses,
                 turn_max: playerInfo.turn_max,
                 bet_max: playerInfo.bet_max,
             }});
-        })
+        }
+        socket.on(`pregame-lobby:${location.state.game_id}:start-game`, startGameSocketHandler)
         return () => {
-            socket.off(`pregame-lobby:${location.state.game_id}:start-game`);
+            socket.off(`pregame-lobby:${location.state.game_id}:start-game`, startGameSocketHandler);
         }
     }, [navigate, playerStatuses, location.state.game_id, playerInfo.turn_max, playerInfo.bet_max])
 

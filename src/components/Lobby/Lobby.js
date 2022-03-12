@@ -28,7 +28,7 @@ export default function Lobby() {
 
 	useEffect(() => {
 		dispatch(fetchGames());
-		socket.on('lobby:create-game', (data) => {
+		const createGameSocketHandler = (data) => {
 			const gameId = parseInt(data.gameId, 10);
 			dispatch(fetchGames());
 
@@ -38,8 +38,9 @@ export default function Lobby() {
 					user_id: userId
 				}});
 			}
-		});
-		socket.on('lobby:join-game', (data) => {
+		}
+		socket.on('lobby:create-game', createGameSocketHandler);
+		const joinGameSocketHandler = (data) => {
 			const gameId = parseInt(data.gameId, 10);
 
 			if (userId === data.userId) {
@@ -48,7 +49,8 @@ export default function Lobby() {
 					user_id: userId
 				}});
 			}
-		})
+		}
+		socket.on('lobby:join-game', joinGameSocketHandler);
 
 		if (isError) {
 			dispatch(toastActions.createToast({
@@ -59,8 +61,8 @@ export default function Lobby() {
 			navigate("/log-in");
 		}
 		return () => {
-			socket.off('lobby:create-game');
-			socket.off('lobby:join-game');
+			socket.off('lobby:create-game', createGameSocketHandler);
+			socket.off('lobby:join-game', joinGameSocketHandler);
 		}
 	}, [dispatch, errorMessage, isError, navigate, userId])
 

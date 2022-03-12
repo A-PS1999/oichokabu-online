@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { gameSelector } from '../../store/gameSlice';
 import { toastActions } from '../../store/toastSlice.js';
-import { fetchPlayerAuth, setGameValues } from '../../store/gameSlice';
+import { fetchPlayerAuth, setGameValues, prepMainGameInitialState } from '../../store/gameSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { socket, GameAPI } from '../../services';
 import './Game.scss';
@@ -41,6 +41,19 @@ export default function Game() {
     }, [dispatch, location.state.game_id, setDeck])
 
     useEffect(() => {
+        const determineHighestValueCard = () => {
+            let highestValueSelection = cardSelections.reduce((current, previous) => 
+                current.cardVal > previous.cardVal ? current : previous
+            )
+            return highestValueSelection.userId;
+        }
+        if (isPickDealer && cardSelections.length > 0 && cardSelections.length === Players.length) {
+            const firstDealer = determineHighestValueCard();
+            dispatch(prepMainGameInitialState(firstDealer));
+        }
+    }, [dispatch, cardSelections, Players, isPickDealer])
+
+    useEffect(() => {
         if (isError) {
             dispatch(toastActions.createToast({
                 message: errorMessage,
@@ -77,6 +90,9 @@ export default function Game() {
                 </div>
             </div>
         )
+    } else {
+        return (
+            <div>THE MAIN GAME STAGE</div>
+        )
     }
-
 }

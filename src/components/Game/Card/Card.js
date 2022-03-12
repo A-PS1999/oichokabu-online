@@ -17,10 +17,7 @@ export default function Card({id, game_id, value, src, defaultVisibility, func})
     }, [value])
 
     useEffect(() => {
-        // set name here, helps avoid accidental typos
-        const eventName = `game:${game_id}:pickdealer-card-selected`;
-        //gets a reference to the handler, used so socket knows which handler to remove in socket.off
-        const handler = (data) => {
+        const cardClickHandler = (data) => {
             if (data.cardId === id) {
                 setIsHidden(false);
                 setIsDisabled(true);
@@ -30,9 +27,9 @@ export default function Card({id, game_id, value, src, defaultVisibility, func})
                 dispatch(setHasClicked())
             }
         }
-        socket.on(eventName, handler)
+        socket.on(`game:${game_id}:pickdealer-card-selected`, cardClickHandler)
         return () => {
-            socket.off(eventName, handler);
+            socket.off(`game:${game_id}:pickdealer-card-selected`, cardClickHandler);
         }
     }, [dispatch, game_id, playerId, id])
 

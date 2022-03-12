@@ -49,7 +49,16 @@ export const gameSlice = createSlice({
         setHasClicked(state) {
             return {
                 ...state,
-                hasClicked: !state.hasClicked,
+                hasClicked: true,
+            }
+        },
+        prepMainGameInitialState(state, action) {
+            return {
+                ...state,
+                isPickDealer: false,
+                hasClicked: false,
+                currentDealer: action.payload,
+                cardSelections: [],
             }
         },
     },
@@ -70,4 +79,7 @@ export const gameSlice = createSlice({
 })
 
 export const gameSelector = state => state.game;
-export const { setGameValues, setCardSelection, setHasClicked } = gameSlice.actions;
+export const { setGameValues, 
+    setCardSelection, 
+    setHasClicked, 
+    prepMainGameInitialState } = gameSlice.actions;
