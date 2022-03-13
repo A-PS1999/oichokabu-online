@@ -5,6 +5,7 @@ const initialGameState = () => ({
     currentTurn: 1,
     turnMax: 12,
     betMax: 500,
+    totalBetAmount: 0,
     Players: [],
     cardSelections: [],
     isPickDealer: true,
@@ -61,6 +62,12 @@ export const gameSlice = createSlice({
                 cardSelections: [],
             }
         },
+        incrementTotalBetAmount(state, action) {
+            return {
+                ...state,
+                totalBetAmount: state.totalBetAmount += action.payload,
+            }
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(fetchPlayerAuth.fulfilled, (state, action) => {
@@ -82,4 +89,5 @@ export const gameSelector = state => state.game;
 export const { setGameValues, 
     setCardSelection, 
     setHasClicked, 
-    prepMainGameInitialState } = gameSlice.actions;
+    prepMainGameInitialState,
+    incrementTotalBetAmount } = gameSlice.actions;

@@ -11,7 +11,14 @@ const pickDealerCardSelected = gameSockets => (gameId, userId, cardId, cardVal) 
     )
 }
 
+const cardBetMade = gameSockets => (gameId, betAmount) => {
+    gameSockets.get(gameId).forEach(clientSocket =>
+        clientSocket.emit(`game:${gameId}:card-bet-made`, {betAmount})
+    )
+}
+
 module.exports = (lobbySockets, gameSockets) => ({
     setGameSockets: setGameSockets(lobbySockets, gameSockets),
     pickDealerCardSelected: pickDealerCardSelected(gameSockets),
+    cardBetMade: cardBetMade(gameSockets),
 })

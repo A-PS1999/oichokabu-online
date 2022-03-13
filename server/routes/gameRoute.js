@@ -29,6 +29,13 @@ router.get(`/api/game/:gameId/get-deck`, checkLoggedIn, (request, response) => {
         .then(result => response.send(result))
 })
 
+router.post('/api/game/:gameId/card-bet', checkLoggedIn, checkGamePlayer, (request, response) => {
+    const { gameId } = request.params;
+    const betAmount = request.body.betAmount;
+    GameSockets.cardBetMade(gameId, betAmount);
+    response.sendStatus(204);
+})
+
 router.post('/api/game/update-player-chips', checkLoggedIn, (request, response) => {
     const { newChips } = request.params;
     const id = response.locals.user.id;

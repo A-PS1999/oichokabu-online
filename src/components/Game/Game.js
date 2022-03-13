@@ -4,13 +4,11 @@ import { gameSelector } from '../../store/gameSlice';
 import { toastActions } from '../../store/toastSlice.js';
 import { fetchPlayerAuth, setGameValues, prepMainGameInitialState } from '../../store/gameSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { socket, GameAPI } from '../../services';
+import { GameAPI } from '../../services';
 import './Game.scss';
 import Card from './Card/Card.js';
-
-const handlePickDealerCardSelection = (gameId, cardId, cardVal) => {
-    GameAPI.pickDealerCardSelected(gameId, cardId, cardVal)
-}
+import Modal from '../Modal/Modal';
+import MakeBetForm from './MakeBetForm/MakeBetForm';
 
 export default function Game() {
 
@@ -18,7 +16,13 @@ export default function Game() {
     const dispatch = useDispatch();
     const location = useLocation();
     const [deck, setDeck] = useState([]);
-    const { isPickDealer, Players, cardSelections, isError, errorMessage } = useSelector(gameSelector);
+    const { isPickDealer, 
+        Players, 
+        cardSelections, 
+        currentTurn,
+        turnMax,
+        isError, 
+        errorMessage } = useSelector(gameSelector);
 
     useEffect(() => {
         const dataToDispatch = {
@@ -79,7 +83,6 @@ export default function Game() {
                                 value={card.value} 
                                 id={card.id} 
                                 defaultVisibility={true} 
-                                func={handlePickDealerCardSelection} 
                             />
                         )
                     })
@@ -92,7 +95,16 @@ export default function Game() {
         )
     } else {
         return (
-            <div>THE MAIN GAME STAGE</div>
+            <>
+                <Modal>
+                    <MakeBetForm />
+                </Modal>
+                <div className="maingame">
+                    <div className="maingame__info-container">
+                        <h2>Turn: {currentTurn}/{turnMax}</h2>
+                    </div>
+                </div>
+            </>
         )
     }
 }

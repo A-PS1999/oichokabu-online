@@ -1,6 +1,29 @@
-.card-button {
-    background: transparent;
-    border: none;
-    cursor: grab;
-    margin: auto 2rem;
+@use "./../../../sass/abstracts/variables" as var;
+
+.game-card {
+    position: relative;
+
+    &__button {
+        background: transparent;
+        border: none;
+        cursor: grab;
+        margin: auto 2rem;
+    }
+
+    &__value-container {
+        position: absolute;
+        top: -15px;
+        left: 10px;
+        background: var.$japan-red;
+        color: var.$color-white;
+        padding: 1.3rem;
+        clip-path: polygon(0 0, 0% 100%, 100% 0);
+
+        &__value {
+            font-weight: 700;
+            position: relative;
+            top: -10px;
+            left: -10px;
+        }
+    }
 }

@@ -37,6 +37,7 @@ export default function Lobby() {
 					game_id: gameId,
 					user_id: userId
 				}});
+				dispatch(modalActions.toggleModal());
 			}
 		}
 		socket.on('lobby:create-game', createGameSocketHandler);
