@@ -1,0 +1,46 @@
+@use "./../../../sass/abstracts/variables" as var;
+
+.makebet-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem;
+
+    &__heading {
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    &__slider-heading {
+        text-align: center;
+    }
+
+    &__button {
+        display: block;
+        text-align: center;
+        transition: all .2s;
+        appearance: none;
+        margin: 0 auto;
+        padding: 1rem;
+        border: none;
+        color: var.$color-white;
+        background-color: var.$japan-red;
+        border-radius: 1rem;
+        box-shadow: 0px 2px 5px 1px rgba(0,0,0,0.38);
+
+        &:hover {
+            cursor: pointer;
+            transform: translateY(-0.3rem);
+            box-shadow: 0px 4px 8px 2px rgba(0,0,0,0.28);
+            
+            &::after {
+                transform: scaleX(1.2) scaleY(1.2);
+            }
+        }
+
+        &:active,
+        &:focus {
+            transform: translateY(-0.1rem);
+        }
+    }
+}

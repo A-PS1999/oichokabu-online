@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { socket } from '../../../services';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCardSelection, setHasClicked, gameSelector, incrementTotalBetAmount } from '../../../store/gameSlice';
+import { setCardBet, setCurrentSelection, setHasClicked, gameSelector, handleCardBetMade } from '../../../store/gameSlice';
 import { modalActions } from '../../../store/modalSlice';
 import { GameAPI } from '../../../services';
 import './Card.scss';
@@ -10,13 +10,18 @@ const handlePickDealerCardSelection = (gameId, cardId, cardVal) => {
     GameAPI.postDealerCardSelected(gameId, cardId, cardVal)
 }
 
-export default function Card({id, game_id, value, src, defaultVisibility}) {
+export default function Card({id, value, src, defaultHidden, defaultDisabled}) {
 
     const [cardValue, setCardValue] = useState(null);
-    const [isHidden, setIsHidden] = useState(defaultVisibility);
-    const [isDisabled, setIsDisabled] = useState(false);
-    const { playerId, hasClicked, isPickDealer } = useSelector(gameSelector);
+    const [isHidden, setIsHidden] = useState(defaultHidden);
+    const [isDisabled, setIsDisabled] = useState(defaultDisabled);
+    const { playerId, hasClicked, isPickDealer, currentDealer, gameId } = useSelector(gameSelector);
     const dispatch = useDispatch();
+
+    const handleMainGameCardClick = () => {
+        dispatch(modalActions.toggleModal());
+        dispatch(setCurrentSelection(id))
+    }
 
     useEffect(() => {
         setCardValue(value);
@@ -27,28 +32,31 @@ export default function Card({id, game_id, value, src, defaultVisibility}) {
             if (data.cardId === id) {
                 setIsHidden(false);
                 setIsDisabled(true);
-                dispatch(setCardSelection( data ));
+                dispatch(setCardBet(data));
             }
             if (playerId && data.userId === playerId) {
                 dispatch(setHasClicked())
             }
         }
-        socket.on(`game:${game_id}:pickdealer-card-selected`, dealerDecideClickHandler)
+        socket.on(`game:${gameId}:pickdealer-card-selected`, dealerDecideClickHandler)
         return () => {
-            socket.off(`game:${game_id}:pickdealer-card-selected`, dealerDecideClickHandler);
+            socket.off(`game:${gameId}:pickdealer-card-selected`, dealerDecideClickHandler);
         }
-    }, [dispatch, game_id, playerId, id])
+    }, [dispatch, gameId, playerId, id])
 
     useEffect(() => {
         const cardBetSocketHandler = (data) => {
-            dispatch(incrementTotalBetAmount(data.betAmount));
-            // add more card bet dispatch stuff here
+            dispatch(handleCardBetMade(data));
+            dispatch(setCardBet(data));
+            if (data.betAmount.user_id === playerId && data.betAmount.card_id === id) {
+                setIsDisabled(true);
+            }
         }
-        socket.on(`game:${game_id}:card-bet-made`, cardBetSocketHandler);
+        socket.on(`game:${gameId}:card-bet-made`, cardBetSocketHandler);
         return () => {
-            socket.off(`game:${game_id}:card-bet-made`, cardBetSocketHandler)
+            socket.off(`game:${gameId}:card-bet-made`, cardBetSocketHandler)
         }
-    }, [dispatch, game_id])
+    }, [dispatch, gameId, playerId, id, value])
 
     return (
         <>
@@ -60,8 +68,8 @@ export default function Card({id, game_id, value, src, defaultVisibility}) {
                         </div>
                     </div> 
                 }
-                <button className='game-card__button' disabled={isDisabled || hasClicked} 
-                    onClick={() => { isPickDealer ? handlePickDealerCardSelection(game_id, id, cardValue) : dispatch(modalActions.toggleModal()) }}>
+                <button className='game-card__button' disabled={isDisabled || hasClicked || (currentDealer && playerId === currentDealer.id)} 
+                    onClick={() => { isPickDealer ? handlePickDealerCardSelection(gameId, id, cardValue) : handleMainGameCardClick() }}>
                     <img src={isHidden ? "/cards/cardback.jpg" : src} alt="Oicho Kabu card" id={id} />
                 </button>
             </div>

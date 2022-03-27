@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { gameSelector } from '../../store/gameSlice';
 import { toastActions } from '../../store/toastSlice.js';
 import { fetchPlayerAuth, setGameValues, prepMainGameInitialState } from '../../store/gameSlice';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { GameAPI } from '../../services';
 import './Game.scss';
 import Card from './Card/Card.js';
@@ -12,13 +12,12 @@ import MakeBetForm from './MakeBetForm/MakeBetForm';
 
 export default function Game() {
 
-    let navigate = useNavigate();
     const dispatch = useDispatch();
     const location = useLocation();
     const [deck, setDeck] = useState([]);
     const { isPickDealer, 
         Players, 
-        cardSelections, 
+        cardBets, 
         currentTurn,
         turnMax,
         isError, 
@@ -28,7 +27,8 @@ export default function Game() {
         const dataToDispatch = {
             player_data: location.state.player_data,
             turn_max: location.state.turn_max,
-            bet_max: location.state.bet_max
+            bet_max: location.state.bet_max,
+            game_id: location.state.game_id,
         }
         dispatch(setGameValues(dataToDispatch))
     }, [dispatch, location.state.game_id, location.state.player_data, location.state.turn_max, location.state.bet_max])
@@ -46,16 +46,21 @@ export default function Game() {
 
     useEffect(() => {
         const determineHighestValueCard = () => {
-            let highestValueSelection = cardSelections.reduce((current, previous) => 
+            let highestValueSelection = cardBets.reduce((current, previous) => 
                 current.cardVal > previous.cardVal ? current : previous
             )
             return highestValueSelection.userId;
         }
-        if (isPickDealer && cardSelections.length > 0 && cardSelections.length === Players.length) {
-            const firstDealer = determineHighestValueCard();
-            dispatch(prepMainGameInitialState(firstDealer));
+        if (isPickDealer && cardBets.length > 0 && cardBets.length === Players.length) {
+            const highestPick = determineHighestValueCard();
+            const firstDealer = Players.filter(player => player.id === highestPick)
+            dispatch(prepMainGameInitialState(firstDealer[0]));
+            dispatch(toastActions.createToast({
+                message: `The first dealer is ${firstDealer[0].username}!`,
+                type: "success"
+            }))
         }
-    }, [dispatch, cardSelections, Players, isPickDealer])
+    }, [dispatch, cardBets, Players, isPickDealer])
 
     useEffect(() => {
         if (isError) {
@@ -79,10 +84,10 @@ export default function Game() {
                             <Card 
                                 key={card.id}
                                 src={card.src}
-                                game_id={location.state.game_id} 
                                 value={card.value} 
                                 id={card.id} 
-                                defaultVisibility={true} 
+                                defaultHidden={true}
+                                defaultDisabled={false}
                             />
                         )
                     })
@@ -100,8 +105,34 @@ export default function Game() {
                     <MakeBetForm />
                 </Modal>
                 <div className="maingame">
-                    <div className="maingame__info-container">
+                    <div className="maingame__turninfo">
                         <h2>Turn: {currentTurn}/{turnMax}</h2>
+                    </div>
+                    <div className="maingame__main-cards-container">
+                        {deck.length > 0 ? deck.slice(Players.length+1, Players.length+5).map(card => {
+                            return (
+                                <Card 
+                                    key={card.id}
+                                    src={card.src}
+                                    value={card.value}
+                                    id={card.id}
+                                    defaultHidden={false}
+                                    defaultDisabled={false}
+                                />
+                            )
+                        })
+                        : <h2>Loading...</h2>
+                    }
+                    </div>
+                    <div className="maingame__players-container">
+                        {Players.map((player) => {
+                            return (
+                                <div key={player.id} className="maingame__players-container__player">
+                                    {player.username}
+                                    Chips: {player.user_chips}
+                                </div>
+                            )
+                        })}
                     </div>
                 </div>
             </>

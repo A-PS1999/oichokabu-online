@@ -29,10 +29,12 @@ router.get(`/api/game/:gameId/get-deck`, checkLoggedIn, (request, response) => {
         .then(result => response.send(result))
 })
 
-router.post('/api/game/:gameId/card-bet', checkLoggedIn, checkGamePlayer, (request, response) => {
+router.post('/api/game/:gameId/card-bet', checkLoggedIn, (request, response) => {
     const { gameId } = request.params;
+    const userId = request.body.user_id;
+    const cardId = request.body.card_id;
     const betAmount = request.body.betAmount;
-    GameSockets.cardBetMade(gameId, betAmount);
+    GameSockets.cardBetMade(gameId, userId, cardId, betAmount);
     response.sendStatus(204);
 })
 

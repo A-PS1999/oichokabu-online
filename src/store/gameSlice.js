@@ -7,11 +7,13 @@ const initialGameState = () => ({
     betMax: 500,
     totalBetAmount: 0,
     Players: [],
-    cardSelections: [],
+    cardBets: [],
+    currentlySelectedCard: null,
     isPickDealer: true,
     hasClicked: false,
     currentDealer: null,
     playerId: null,
+    gameId: null,
     isFetching: false,
 	isError: false,
 	errorMessage: "",
@@ -43,9 +45,16 @@ export const gameSlice = createSlice({
             state.Players = action.payload.player_data;
             state.turnMax = action.payload.turn_max;
             state.betMax = action.payload.bet_max;
+            state.gameId = action.payload.game_id;
         },
-        setCardSelection(state, action) {
-            state.cardSelections.push(action.payload);
+        setCardBet(state, action) {
+            state.cardBets.push(action.payload);
+        },
+        setCurrentSelection(state, action) {
+            return {
+                ...state,
+                currentlySelectedCard: action.payload,
+            }
         },
         setHasClicked(state) {
             return {
@@ -59,14 +68,13 @@ export const gameSlice = createSlice({
                 isPickDealer: false,
                 hasClicked: false,
                 currentDealer: action.payload,
-                cardSelections: [],
+                cardBets: [],
             }
         },
-        incrementTotalBetAmount(state, action) {
-            return {
-                ...state,
-                totalBetAmount: state.totalBetAmount += action.payload,
-            }
+        handleCardBetMade(state, action) {
+            const index = state.Players.findIndex((i) => i.id === action.payload.betAmount.user_id);
+            state.totalBetAmount += action.payload.betAmount.betAmount;
+            state.Players[index].user_chips -= action.payload.betAmount.betAmount;
         }
     },
     extraReducers: (builder) => {
@@ -87,7 +95,8 @@ export const gameSlice = createSlice({
 
 export const gameSelector = state => state.game;
 export const { setGameValues, 
-    setCardSelection, 
+    setCardBet,
+    setCurrentSelection, 
     setHasClicked, 
     prepMainGameInitialState,
-    incrementTotalBetAmount } = gameSlice.actions;
+    handleCardBetMade } = gameSlice.actions;

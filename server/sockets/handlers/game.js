@@ -7,13 +7,13 @@ const setGameSockets = (lobbySockets, gameSockets) => (gameId, userId) => {
 
 const pickDealerCardSelected = gameSockets => (gameId, userId, cardId, cardVal) => {
     gameSockets.get(gameId).forEach(clientSocket => 
-        clientSocket.emit(`game:${gameId}:pickdealer-card-selected`, {userId, cardId, cardVal})
+        clientSocket.emit(`game:${gameId}:pickdealer-card-selected`, { userId, cardId, cardVal })
     )
 }
 
-const cardBetMade = gameSockets => (gameId, betAmount) => {
+const cardBetMade = gameSockets => (gameId, userId, cardId, betAmount) => {
     gameSockets.get(gameId).forEach(clientSocket =>
-        clientSocket.emit(`game:${gameId}:card-bet-made`, {betAmount})
+        clientSocket.emit(`game:${gameId}:card-bet-made`, { userId, cardId, betAmount })
     )
 }
 
