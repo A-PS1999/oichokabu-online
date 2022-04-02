@@ -22,8 +22,10 @@ export const PregameAPI = {
 export const GameAPI = {
 	getPlayerAuth: gameId => API.get(`/game/${gameId}/authenticate-player`, {}),
 	postJoinGame: gameId => API.post(`/game/${gameId}/join`, {}),
+	postStartGame: gameId => API.post(`/game/${gameId}/start`, {}),
+	postLoadGame: gameId => API.post(`/game/${gameId}/load`, {}),
+	postUpdateGame: gameId => API.post(`/game/${gameId}/update`, {}),
 	postDealerCardSelected: (gameId, cardId, cardVal) => API.post(`/game/${gameId}/pickdealer-card-selected`, { cardId, cardVal }),
 	postCardBet: (gameId, betAmount) => API.post(`/game/${gameId}/card-bet`, { betAmount }),
-	getDeck: gameId => API.get(`/game/${gameId}/get-deck`, {}),
 	postUpdateChips: newChips => API.post('/game/update-player-chips', { newChips }),
 }

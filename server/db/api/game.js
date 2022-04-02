@@ -2,8 +2,11 @@ const db = require("../models");
 
 const getUserIdsAndUsernames = db => game_id =>
 	db.ok_games.findByPk(game_id).then(game =>
-		game.getUsers({ attributes: ['user_id', 'username', 'user_chips'] })
+		game.getUsers({ attributes: ['id', 'username', 'user_chips'] })
 	);
+
+const getGameConstants = db => game_id =>
+		db.ok_games.findByPk(game_id).then(game => game.dataValues);
 
 const removePlayer = db => (player_gameid, player_userid) =>
 	db.ok_games.findByPk(player_gameid)
@@ -29,14 +32,6 @@ const updateChips = db => (player_userid, new_chips) =>
 	db.ok_users.findByPk(player_userid).then(user => 
 		user.update({ user_chips: new_chips })
 	);
-
-const setDeck = db => (game_id, shuffled_deck) =>
-    db.ok_games.findByPk(game_id).then(game =>
-		game.update({ game_deck: shuffled_deck })
-	);
-
-const getDeck = db => game_id =>
-	db.ok_games.findByPk(game_id).then(game => game.game_deck);
 	
 module.exports = db => ({
 	getUserIdsAndUsernames: getUserIdsAndUsernames(db),
@@ -45,6 +40,5 @@ module.exports = db => ({
 	endGame: endGame(db),
 	getStatus: getStatus(db),
 	updateChips: updateChips(db),
-	setDeck: setDeck(db),
-	getDeck: getDeck(db),
+	getGameConstants: getGameConstants(db),
 });

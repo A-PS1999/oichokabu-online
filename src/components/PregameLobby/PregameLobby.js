@@ -56,16 +56,13 @@ export default function PregameLobby() {
         const startGameSocketHandler = () => {
             navigate(`/game/${location.state.game_id}`, { state: {
                 game_id: location.state.game_id,
-                player_data: playerStatuses,
-                turn_max: playerInfo.turn_max,
-                bet_max: playerInfo.bet_max,
             }});
         }
         socket.on(`pregame-lobby:${location.state.game_id}:start-game`, startGameSocketHandler)
         return () => {
             socket.off(`pregame-lobby:${location.state.game_id}:start-game`, startGameSocketHandler);
         }
-    }, [navigate, playerStatuses, location.state.game_id, playerInfo.turn_max, playerInfo.bet_max])
+    }, [navigate, location.state.game_id])
 
     const determineGameStartable = () => {
         let numReadyPlayers = 0;

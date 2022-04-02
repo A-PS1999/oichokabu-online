@@ -44,11 +44,6 @@ module.exports = (sequelize, Sequelize) => {
 				max: 1000000
 			},
 		},
-		game_deck: {
-			type: Sequelize.ARRAY(Sequelize.JSON),
-			allowNull: false,
-			defaultValue: [],
-		},
 	},
 	{
 		timestamps: false,

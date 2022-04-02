@@ -3,6 +3,7 @@ const { Game: GameSockets } = require('../sockets');
 const { Game: GameDB } = require('../db/api');
 const checkLoggedIn = require('./middleware/checkLoggedIn');
 const checkGamePlayer = require('./middleware/checkGamePlayer');
+const checkGameHost = require('./middleware/checkGameHost');
 const sendUserId = require('./middleware/sendUserId');
 
 router.get('/api/game/:gameId/authenticate-player', checkLoggedIn, checkGamePlayer, sendUserId);
@@ -14,6 +15,25 @@ router.post('/api/game/:gameId/join', checkLoggedIn, (request, response) => {
     response.sendStatus(204);
 });
 
+router.post('/api/game/:gameId/start', checkLoggedIn, checkGamePlayer, checkGameHost, (request, response) => {
+    const { gameId } = request.params;
+    GameSockets.startGame(gameId);
+    response.sendStatus(204);
+})
+
+router.post('/api/game/:gameId/load', checkLoggedIn, checkGamePlayer, checkGameHost, (request, response) => {
+    const { gameId } = request.params;
+    GameSockets.loadGame(gameId);
+    response.sendStatus(204);
+})
+
+router.post('/api/game/:gameId/update', checkLoggedIn, checkGamePlayer, (request, response) => {
+    const { gameId } = request.params;
+    const id = response.locals.user.id;
+    GameSockets.updateGame(gameId, id);
+    response.sendStatus(204);
+})
+
 router.post('/api/game/:gameId/pickdealer-card-selected', checkLoggedIn, checkGamePlayer, (request, response) => {
     const { gameId } = request.params;
     const cardValue = request.body.cardVal;
@@ -21,12 +41,6 @@ router.post('/api/game/:gameId/pickdealer-card-selected', checkLoggedIn, checkGa
     const userId = response.locals.user.id;
     GameSockets.pickDealerCardSelected(gameId, userId, cardId, cardValue);
     response.sendStatus(204);
-})
-
-router.get(`/api/game/:gameId/get-deck`, checkLoggedIn, (request, response) => {
-    const { gameId } = request.params;
-    GameDB.getDeck(gameId)
-        .then(result => response.send(result))
 })
 
 router.post('/api/game/:gameId/card-bet', checkLoggedIn, (request, response) => {

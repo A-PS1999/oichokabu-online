@@ -201,6 +201,4 @@ const kabufudaDeck = [
     },
 ]
 
-module.exports = {
-    kabufudaDeck
-}
+module.exports = kabufudaDeck;

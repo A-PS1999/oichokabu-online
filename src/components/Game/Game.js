@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { gameSelector } from '../../store/gameSlice';
 import { toastActions } from '../../store/toastSlice.js';
-import { fetchPlayerAuth, setGameValues, prepMainGameInitialState } from '../../store/gameSlice';
+import { fetchPlayerAuth, setGameId, setGameState } from '../../store/gameSlice';
 import { useLocation } from 'react-router-dom';
-import { GameAPI } from '../../services';
+import { GameAPI, PregameAPI, socket } from '../../services';
 import './Game.scss';
 import Card from './Card/Card.js';
 import Modal from '../Modal/Modal';
@@ -14,53 +14,50 @@ export default function Game() {
 
     const dispatch = useDispatch();
     const location = useLocation();
-    const [deck, setDeck] = useState([]);
     const { isPickDealer, 
         Players, 
         cardBets, 
         currentTurn,
         turnMax,
-        isError, 
+        pickDealerCards,
+        isError,
+        playerAuth, 
         errorMessage } = useSelector(gameSelector);
 
     useEffect(() => {
-        const dataToDispatch = {
-            player_data: location.state.player_data,
-            turn_max: location.state.turn_max,
-            bet_max: location.state.bet_max,
-            game_id: location.state.game_id,
-        }
-        dispatch(setGameValues(dataToDispatch))
-    }, [dispatch, location.state.game_id, location.state.player_data, location.state.turn_max, location.state.bet_max])
+        const game_id = location.state.game_id;
+        dispatch(setGameId(game_id));
+    }, [dispatch, location.state.game_id])
+
+    const handleUpdateGameState = useCallback(gameData => {
+        console.log(gameData);
+        dispatch(setGameState(gameData));
+    }, [dispatch])
 
     useEffect(() => {
         GameAPI.postJoinGame(location.state.game_id);
         dispatch(fetchPlayerAuth(location.state.game_id));
 
-        const fetchDeck = async (gameId) => {
-            const deckResult = await GameAPI.getDeck(gameId);
-            setDeck(deckResult.data);
-        }
-        fetchDeck(location.state.game_id);
-    }, [dispatch, location.state.game_id, setDeck])
+        socket.on(`game:${location.state.game_id}:update-game`, handleUpdateGameState);
 
-    useEffect(() => {
-        const determineHighestValueCard = () => {
-            let highestValueSelection = cardBets.reduce((current, previous) => 
-                current.cardVal > previous.cardVal ? current : previous
-            )
-            return highestValueSelection.userId;
+        const handleLoadGame = async () => {
+            const { data: gameLobbyInfo } = await PregameAPI.getPlayerInfo(location.state.game_id);
+            if (playerAuth && playerAuth.host.host && gameLobbyInfo.status === 'running') {
+                await GameAPI.postLoadGame(location.state.game_id);
+            }
         }
-        if (isPickDealer && cardBets.length > 0 && cardBets.length === Players.length) {
-            const highestPick = determineHighestValueCard();
-            const firstDealer = Players.filter(player => player.id === highestPick)
-            dispatch(prepMainGameInitialState(firstDealer[0]));
-            dispatch(toastActions.createToast({
-                message: `The first dealer is ${firstDealer[0].username}!`,
-                type: "success"
-            }))
-        }
-    }, [dispatch, cardBets, Players, isPickDealer])
+
+        handleLoadGame();
+    }, [dispatch, location.state.game_id, handleUpdateGameState])
+
+    const handleStartGame = useCallback(_ => {
+        const startFunction = async () => {
+            await GameAPI.postStartGame(location.state.game_id);
+            GameAPI.postUpdateGame(location.state.game_id);
+        };
+
+        startFunction();
+    }, [location.state.game_id]);
 
     useEffect(() => {
         if (isError) {
@@ -71,7 +68,7 @@ export default function Game() {
         }
     }, [dispatch, isError, errorMessage])
 
-    if (isPickDealer) {
+    if (isPickDealer === true) {
         return (
             <div className="pickdealer-container">
                 <div className='pickdealer-container__heading-group'>
@@ -79,7 +76,7 @@ export default function Game() {
                     <h2>The player who chooses the highest value card will be first dealer</h2>
                 </div>
                 <div className='pickdealer-container__card-container'>
-                    {deck.length > 0 ? deck.slice(0, Players.length).map(card => {
+                    {pickDealerCards.length > 0 ? pickDealerCards.map(card => {
                         return (
                             <Card 
                                 key={card.id}
@@ -98,44 +95,31 @@ export default function Game() {
                 </div>
             </div>
         )
-    } else {
+    } 
+
+    if (isPickDealer === false) {
         return (
             <>
-                <Modal>
-                    <MakeBetForm />
-                </Modal>
-                <div className="maingame">
-                    <div className="maingame__turninfo">
-                        <h2>Turn: {currentTurn}/{turnMax}</h2>
-                    </div>
-                    <div className="maingame__main-cards-container">
-                        {deck.length > 0 ? deck.slice(Players.length+1, Players.length+5).map(card => {
-                            return (
-                                <Card 
-                                    key={card.id}
-                                    src={card.src}
-                                    value={card.value}
-                                    id={card.id}
-                                    defaultHidden={false}
-                                    defaultDisabled={false}
-                                />
-                            )
-                        })
-                        : <h2>Loading...</h2>
-                    }
-                    </div>
-                    <div className="maingame__players-container">
-                        {Players.map((player) => {
-                            return (
-                                <div key={player.id} className="maingame__players-container__player">
-                                    {player.username}
-                                    Chips: {player.user_chips}
-                                </div>
-                            )
-                        })}
-                    </div>
-                </div>
+                <div>MAIN BOARD</div>
             </>
         )
     }
+
+    return (
+        <div className="startscreen">
+            {playerAuth && playerAuth.host.host ? (
+                <div className="startscreen__inner">
+                    <button onClick={handleStartGame} className="startscreen__inner__button">
+                        Start Game
+                    </button>
+                </div>
+            ) : (
+                <div className="startscreen__inner">
+                    <div className="startscreen__inner__wait-text">
+                        Waiting for the host to start the game...
+                    </div>
+                </div>
+            )}
+        </div>
+    )
 }

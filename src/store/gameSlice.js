@@ -9,10 +9,13 @@ const initialGameState = () => ({
     Players: [],
     cardBets: [],
     currentlySelectedCard: null,
-    isPickDealer: true,
+    isPickDealer: null,
+    pickDealerCards: [],
+    currentPhase: null,
     hasClicked: false,
+    currentPlayer: null,
     currentDealer: null,
-    playerId: null,
+    playerAuth: null,
     gameId: null,
     isFetching: false,
 	isError: false,
@@ -41,14 +44,8 @@ export const gameSlice = createSlice({
     name: 'game',
     initialState: initialGameState(),
     reducers: {
-        setGameValues(state, action) {
-            state.Players = action.payload.player_data;
-            state.turnMax = action.payload.turn_max;
-            state.betMax = action.payload.bet_max;
-            state.gameId = action.payload.game_id;
-        },
-        setCardBet(state, action) {
-            state.cardBets.push(action.payload);
+        setGameId(state, action) {
+            state.gameId = action.payload;
         },
         setCurrentSelection(state, action) {
             return {
@@ -62,24 +59,21 @@ export const gameSlice = createSlice({
                 hasClicked: true,
             }
         },
-        prepMainGameInitialState(state, action) {
-            return {
-                ...state,
-                isPickDealer: false,
-                hasClicked: false,
-                currentDealer: action.payload,
-                cardBets: [],
-            }
+        setGameState(state, action) {
+            state.betMax = action.payload.general_data.betMax;
+            state.currentTurn = action.payload.general_data.currentTurn;
+            state.turnMax = action.payload.general_data.turnMax;
+            state.totalBetAmount = action.payload.general_data.currentOverallBet;
+            state.isPickDealer = action.payload.general_data.isPickDealer;
+            state.Players = action.payload.players_data;
+            state.currentPlayer = action.payload.general_data.currentPlayer;
+            state.cardBets = action.payload.general_data.cardBets;
+            state.pickDealerCards = action.payload.general_data.pickDealerCardsArray;
         },
-        handleCardBetMade(state, action) {
-            const index = state.Players.findIndex((i) => i.id === action.payload.betAmount.user_id);
-            state.totalBetAmount += action.payload.betAmount.betAmount;
-            state.Players[index].user_chips -= action.payload.betAmount.betAmount;
-        }
     },
     extraReducers: (builder) => {
         builder.addCase(fetchPlayerAuth.fulfilled, (state, action) => {
-            state.playerId = action.payload.id;
+            state.playerAuth = action.payload;
             state.isFetching = false;
         })
         builder.addCase(fetchPlayerAuth.pending, (state) => {
@@ -94,9 +88,7 @@ export const gameSlice = createSlice({
 })
 
 export const gameSelector = state => state.game;
-export const { setGameValues, 
-    setCardBet,
-    setCurrentSelection, 
-    setHasClicked, 
-    prepMainGameInitialState,
-    handleCardBetMade } = gameSlice.actions;
+export const { setGameId,
+    setCurrentSelection,
+    setHasClicked,
+    setGameState } = gameSlice.actions;
