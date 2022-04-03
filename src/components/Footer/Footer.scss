@@ -37,7 +37,7 @@ li {
 		transition: all .2s;
 		
 		&:hover {
-			background-color: #b4faf8;
+			background-color: var.$color-blue;
 		}
 	}
 }

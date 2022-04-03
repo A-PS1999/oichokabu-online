@@ -67,7 +67,14 @@ export default function Card({id, value, src, defaultHidden, defaultDisabled}) {
                 }
                 <button className='game-card__button' disabled={isDisabled || hasClicked || (currentDealer && playerAuth.id === currentDealer.id)} 
                     onClick={() => { isPickDealer ? handlePickDealerCardSelection(gameId, id, cardValue) : handleMainGameCardClick() }}>
-                    <img src={isHidden ? "/cards/cardback.jpg" : src} alt="Oicho Kabu card" id={id} />
+                    <div className={isHidden ? "game-card__inner--hidden" : "game-card__inner"}>
+                        <div className="game-card__side game-card__side--front">
+                            <img src={src} alt="Front of an Oicho Kabu card" id={id} />
+                        </div>
+                        <div className="game-card__side game-card__side">
+                            <img src="/cards/cardback.jpg" alt="Back of an Oicho Kabu card" />
+                        </div>
+                    </div>
                 </button>
             </div>
         </>

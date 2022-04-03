@@ -21,10 +21,11 @@
 	
 	&__button {
 		appearance: none;
-		border: 2px solid white;
+		border: 2px solid var.$color-white;
 		padding: 1rem;
 		color: var.$color-white;
 		font-size: 1.2rem;
+		transition: all .1s;
 		border-radius: 1rem;
 		background-color: transparent;
 		

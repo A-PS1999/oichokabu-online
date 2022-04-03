@@ -26,12 +26,12 @@
         color: var.$color-white;
         background-color: var.$japan-red;
         border-radius: 1rem;
-        box-shadow: 0px 2px 5px 1px rgba(0,0,0,0.38);
+        box-shadow: 0px 2px 5px 1px rgba(var.$color-black, .38);
 
         &:hover {
             cursor: pointer;
             transform: translateY(-0.3rem);
-            box-shadow: 0px 4px 8px 2px rgba(0,0,0,0.28);
+            box-shadow: 0px 4px 8px 2px rgba(var.$color-black, .28);
             
             &::after {
                 transform: scaleX(1.2) scaleY(1.2);

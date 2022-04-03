@@ -2,6 +2,8 @@
 
 .game-card {
     position: relative;
+    -moz-perspective: 150rem;
+	perspective: 150rem;
 
     &__button {
         background: transparent;
@@ -14,6 +16,7 @@
         position: absolute;
         top: -15px;
         left: 10px;
+        z-index: 999999;
         background: var.$japan-red;
         color: var.$color-white;
         padding: 1.3rem;
@@ -24,6 +27,29 @@
             position: relative;
             top: -10px;
             left: -10px;
+        }
+    }
+
+    &__inner {
+        display: grid;
+		transition: all .4s ease-out;
+		transform-style: preserve-3d;
+        transform: rotateY(180deg);
+
+        &--hidden {
+            @extend .game-card__inner;
+            transform: rotateY(0);
+        }
+    }
+
+    &__side {
+        grid-area: 1/1;
+		width: 100%;
+		backface-visibility: hidden;
+        box-shadow: 1px 8px 15px 4px rgba(var.$color-black, .39);
+
+        &--front {
+            transform: rotateY(180deg);
         }
     }
 }
