@@ -55,6 +55,7 @@ const initGameVariables = (Game, ok_users, constants) => {
     Game.currentOverallBet = 0;
     Game.cardBets = [];
     Game.pickDealerCardsArray = [];
+    Game.cardsOnBoard = [];
     Game.playerCount = ok_users.length;
     Game.isPickDealer = true;
     Game.currentPhase = 'pickDealer';

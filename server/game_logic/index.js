@@ -28,6 +28,7 @@ const game_engine = {
         if (Game.isPickDealer) {
             data.general_data.pickDealerCardsArray = Game.pickDealerCardsArray;
         }
+        data.general_data.cardsOnBoard = Game.cardsOnBoard;
         if (Game.currentDealer) {
             data.general_data.currentDealer = Game.currentDealer;
         }

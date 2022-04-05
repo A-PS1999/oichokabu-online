@@ -6,8 +6,9 @@ import { fetchPlayerAuth, setGameId, setGameState } from '../../store/gameSlice'
 import { useLocation } from 'react-router-dom';
 import { GameAPI, PregameAPI, socket } from '../../services';
 import './Game.scss';
-import Card from './Card/Card.js';
+import CardColumn from './CardColumn/CardColumn';
 import Modal from '../Modal/Modal';
+import PickDealerScreen from './PickDealerScreen/PickDealerScreen';
 import MakeBetForm from './MakeBetForm/MakeBetForm';
 
 export default function Game() {
@@ -16,10 +17,10 @@ export default function Game() {
     const location = useLocation();
     const { isPickDealer, 
         Players, 
-        cardBets, 
+        cardBets,
+        cardsOnBoard,
         currentTurn,
         turnMax,
-        pickDealerCards,
         isError,
         playerAuth, 
         errorMessage } = useSelector(gameSelector);
@@ -48,6 +49,12 @@ export default function Game() {
         }
 
         handleLoadGame();
+
+        return () => {
+            if (playerAuth) {
+                socket.off(`game:${location.state.game_id}:update-game`);
+            }
+        }
     }, [dispatch, location.state.game_id, handleUpdateGameState])
 
     const handleStartGame = useCallback(_ => {
@@ -70,37 +77,49 @@ export default function Game() {
 
     if (isPickDealer === true) {
         return (
-            <div className="pickdealer-container">
-                <div className='pickdealer-container__heading-group'>
-                    <h1>Click one face-down card to turn it over</h1>
-                    <h2>The player who chooses the highest value card will be first dealer</h2>
-                </div>
-                <div className='pickdealer-container__card-container'>
-                    {pickDealerCards.length > 0 ? pickDealerCards.map(card => {
-                        return (
-                            <Card 
-                                key={card.id}
-                                src={card.src}
-                                value={card.value} 
-                                id={card.id} 
-                                defaultHidden={true}
-                                defaultDisabled={false}
-                            />
-                        )
-                    })
-                    : <>
-                        <h2 className='pickdealer-container__loading'>Loading...</h2>
-                    </>
-                    }
-                </div>
-            </div>
+            <PickDealerScreen />
         )
     } 
 
     if (isPickDealer === false) {
         return (
             <>
-                <div>MAIN BOARD</div>
+                <Modal>
+                    <MakeBetForm />
+                </Modal>
+                <div className="maingame">
+                    <div className="maingame__turninfo">
+                        <h2 className="maingame__turninfo__turntext">Turn: {currentTurn}/{turnMax}</h2>
+                    </div>
+                    <div className="maingame__cardcolumn-container">
+                        {cardsOnBoard.length > 0 ? cardsOnBoard.map((column, key) => {
+                            return (
+                                <CardColumn key={key} column={column} />
+                            )
+                        })
+                        : <h2>Loading...</h2>
+                    }
+                    </div>
+                    <div className="maingame__players-container">
+                        {Players.map((player) => {
+                            return (
+                                <>
+                                    <div className="maingame__player">
+                                        {player.isDealer ? (
+                                            <div className='maingame__player__dealerstatus'>親</div>
+                                        ) : (
+                                            <div className='maingame__player__dealerstatus'>子</div>
+                                        )}
+                                        <div key={player.id} className="maingame__player__playerinfo">
+                                            <div className='maingame__player__playerinfo__username'>{player.username}</div>
+                                            <div className='maingame__player__playerinfo__chips'>Chips: {player.chips}</div>
+                                        </div>
+                                    </div>
+                                </>
+                            )
+                        })}
+                    </div>
+                </div>
             </>
         )
     }

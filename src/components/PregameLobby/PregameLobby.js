@@ -91,7 +91,7 @@ export default function PregameLobby() {
                         <div className="players-container">
                             <h2 className="players-container__heading">Players</h2>
                             {playerStatuses.length > 0 ? playerStatuses.map((playerStatus) => {
-                                return(
+                                return (
                                     <React.Fragment key={playerStatus.id}>
                                         <div className="players-container__player">
                                             <h3 className="players-container__player__username">{playerStatus.username}</h3>

@@ -11,6 +11,7 @@ const initialGameState = () => ({
     currentlySelectedCard: null,
     isPickDealer: null,
     pickDealerCards: [],
+    cardsOnBoard: [],
     currentPhase: null,
     hasClicked: false,
     currentPlayer: null,
@@ -67,8 +68,16 @@ export const gameSlice = createSlice({
             state.isPickDealer = action.payload.general_data.isPickDealer;
             state.Players = action.payload.players_data;
             state.currentPlayer = action.payload.general_data.currentPlayer;
+            if (action.payload.general_data.currentDealer) {
+                state.currentDealer = action.payload.general_data.currentDealer;
+            }
             state.cardBets = action.payload.general_data.cardBets;
-            state.pickDealerCards = action.payload.general_data.pickDealerCardsArray;
+            state.cardsOnBoard = action.payload.general_data.cardsOnBoard;
+            if (action.payload.general_data.pickDealerCardsArray && action.payload.general_data.pickDealerCardsArray.length > 0) {
+                state.pickDealerCards = action.payload.general_data.pickDealerCardsArray;
+            } else {
+                state.pickDealerCards = [];
+            }
         },
     },
     extraReducers: (builder) => {
