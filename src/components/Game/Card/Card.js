@@ -10,22 +10,32 @@ const handlePickDealerCardSelection = (gameId, cardId, cardVal) => {
     GameAPI.postDealerCardSelected(gameId, cardId, cardVal)
 }
 
-export default function Card({id, value, src, defaultHidden, defaultDisabled}) {
+export default function Card({id, value, src, ownerColumn, defaultHidden, defaultDisabled}) {
 
     const [cardValue, setCardValue] = useState(null);
     const [isHidden, setIsHidden] = useState(defaultHidden);
     const [isDisabled, setIsDisabled] = useState(defaultDisabled);
-    const { playerAuth, hasClicked, isPickDealer, currentDealer, gameId } = useSelector(gameSelector);
+    const { playerAuth, hasClicked, isPickDealer, currentDealer, currentPlayer, gameId } = useSelector(gameSelector);
     const dispatch = useDispatch();
 
     const handleMainGameCardClick = () => {
         dispatch(modalActions.toggleModal());
-        dispatch(setCurrentSelection(id))
+        dispatch(setCurrentSelection({ id, ownerColumn }))
     }
 
     useEffect(() => {
         setCardValue(value);
     }, [value])
+
+    const determineDisabled = () => {
+        if (isDisabled || hasClicked || (currentDealer && playerAuth.id === currentDealer.id)) {
+            return true
+        } else if (!isPickDealer && (currentPlayer && currentPlayer.id !== playerAuth.id)) {
+            return true
+        } else {
+            return false
+        }
+    }
 
     useEffect(() => {
         const dealerDecideClickHandler = (data) => {
@@ -45,8 +55,11 @@ export default function Card({id, value, src, defaultHidden, defaultDisabled}) {
 
     useEffect(() => {
         const cardBetSocketHandler = (data) => {
-            if (data.betAmount.user_id === playerAuth.id && data.betAmount.card_id === id) {
+            if (data.userId === playerAuth.id && data.cardId === id) {
                 setIsDisabled(true);
+            }
+            if (playerAuth.id && playerAuth.id === data.userId) {
+                dispatch(setHasClicked())
             }
         }
         socket.on(`game:${gameId}:card-bet-made`, cardBetSocketHandler);
@@ -65,7 +78,7 @@ export default function Card({id, value, src, defaultHidden, defaultDisabled}) {
                         </div>
                     </div> 
                 }
-                <button className='game-card__button' disabled={isDisabled || hasClicked || (currentDealer && playerAuth.id === currentDealer.id)} 
+                <button className='game-card__button' disabled={determineDisabled()} 
                     onClick={() => { isPickDealer ? handlePickDealerCardSelection(gameId, id, cardValue) : handleMainGameCardClick() }}>
                     <div className={isHidden ? "game-card__inner--hidden" : "game-card__inner"}>
                         <div className="game-card__side game-card__side--front">

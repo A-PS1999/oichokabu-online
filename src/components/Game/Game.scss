@@ -45,21 +45,23 @@
 
 .maingame {
     display: grid;
-    grid-template-columns: 10% 65% 1fr;
+    grid-template-columns: 5% 20% 5% 50% 20%;
     grid-template-rows: 10% 65% 1fr;
     grid-template-areas: 
-        "left1 turninfo right"
-        "left2 cardcolumns playersbox"
-        "left3 cardcolumns playersbox";
+        "left1 dealertop . turninfo right"
+        "left2 dealer . cardcolumns playersbox"
+        "left3 dealer . cardcolumns playersbox";
     min-height: 100%;
     background-color: var.$purple;
 
     &__turninfo {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
         grid-area: turninfo;
-        justify-self: center;
         margin-top: 0.7rem;
 
-        &__turntext {
+        &__text {
             padding: 0.6rem;
             background-color: var.$color-white;
             border-radius: 1rem;
@@ -76,11 +78,45 @@
         margin-bottom: 2rem;
     }
 
+    &__dealerinfo {
+        grid-area: dealertop;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var.$color-white;
+        text-align: center;
+        margin: 1.5rem 2rem;
+        border-radius: 1rem;
+        font-size: 1.3rem;
+    }
+
+    &__dealercards-container {
+        grid-area: dealer;
+        display: flex;
+        border: 2px solid var.$color-white;
+        border-radius: 2rem;
+        padding-top: 2rem;
+        margin-bottom: 2rem;
+        flex-direction: column;
+        align-items: center;
+    }
+
     &__players-container {
         grid-area: playersbox;
         display: flex;
         flex-direction: column;
         margin: 2rem 1rem;
+
+        &__heading {
+            background-color: var.$color-white;
+            padding: 0.5rem;
+            text-align: center;
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            align-self: center;
+        }
     }
 
     &__player {
@@ -88,8 +124,8 @@
         margin-bottom: 1rem;
         border-radius: 1rem;
         display: grid;
-        grid-template-columns: 19% 1fr;
-        grid-template-rows: 19% 1fr;
+        grid-template-columns: 24% 1fr;
+        grid-template-rows: 24% 1fr;
         grid-template-areas: 
             "dealerstatus playerinfo"
             "dealerstatus playerinfo";

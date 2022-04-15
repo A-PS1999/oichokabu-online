@@ -20,7 +20,7 @@ function BetAmountWatched({ control }) {
 export default function MakeBetForm() {
 
     const dispatch = useDispatch();
-    const { totalBetAmount, betMax, playerId, currentlySelectedCard, gameId} = useSelector(gameSelector);
+    const { totalBetAmount, betMax, playerAuth, currentlySelectedCard, gameId} = useSelector(gameSelector);
     const { register, handleSubmit, control } = useForm();
 
     const submitData = (data) => {
@@ -33,8 +33,8 @@ export default function MakeBetForm() {
             <div className='makebet-form'>
                 <h2 className="makebet-form__heading">How much would you like to bet on this card?</h2>
                 <form onSubmit={handleSubmit(submitData)}>
-                    <input type="hidden" {...register("user_id", { value: playerId })} />
-                    <input type="hidden" {...register("card_id", { value: currentlySelectedCard })} />
+                    <input type="hidden" {...register("user_id", { value: playerAuth.id })} />
+                    <input type="hidden" {...register("current_card", { value: currentlySelectedCard })} />
                     <BetAmountWatched control={control} />
                     <Controller 
                         control={control}

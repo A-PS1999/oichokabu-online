@@ -2,11 +2,12 @@ import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { gameSelector } from '../../store/gameSlice';
 import { toastActions } from '../../store/toastSlice.js';
-import { fetchPlayerAuth, setGameId, setGameState } from '../../store/gameSlice';
+import { fetchPlayerAuth, setGameId, setGameState, setHasClicked } from '../../store/gameSlice';
 import { useLocation } from 'react-router-dom';
 import { GameAPI, PregameAPI, socket } from '../../services';
 import './Game.scss';
 import CardColumn from './CardColumn/CardColumn';
+import Card from './Card/Card';
 import Modal from '../Modal/Modal';
 import PickDealerScreen from './PickDealerScreen/PickDealerScreen';
 import MakeBetForm from './MakeBetForm/MakeBetForm';
@@ -21,6 +22,9 @@ export default function Game() {
         cardsOnBoard,
         currentTurn,
         turnMax,
+        currentPlayer,
+        currentDealer,
+        hasClicked,
         isError,
         playerAuth, 
         errorMessage } = useSelector(gameSelector);
@@ -29,6 +33,12 @@ export default function Game() {
         const game_id = location.state.game_id;
         dispatch(setGameId(game_id));
     }, [dispatch, location.state.game_id])
+
+    useEffect(() => {
+        if (cardBets.length === 0 && hasClicked) {
+            dispatch(setHasClicked());
+        }
+    }, [dispatch, cardBets, hasClicked])
 
     const handleUpdateGameState = useCallback(gameData => {
         console.log(gameData);
@@ -89,21 +99,44 @@ export default function Game() {
                 </Modal>
                 <div className="maingame">
                     <div className="maingame__turninfo">
-                        <h2 className="maingame__turninfo__turntext">Turn: {currentTurn}/{turnMax}</h2>
+                        <h2 className="maingame__turninfo__text">Turn: {currentTurn}/{turnMax}</h2>
+                        <h2 className="maingame__turninfo__text">Current Player: {currentPlayer.username}</h2>
                     </div>
+                    {currentDealer ? (
+                        <>
+                            <div className="maingame__dealerinfo">
+                                <p>Dealer: <b>{currentDealer.username}</b></p>
+                            </div>
+                            <div className="maingame__dealercards-container">
+                                {currentDealer.cardBet.map(card => {
+                                    return (
+                                        <Card
+                                            key={card.id} 
+                                            id={card.id}
+                                            value={card.value}
+                                            src={card.src}
+                                            defaultHidden={false}
+                                            defaultDisabled={true}
+                                        />
+                                    )
+                                })}
+                            </div>
+                        </>
+                    ) : (null)}
                     <div className="maingame__cardcolumn-container">
-                        {cardsOnBoard.length > 0 ? cardsOnBoard.map((column, key) => {
+                        {cardsOnBoard.length > 0 ? cardsOnBoard.map((column, index) => {
                             return (
-                                <CardColumn key={key} column={column} />
+                                <CardColumn key={index} column={column} columnIndex={index} />
                             )
                         })
                         : <h2>Loading...</h2>
                     }
                     </div>
                     <div className="maingame__players-container">
+                        <p className="maingame__players-container__heading">Players</p>
                         {Players.map((player) => {
                             return (
-                                <>
+                                <React.Fragment key={player.id}>
                                     <div className="maingame__player">
                                         {player.isDealer ? (
                                             <div className='maingame__player__dealerstatus'>親</div>
@@ -115,7 +148,7 @@ export default function Game() {
                                             <div className='maingame__player__playerinfo__chips'>Chips: {player.chips}</div>
                                         </div>
                                     </div>
-                                </>
+                                </React.Fragment>
                             )
                         })}
                     </div>

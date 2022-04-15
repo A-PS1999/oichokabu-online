@@ -67,6 +67,15 @@ const game_engine = {
             game_controls.determineFirstDealer(Game);
             game_controls.prepMainGameInitialState(Game);
         }
+    },
+    pushCardBet: (Game, betInfo) => {
+        let player = Game.currentPlayer;
+        game_controls.handleCardBet(Game, player, betInfo);
+        game_engine.handleEndTurn(Game);
+
+        if (Game.cardBets.length === (Game.players.length - 1)) {
+            game_controls.pushSecondCard(Game);
+        }
     }
 };
 

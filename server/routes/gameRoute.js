@@ -45,10 +45,8 @@ router.post('/api/game/:gameId/pickdealer-card-selected', checkLoggedIn, checkGa
 
 router.post('/api/game/:gameId/card-bet', checkLoggedIn, (request, response) => {
     const { gameId } = request.params;
-    const userId = request.body.user_id;
-    const cardId = request.body.card_id;
-    const betAmount = request.body.betAmount;
-    GameSockets.cardBetMade(gameId, userId, cardId, betAmount);
+    const { betAmount: { user_id: userId, current_card: { id: cardId, ownerColumn }, betAmount } } = request.body;
+    GameSockets.cardBetMade(gameId, userId, cardId, ownerColumn, betAmount);
     response.sendStatus(204);
 })
 

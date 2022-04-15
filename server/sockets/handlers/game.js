@@ -61,9 +61,11 @@ const pickDealerCardSelected = gameSockets => (gameId, userId, cardId, cardVal) 
     )
 }
 
-const cardBetMade = gameSockets => (gameId, userId, cardId, betAmount) => {
+const cardBetMade = gameSockets => (gameId, userId, cardId, ownerColumn, betAmount) => {
+    const betInfo = { userId, cardId, ownerColumn, betAmount };
+    game_engine.pushCardBet(gameGlobals.get(gameId), betInfo);
     gameSockets.get(gameId).forEach(clientSocket =>
-        clientSocket.emit(`game:${gameId}:card-bet-made`, { userId, cardId, betAmount })
+        clientSocket.emit(`game:${gameId}:card-bet-made`, { userId, cardId })
     )
 }
 

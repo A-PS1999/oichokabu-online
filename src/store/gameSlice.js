@@ -57,7 +57,7 @@ export const gameSlice = createSlice({
         setHasClicked(state) {
             return {
                 ...state,
-                hasClicked: true,
+                hasClicked: !state.hasClicked,
             }
         },
         setGameState(state, action) {
