@@ -1,0 +1,18 @@
+@use "./../../../sass/abstracts/variables" as var;
+@use '../MakeBetForm/MakeBetForm.scss';
+
+.cardmodal {
+    @extend .makebet-form;
+
+    &__heading {
+        @extend .makebet-form__heading;
+    }
+
+    &__button-container {
+
+        &__yesbutton {
+            @extend .makebet-form__button;
+            background-color: var.$dark-grey;
+        }
+    }
+}

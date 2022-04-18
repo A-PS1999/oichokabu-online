@@ -20,6 +20,7 @@ const game_engine = {
         data.general_data = {};
         data.general_data.currentTurn = Game.currentTurn;
         data.general_data.currentOverallBet = Game.currentOverallBet;
+        data.general_data.currentPhase = Game.currentPhase;
         data.general_data.turnMax = Game.turnMax;
         data.general_data.betMax = Game.betMax;
         data.general_data.currentPlayer = Game.currentPlayer;
@@ -76,6 +77,9 @@ const game_engine = {
         if (Game.cardBets.length === (Game.players.length - 1)) {
             game_controls.pushSecondCard(Game);
         }
+    },
+    handleOptionalThirdCard: (Game, userId, choiceMade) => {
+        
     }
 };
 

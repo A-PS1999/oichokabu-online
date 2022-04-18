@@ -2,29 +2,30 @@ import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { gameSelector } from '../../store/gameSlice';
 import { toastActions } from '../../store/toastSlice.js';
-import { fetchPlayerAuth, setGameId, setGameState, setHasClicked } from '../../store/gameSlice';
+import { fetchPlayerAuth, setGameId, setGameState } from '../../store/gameSlice';
 import { useLocation } from 'react-router-dom';
 import { GameAPI, PregameAPI, socket } from '../../services';
 import './Game.scss';
 import CardColumn from './CardColumn/CardColumn';
+import CardsValueCounter from './CardsValueCounter/CardsValueCounter';
 import Card from './Card/Card';
 import Modal from '../Modal/Modal';
 import PickDealerScreen from './PickDealerScreen/PickDealerScreen';
 import MakeBetForm from './MakeBetForm/MakeBetForm';
+import ThirdCardModal from './ThirdCardModal/ThirdCardModal';
 
 export default function Game() {
 
     const dispatch = useDispatch();
     const location = useLocation();
     const { isPickDealer, 
-        Players, 
-        cardBets,
+        Players,
         cardsOnBoard,
         currentTurn,
         turnMax,
         currentPlayer,
         currentDealer,
-        hasClicked,
+        currentPhase,
         isError,
         playerAuth, 
         errorMessage } = useSelector(gameSelector);
@@ -33,12 +34,6 @@ export default function Game() {
         const game_id = location.state.game_id;
         dispatch(setGameId(game_id));
     }, [dispatch, location.state.game_id])
-
-    useEffect(() => {
-        if (cardBets.length === 0 && hasClicked) {
-            dispatch(setHasClicked());
-        }
-    }, [dispatch, cardBets, hasClicked])
 
     const handleUpdateGameState = useCallback(gameData => {
         console.log(gameData);
@@ -95,7 +90,7 @@ export default function Game() {
         return (
             <>
                 <Modal>
-                    <MakeBetForm />
+                    {currentPhase === "bettingPhase" ? <MakeBetForm /> : <ThirdCardModal />}
                 </Modal>
                 <div className="maingame">
                     <div className="maingame__turninfo">
@@ -120,6 +115,7 @@ export default function Game() {
                                         />
                                     )
                                 })}
+                                <CardsValueCounter cards={currentDealer.cardBet} parentColumn={'D'} />
                             </div>
                         </>
                     ) : (null)}

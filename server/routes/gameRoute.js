@@ -50,6 +50,14 @@ router.post('/api/game/:gameId/card-bet', checkLoggedIn, (request, response) => 
     response.sendStatus(204);
 })
 
+router.post('/api/game/:gameId/decide-third-card', checkLoggedIn, (request, response) => {
+    const { gameId } = request.params;
+    const userId = response.locals.user.id;
+    const choiceMade = request.body.cardChoice;
+    GameSockets.thirdCardChoice(gameId, userId, choiceMade);
+    response.sendStatus(204);
+})
+
 router.post('/api/game/update-player-chips', checkLoggedIn, (request, response) => {
     const { newChips } = request.params;
     const id = response.locals.user.id;

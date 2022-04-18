@@ -69,10 +69,15 @@ const cardBetMade = gameSockets => (gameId, userId, cardId, ownerColumn, betAmou
     )
 }
 
+const thirdCardChoice = gameSockets => (gameId, userId, choiceMade) => {
+    game_engine.handleOptionalThirdCard(gameGlobals.get(gameId), userId, choiceMade);
+}
+
 module.exports = (lobbySockets, gameSockets) => ({
     setGameSockets: setGameSockets(lobbySockets, gameSockets),
     pickDealerCardSelected: pickDealerCardSelected(gameSockets),
     cardBetMade: cardBetMade(gameSockets),
+    thirdCardChoice: thirdCardChoice(gameSockets),
     startGame: startGame(gameSockets),
     loadGame: loadGame(gameSockets),
     updateGame: updateGame(gameSockets),

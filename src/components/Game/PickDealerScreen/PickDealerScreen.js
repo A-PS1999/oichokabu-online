@@ -1,12 +1,19 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { gameSelector } from '../../../store/gameSlice.js';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { gameSelector, setHasClicked } from '../../../store/gameSlice.js';
 import Card from '../Card/Card.js';
 import './PickDealerScreen.scss';
 
 export default function PickDealerScreen() {
 
-    const { pickDealerCards } = useSelector(gameSelector);
+    const { pickDealerCards, Players, hasClicked } = useSelector(gameSelector);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (hasClicked && (pickDealerCards.length === Players.length)) {
+            dispatch(setHasClicked());
+        }
+    }, [dispatch, pickDealerCards, Players, hasClicked])
 
     return (
         <div className="pickdealer-container">

@@ -10,12 +10,15 @@ module.exports = (Game) => {
     const firstDealerIndex = Game.players.findIndex(player => player.id === toBecomeFirstDealer);
     Game.currentDealerIndex = firstDealerIndex;
     const currentDealer = Game.players[firstDealerIndex];
-    Game.players[firstDealerIndex].isDealer = true;
-    Game.currentDealer = currentDealer;
-    Game.currentDealer.cardBet.push(Game.deck.pop());
-    
+
     if (Game.currentPlayer === currentDealer) {
         Game.currentPlayerIndex = (Game.currentPlayerIndex + 1) % Game.playerCount;
         Game.currentPlayer = Game.players[Game.currentPlayerIndex];
     }
+
+    Game.players[firstDealerIndex].isDealer = true;
+    Game.currentDealer = currentDealer;
+    const firstDealerCard = Game.deck.pop();
+    firstDealerCard.userId = currentDealer.id;
+    Game.currentDealer.cardBet.push(firstDealerCard);
 }

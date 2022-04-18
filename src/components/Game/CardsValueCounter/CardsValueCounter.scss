@@ -1,0 +1,15 @@
+@use "./../../../sass/abstracts/variables" as var;
+
+.cardvalue {
+    background-color: var.$japan-red;
+    color: var.$color-white;
+    font-weight: 700;
+    padding: 0.5rem;
+    clip-path: circle(1.2rem at 50% 50%);
+    text-align: center;
+}
+
+.dealer-cardvalue {
+    @extend .cardvalue;
+    width: 3rem;
+}

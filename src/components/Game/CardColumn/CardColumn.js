@@ -46,8 +46,8 @@ export default function CardColumn({ column, columnIndex }) {
                     />
                 : null
                 }
+                <CardsValueCounter cards={column.cards} parentColumn={columnIndex} />
             </div>
-            <CardsValueCounter cards={column.cards} />
         </React.Fragment>
     )
 }

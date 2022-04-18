@@ -68,6 +68,7 @@ export const gameSlice = createSlice({
             state.isPickDealer = action.payload.general_data.isPickDealer;
             state.Players = action.payload.players_data;
             state.currentPlayer = action.payload.general_data.currentPlayer;
+            state.currentPhase = action.payload.general_data.currentPhase;
             if (action.payload.general_data.currentDealer) {
                 state.currentDealer = action.payload.general_data.currentDealer;
             }
