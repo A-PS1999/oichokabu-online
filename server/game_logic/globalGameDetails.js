@@ -40,6 +40,7 @@ const initPlayers = (Game, ok_users) => {
             chips: ok_users[i].user_chips,
             cardBet: [],
             isDealer: null,
+            thirdCardChosen: null,
         }
         players.push(player);
     }

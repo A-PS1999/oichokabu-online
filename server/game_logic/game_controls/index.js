@@ -4,7 +4,8 @@ const determineFirstDealer = require('./determineFirstDealer');
 const prepMainGameInitialState = require('./prepMainGameInitialState');
 const handleCardBet = require('./handleCardBet');
 const pushSecondCard = require('./pushSecondCard');
-const handleMandatoryThirdCard = require('./handleMandatoryThirdCard');
+const pushThirdCard = require('./pushThirdCard');
+const checkThirdCardsStatus = require('./checkThirdCardsStatus');
 
 module.exports = {
     startGame,
@@ -13,5 +14,6 @@ module.exports = {
     prepMainGameInitialState,
     handleCardBet,
     pushSecondCard,
-    handleMandatoryThirdCard
+    pushThirdCard,
+    checkThirdCardsStatus,
 }

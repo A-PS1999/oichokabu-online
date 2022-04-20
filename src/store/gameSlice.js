@@ -1,7 +1,7 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
 import { GameAPI } from '../services';
 
-const initialGameState = () => ({
+const initialGameState = {
     currentTurn: 1,
     turnMax: 12,
     betMax: 500,
@@ -21,7 +21,7 @@ const initialGameState = () => ({
     isFetching: false,
 	isError: false,
 	errorMessage: "",
-})
+}
 
 export const fetchPlayerAuth = createAsyncThunk(
     "game/fetchPlayerAuth",
@@ -43,7 +43,7 @@ export const fetchPlayerAuth = createAsyncThunk(
 
 export const gameSlice = createSlice({
     name: 'game',
-    initialState: initialGameState(),
+    initialState: initialGameState,
     reducers: {
         setGameId(state, action) {
             state.gameId = action.payload;
@@ -97,7 +97,22 @@ export const gameSlice = createSlice({
     }
 })
 
+const selectCardBets = state => state.game.cardBets;
+const selectPlayerId = state => state.game.playerAuth;
+
 export const gameSelector = state => state.game;
+
+export const selectPlayerCardBet = createSelector([selectCardBets, selectPlayerId], (cardBets, playerAuth) => {
+    if (cardBets.length > 0) {
+        return cardBets.find(bet => bet.userId === playerAuth.id);
+    }
+    return null;
+})
+
+export const selectCardOwnedBool = createSelector([selectCardBets, selectPlayerId], (cardBets, playerAuth) => {
+    return cardBets.some(bet => bet.userId !== playerAuth.id);
+})
+
 export const { setGameId,
     setCurrentSelection,
     setHasClicked,

@@ -2,16 +2,12 @@ import React from "react";
 import Card from "../Card/Card";
 import CardsValueCounter from "../CardsValueCounter/CardsValueCounter";
 import { useSelector } from "react-redux";
-import { gameSelector } from "../../../store/gameSlice";
+import { selectCardOwnedBool } from "../../../store/gameSlice";
 import './CardColumn.scss';
 
 export default function CardColumn({ column, columnIndex }) {
 
-    const { playerAuth, cardBets } = useSelector(gameSelector);
-
-    const determineSecondCardHidden = () => {
-        return cardBets.some(bet => bet.userId !== playerAuth.id);
-    }
+    const secondCardHiddenBool = useSelector(selectCardOwnedBool);
 
     return (
         <React.Fragment key={columnIndex}>
@@ -30,7 +26,7 @@ export default function CardColumn({ column, columnIndex }) {
                         value={column.cards[1].value}
                         id={column.cards[1].id}
                         ownerColumn={columnIndex}
-                        defaultHidden={determineSecondCardHidden()}
+                        defaultHidden={secondCardHiddenBool}
                         defaultDisabled={false}
                     />
                 : null

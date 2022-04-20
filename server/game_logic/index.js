@@ -42,6 +42,7 @@ const game_engine = {
             tempPlayer.username = player.username;
             tempPlayer.chips = player.chips;
             tempPlayer.isDealer = player.isDealer;
+            tempPlayer.thirdCardChosen = player.thirdCardChosen;
             if (player.id === playerId) {
                 tempPlayer.cardBet = player.cardBet;
             }
@@ -75,10 +76,28 @@ const game_engine = {
         game_engine.handleEndTurn(Game);
 
         if (Game.cardBets.length === (Game.players.length - 1)) {
-            game_controls.pushSecondCard(Game);
+            game_engine.handleSecondCard(Game);
+        }
+    },
+    handleSecondCard: (Game) => {
+        game_controls.pushSecondCard({ Game });
+        if (game_controls.checkThirdCardsStatus(Game)) {
+            game_engine.commenceResolvingBets(Game);
         }
     },
     handleOptionalThirdCard: (Game, userId, choiceMade) => {
+        let playerIndex = Game.players.findIndex(player => player.id === userId);
+        if (choiceMade === 'no') {
+            Game.players[playerIndex].thirdCardChosen = false;
+        }
+        if (choiceMade === 'yes') {
+            game_controls.pushThirdCard(Game, playerIndex);
+        }
+        if (game_controls.checkThirdCardsStatus(Game)) {
+            game_engine.commenceResolvingBets(Game);
+        }
+    },
+    commenceResolvingBets: (Game) => {
         
     }
 };
