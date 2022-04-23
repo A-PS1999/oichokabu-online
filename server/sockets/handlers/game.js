@@ -69,8 +69,17 @@ const cardBetMade = gameSockets => (gameId, userId, cardId, ownerColumn, betAmou
     )
 }
 
-const thirdCardChoice = gameSockets => (gameId, userId, choiceMade) => {
-    game_engine.handleOptionalThirdCard(gameGlobals.get(gameId), userId, choiceMade);
+const thirdCardChoice = gameSockets => (gameId, userId, choiceMade, isDealer) => {
+    if (!isDealer) {
+        game_engine.handleOptionalThirdPlayerCard(gameGlobals.get(gameId), userId, choiceMade);
+    }
+    if (isDealer) {
+        game_engine.handleOptionalThirdDealerCard(gameGlobals.get(gameId), choiceMade);
+    }
+    gameSockets.get(gameId).forEach((value, key, _) => {
+        let data = game_engine.getGameData(gameGlobals.get(gameId), key);
+        value.emit(`game:${gameId}:update-game`, data);
+    })
 }
 
 module.exports = (lobbySockets, gameSockets) => ({

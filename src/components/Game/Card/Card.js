@@ -15,7 +15,7 @@ export default function Card({id, value, src, ownerColumn, defaultHidden, defaul
     const [cardValue, setCardValue] = useState(null);
     const [isHidden, setIsHidden] = useState(defaultHidden);
     const [isDisabled, setIsDisabled] = useState(defaultDisabled);
-    const { playerAuth, hasClicked, isPickDealer, currentDealer, currentPlayer, gameId } = useSelector(gameSelector);
+    const { playerAuth, hasClicked, isPickDealer, currentDealer, currentPlayer, currentPhase, gameId } = useSelector(gameSelector);
     const dispatch = useDispatch();
 
     const handleMainGameCardClick = () => {
@@ -26,6 +26,12 @@ export default function Card({id, value, src, ownerColumn, defaultHidden, defaul
     useEffect(() => {
         setCardValue(value);
     }, [value])
+
+    useEffect(() => {
+        if (currentPhase === 'scoringPhase') {
+            setIsHidden(false);
+        }
+    }, [currentPhase]);
 
     const determineDisabled = () => {
         if (isDisabled || hasClicked || (currentDealer && playerAuth.id === currentDealer.id)) {

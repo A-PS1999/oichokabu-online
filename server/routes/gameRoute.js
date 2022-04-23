@@ -53,8 +53,9 @@ router.post('/api/game/:gameId/card-bet', checkLoggedIn, (request, response) => 
 router.post('/api/game/:gameId/decide-third-card', checkLoggedIn, (request, response) => {
     const { gameId } = request.params;
     const userId = response.locals.user.id;
-    const choiceMade = request.body.cardChoice;
-    GameSockets.thirdCardChoice(gameId, userId, choiceMade);
+    const choiceMade = request.body.choiceMade;
+    const isDealer = request.body.isDealer;
+    GameSockets.thirdCardChoice(gameId, userId, choiceMade, isDealer);
     response.sendStatus(204);
 })
 

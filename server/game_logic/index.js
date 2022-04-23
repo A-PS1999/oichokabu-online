@@ -1,3 +1,4 @@
+const { default: Game } = require('../../src/components/Game/Game');
 const game_controls = require('./game_controls');
 
 const game_engine = {
@@ -76,29 +77,50 @@ const game_engine = {
         game_engine.handleEndTurn(Game);
 
         if (Game.cardBets.length === (Game.players.length - 1)) {
-            game_engine.handleSecondCard(Game);
+            game_engine.handlePlayerSecondCard(Game);
         }
     },
-    handleSecondCard: (Game) => {
-        game_controls.pushSecondCard({ Game });
-        if (game_controls.checkThirdCardsStatus(Game)) {
-            game_engine.commenceResolvingBets(Game);
+    handlePlayerSecondCard: (Game) => {
+        game_controls.pushPlayerSecondCard({ Game });
+        if (game_controls.checkPlayersThirdCardsStatus({ Game })) {
+            game_engine.handleDealerSecondCard(Game);
         }
     },
-    handleOptionalThirdCard: (Game, userId, choiceMade) => {
+    handleOptionalThirdPlayerCard: (Game, userId, choiceMade) => {
         let playerIndex = Game.players.findIndex(player => player.id === userId);
         if (choiceMade === 'no') {
             Game.players[playerIndex].thirdCardChosen = false;
         }
         if (choiceMade === 'yes') {
-            game_controls.pushThirdCard(Game, playerIndex);
+            game_controls.pushPlayerThirdCard({ Game, playerIndex });
         }
-        if (game_controls.checkThirdCardsStatus(Game)) {
-            game_engine.commenceResolvingBets(Game);
+        if (game_controls.checkPlayersThirdCardsStatus({ Game })) {
+            game_engine.handleDealerSecondCard(Game);
+        }
+    },
+    handleDealerSecondCard: (Game) => {
+        let dealer = Game.currentDealer;
+        Game.currentPhase = 'dealerCardsPhase';
+        game_controls.pushDealerSecondCard({ Game, dealer });
+        if (game_controls.checkAllThirdCardsStatus({ Game })) {
+            game_engine.commenceResolvingBets();
+        }
+    },
+    handleOptionalThirdDealerCard: (Game, choiceMade) => {
+        let dealer = Game.currentDealer;
+        if (choiceMade === 'no') {
+            dealer.thirdCardChosen = false;
+        }
+        if (choiceMade === 'yes') {
+            game_controls.pushDealerThirdCard({ Game, dealer });
+        }
+        if (game_controls.checkAllThirdCardsStatus({ Game })) {
+            game_engine.commenceResolvingBets();
         }
     },
     commenceResolvingBets: (Game) => {
-        
+        Game.currentPhase = 'scoringPhase';
+        game_controls.resolveBets({ Game });
     }
 };
 

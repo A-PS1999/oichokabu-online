@@ -1,4 +1,4 @@
-const pushThirdCard = require('./pushThirdCard');
+const pushPlayerThirdCard = require('./pushPlayerThirdCard');
 
 module.exports = ({ Game }) => {
     const nonDealerPlayers = Game.players.filter(player => player.isDealer !== true);
@@ -16,7 +16,7 @@ module.exports = ({ Game }) => {
         Game.players[playerIndex].cardBet.push(secondCard);
 
         if ((Game.players[playerIndex].cardBet[0].value + secondCard.value) % 10 <= 3) {
-            pushThirdCard({ Game, playerIndex });
+            pushPlayerThirdCard({ Game, playerIndex });
         } else if ((Game.players[playerIndex].cardBet[0].value + secondCard.value) % 10 >= 7) {
             Game.players[playerIndex].thirdCardChosen = false;
         }

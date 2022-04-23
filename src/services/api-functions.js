@@ -27,6 +27,6 @@ export const GameAPI = {
 	postUpdateGame: gameId => API.post(`/game/${gameId}/update`, {}),
 	postDealerCardSelected: (gameId, cardId, cardVal) => API.post(`/game/${gameId}/pickdealer-card-selected`, { cardId, cardVal }),
 	postCardBet: (gameId, betAmount) => API.post(`/game/${gameId}/card-bet`, { betAmount }),
-	postThirdCardChoice: (gameId, choiceMade) => API.post(`/game/${gameId}/decide-third-card`, { choiceMade }),
+	postThirdCardChoice: (gameId, choiceMade, isDealer) => API.post(`/game/${gameId}/decide-third-card`, { choiceMade, isDealer }),
 	postUpdateChips: newChips => API.post('/game/update-player-chips', { newChips }),
 }
