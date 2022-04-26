@@ -99,6 +99,7 @@ export const gameSlice = createSlice({
 
 const selectCardBets = state => state.game.cardBets;
 const selectCurrentDealer = state => state.game.currentDealer;
+const selectPlayers = state => state.game.Players;
 const selectPlayerId = state => state.game.playerAuth;
 
 export const gameSelector = state => state.game;
@@ -116,6 +117,10 @@ export const selectCardOwnedBool = createSelector([selectCardBets, selectPlayerI
 
 export const selectIsDealerBool = createSelector([selectCurrentDealer, selectPlayerId], (currentDealer, playerAuth) => {
     return currentDealer.id === playerAuth.id;
+})
+
+export const selectPlayerStatus = createSelector([selectPlayers, selectPlayerId], (players, playerAuth) => {
+    return players.find(player => player.id === playerAuth.id);
 })
 
 export const { setGameId,

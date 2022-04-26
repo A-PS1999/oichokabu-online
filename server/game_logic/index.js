@@ -1,4 +1,3 @@
-const { default: Game } = require('../../src/components/Game/Game');
 const game_controls = require('./game_controls');
 
 const game_engine = {
@@ -103,7 +102,7 @@ const game_engine = {
         Game.currentPhase = 'dealerCardsPhase';
         game_controls.pushDealerSecondCard({ Game, dealer });
         if (game_controls.checkAllThirdCardsStatus({ Game })) {
-            game_engine.commenceResolvingBets();
+            game_engine.commenceResolvingBets(Game);
         }
     },
     handleOptionalThirdDealerCard: (Game, choiceMade) => {
@@ -115,7 +114,7 @@ const game_engine = {
             game_controls.pushDealerThirdCard({ Game, dealer });
         }
         if (game_controls.checkAllThirdCardsStatus({ Game })) {
-            game_engine.commenceResolvingBets();
+            game_engine.commenceResolvingBets(Game);
         }
     },
     commenceResolvingBets: (Game) => {

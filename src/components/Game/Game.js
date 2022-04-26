@@ -28,7 +28,8 @@ export default function Game() {
         currentPhase,
         isError,
         playerAuth, 
-        errorMessage } = useSelector(gameSelector);
+        errorMessage 
+    } = useSelector(gameSelector);
 
     useEffect(() => {
         const game_id = location.state.game_id;
