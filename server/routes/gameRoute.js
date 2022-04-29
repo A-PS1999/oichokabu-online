@@ -21,12 +21,6 @@ router.post('/api/game/:gameId/start', checkLoggedIn, checkGamePlayer, checkGame
     response.sendStatus(204);
 })
 
-router.post('/api/game/:gameId/load', checkLoggedIn, checkGamePlayer, checkGameHost, (request, response) => {
-    const { gameId } = request.params;
-    GameSockets.loadGame(gameId);
-    response.sendStatus(204);
-})
-
 router.post('/api/game/:gameId/update', checkLoggedIn, checkGamePlayer, (request, response) => {
     const { gameId } = request.params;
     const id = response.locals.user.id;
@@ -56,6 +50,13 @@ router.post('/api/game/:gameId/decide-third-card', checkLoggedIn, (request, resp
     const choiceMade = request.body.choiceMade;
     const isDealer = request.body.isDealer;
     GameSockets.thirdCardChoice(gameId, userId, choiceMade, isDealer);
+    response.sendStatus(204);
+})
+
+router.post('/api/game/:gameId/remove-player', checkLoggedIn, checkGamePlayer, (request, response) => {
+    const { gameId } = request.params;
+    const userId = response.locals.user.id;
+    GameSockets.removePlayer(gameId, userId);
     response.sendStatus(204);
 })
 

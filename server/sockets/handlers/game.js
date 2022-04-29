@@ -2,7 +2,7 @@ const game_engine = require('./../../game_logic');
 const { Game } = require('./../../db/api');
 
 const gameGlobals = new Map();
-const ongoingGames = new Map();
+const ongoingGames = {};
 
 const setGameSockets = (lobbySockets, gameSockets) => (gameId, userId) => {
     if (undefined === gameSockets.get(gameId)) {
@@ -26,23 +26,21 @@ const startGame = gameSockets => async (gameId) => {
         const ok_users = await Game.getUserIdsAndUsernames(gameId);
         const constants = await Game.getGameConstants(gameId);
         gameGlobals.set(gameId, game_engine.start(ok_users, constants));
+        ongoingGames[gameId] = [];
         gameSockets.get(gameId).forEach((socket, userId, _) => {
-            ongoingGames.set(gameId, setInterval(() => tick(socket, userId, gameId), 1000));
+            ongoingGames[gameId].push((gameId, setInterval(() => tick(socket, userId, gameId), 1000)));
         })
     } catch (error) {
         console.log(error)
     }
 }
 
-const loadGame = gameSockets => gameId => {
-    gameSockets.get(gameId).forEach((socket, userId, _) => {
-        ongoingGames.set(gameId, setInterval(() => tick(socket, userId, gameId), 1000));
-    })
-}
-
 const endGame = gameId => {
-    clearInterval(ongoingGames.get(gameId));
-    ongoingGames.delete(gameId);
+    const timersToDestroy = ongoingGames[gameId];
+    for (let i = 0; i < timersToDestroy.length; i++) {
+        clearInterval(timersToDestroy[i]);
+    }
+    delete ongoingGames[gameId];
     Game.endGame(gameId);
 }
 
@@ -82,12 +80,22 @@ const thirdCardChoice = gameSockets => (gameId, userId, choiceMade, isDealer) =>
     })
 }
 
+const removePlayer = gameSockets => (gameId, userId) => {
+    game_engine.handleRemovePlayer(gameGlobals.get(gameId), userId);
+    Game.removePlayer(gameId, userId).then(_ => {
+        gameSockets.get(gameId).forEach((value, key, _) => {
+            let data = game_engine.getGameData(gameGlobals.get(gameId), key);
+            value.emit(`game:${gameId}:update-game`, data);
+        });
+    })
+}
+
 module.exports = (lobbySockets, gameSockets) => ({
     setGameSockets: setGameSockets(lobbySockets, gameSockets),
     pickDealerCardSelected: pickDealerCardSelected(gameSockets),
     cardBetMade: cardBetMade(gameSockets),
     thirdCardChoice: thirdCardChoice(gameSockets),
     startGame: startGame(gameSockets),
-    loadGame: loadGame(gameSockets),
     updateGame: updateGame(gameSockets),
+    removePlayer: removePlayer(gameSockets),
 })
