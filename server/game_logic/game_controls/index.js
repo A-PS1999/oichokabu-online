@@ -10,6 +10,7 @@ const pushDealerThirdCard = require('./pushDealerThirdCard');
 const checkPlayersThirdCardsStatus = require('./checkPlayersThirdCardsStatus');
 const checkAllThirdCardsStatus = require('./checkAllThirdCardsStatus');
 const resolveBets = require('./resolveBets');
+const removePlayer = require('./removePlayer');
 
 module.exports = {
     startGame,
@@ -24,4 +25,5 @@ module.exports = {
     checkPlayersThirdCardsStatus,
     checkAllThirdCardsStatus,
     resolveBets,
+    removePlayer,
 }

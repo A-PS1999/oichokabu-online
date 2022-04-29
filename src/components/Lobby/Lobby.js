@@ -43,6 +43,7 @@ export default function Lobby() {
 		socket.on('lobby:create-game', createGameSocketHandler);
 		const joinGameSocketHandler = (data) => {
 			const gameId = parseInt(data.gameId, 10);
+			dispatch(fetchGames());
 
 			if (userId === data.userId) {
 				navigate(`/pregame-lobby/${gameId}`, { state: {

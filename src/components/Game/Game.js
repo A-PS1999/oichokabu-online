@@ -2,9 +2,9 @@ import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { gameSelector } from '../../store/gameSlice';
 import { toastActions } from '../../store/toastSlice.js';
-import { fetchPlayerAuth, setGameId, setGameState } from '../../store/gameSlice';
-import { useLocation } from 'react-router-dom';
-import { GameAPI, PregameAPI, socket } from '../../services';
+import { fetchPlayerAuth, setGameId, setGameState, selectPlayerStatus } from '../../store/gameSlice';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { GameAPI, socket } from '../../services';
 import './Game.scss';
 import CardColumn from './CardColumn/CardColumn';
 import CardsValueCounter from './CardsValueCounter/CardsValueCounter';
@@ -18,6 +18,8 @@ export default function Game() {
 
     const dispatch = useDispatch();
     const location = useLocation();
+    let navigate = useNavigate();
+    const playerStatus = useSelector(selectPlayerStatus);
     const { isPickDealer, 
         Players,
         cardsOnBoard,
@@ -42,26 +44,29 @@ export default function Game() {
     }, [dispatch])
 
     useEffect(() => {
+        if (currentPhase === 'prepareNextRound' && playerStatus.chips < 100) {
+            navigate("/lobby");
+            GameAPI.postRemovePlayer(location.state.game_id);
+        }
+        if (currentPhase === 'endGame') {
+            navigate("/lobby");
+            GameAPI.postRemovePlayer(location.state.game_id);
+        }
+    }, [navigate, currentPhase, playerStatus, location.state.game_id])
+
+    useEffect(() => {
         GameAPI.postJoinGame(location.state.game_id);
         dispatch(fetchPlayerAuth(location.state.game_id));
 
         socket.on(`game:${location.state.game_id}:update-game`, handleUpdateGameState);
 
-        const handleLoadGame = async () => {
-            const { data: gameLobbyInfo } = await PregameAPI.getPlayerInfo(location.state.game_id);
-            if (playerAuth && playerAuth.host.host && gameLobbyInfo.status === 'running') {
-                await GameAPI.postLoadGame(location.state.game_id);
-            }
-        }
-
-        handleLoadGame();
-
         return () => {
             if (playerAuth) {
                 socket.off(`game:${location.state.game_id}:update-game`);
+                socket.off(`game:${location.state.game_id}:remove-player`);
             }
         }
-    }, [dispatch, location.state.game_id, handleUpdateGameState])
+    }, [dispatch, navigate, location.state.game_id, handleUpdateGameState])
 
     const handleStartGame = useCallback(_ => {
         const startFunction = async () => {

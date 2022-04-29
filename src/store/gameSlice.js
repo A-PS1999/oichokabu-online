@@ -119,8 +119,8 @@ export const selectIsDealerBool = createSelector([selectCurrentDealer, selectPla
     return currentDealer.id === playerAuth.id;
 })
 
-export const selectPlayerStatus = createSelector([selectPlayers, selectPlayerId], (players, playerAuth) => {
-    return players.find(player => player.id === playerAuth.id);
+export const selectPlayerStatus = createSelector([selectPlayers, selectPlayerId], (Players, playerAuth) => {
+    return Players.find(player => player.id === playerAuth.id);
 })
 
 export const { setGameId,

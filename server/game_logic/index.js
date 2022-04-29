@@ -49,6 +49,13 @@ const game_engine = {
             data.players_data.push(tempPlayer);
         });
     },
+    handleRemovePlayer: (Game, playerId) => {
+        game_controls.removePlayer(Game, playerId);
+        if (Game.players.length < 2) {
+            Game.currentPhase = "endGame";
+            Game.currentTurn = (Game.turnMax + 1);
+        }
+    },
     onEndTurn: (Game, playerId) => {
         let player = Game.currentPlayer;
         if (player.id === playerId) {
@@ -120,6 +127,7 @@ const game_engine = {
     commenceResolvingBets: (Game) => {
         Game.currentPhase = 'scoringPhase';
         game_controls.resolveBets({ Game });
+        Game.currentPhase = 'prepareNextRound';
     }
 };
 
