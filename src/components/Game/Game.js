@@ -4,7 +4,7 @@ import { gameSelector } from '../../store/gameSlice';
 import { toastActions } from '../../store/toastSlice.js';
 import { fetchPlayerAuth, setGameId, setGameState, selectPlayerStatus } from '../../store/gameSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { GameAPI, socket } from '../../services';
+import { GameAPI, PregameAPI, socket } from '../../services';
 import './Game.scss';
 import CardColumn from './CardColumn/CardColumn';
 import CardsValueCounter from './CardsValueCounter/CardsValueCounter';
@@ -63,10 +63,20 @@ export default function Game() {
         return () => {
             if (playerAuth) {
                 socket.off(`game:${location.state.game_id}:update-game`);
-                socket.off(`game:${location.state.game_id}:remove-player`);
             }
         }
     }, [dispatch, navigate, location.state.game_id, handleUpdateGameState])
+
+    useEffect(() => {
+        const handleReloadGame = async () => {
+            const { data: gameLobbyInfo } = await PregameAPI.getPlayerInfo(location.state.game_id);
+            if (playerAuth && gameLobbyInfo.status === 'running' && isPickDealer === null) {
+                await GameAPI.postReloadGame(location.state.game_id);
+            }
+        }
+
+        handleReloadGame();
+    })
 
     const handleStartGame = useCallback(_ => {
         const startFunction = async () => {

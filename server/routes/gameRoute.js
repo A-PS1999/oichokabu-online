@@ -28,6 +28,13 @@ router.post('/api/game/:gameId/update', checkLoggedIn, checkGamePlayer, (request
     response.sendStatus(204);
 })
 
+router.post('/api/game/:gameId/reload', checkLoggedIn, checkGamePlayer, (request, response) => {
+    const { gameId } = request.params;
+    const id = response.locals.user.id;
+    GameSockets.reloadGame(gameId, id);
+    response.sendStatus(204);
+})
+
 router.post('/api/game/:gameId/pickdealer-card-selected', checkLoggedIn, checkGamePlayer, (request, response) => {
     const { gameId } = request.params;
     const cardValue = request.body.cardVal;
