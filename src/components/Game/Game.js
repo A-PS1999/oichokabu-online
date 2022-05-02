@@ -44,28 +44,42 @@ export default function Game() {
     }, [dispatch])
 
     useEffect(() => {
-        if (currentPhase === 'prepareNextRound' && playerStatus.chips < 100) {
+        const endGameHandler = () => {
+            navigate("/lobby");
+            GameAPI.postRemovePlayer(location.state.game_id);
+        }
+        if (currentPhase === 'checkForBustPlayers' && playerStatus.chips < 100) {
             navigate("/lobby");
             GameAPI.postRemovePlayer(location.state.game_id);
         }
         if (currentPhase === 'endGame') {
-            navigate("/lobby");
-            GameAPI.postRemovePlayer(location.state.game_id);
+            endGameHandler();
+        }
+        socket.on(`game:${location.state.game_id}:end-game`, endGameHandler);
+
+        return () => {
+            if (playerAuth) {
+                socket.off(`game:${location.state.game_id}:end-game`);
+            }
         }
     }, [navigate, currentPhase, playerStatus, location.state.game_id])
 
     useEffect(() => {
-        GameAPI.postJoinGame(location.state.game_id);
-        dispatch(fetchPlayerAuth(location.state.game_id));
+        const initGame = async () => {
+            dispatch(fetchPlayerAuth(location.state.game_id));
+            await GameAPI.postJoinGame(location.state.game_id);
 
-        socket.on(`game:${location.state.game_id}:update-game`, handleUpdateGameState);
+            socket.on(`game:${location.state.game_id}:update-game`, handleUpdateGameState);
+        };
+
+        initGame();
 
         return () => {
             if (playerAuth) {
                 socket.off(`game:${location.state.game_id}:update-game`);
             }
         }
-    }, [dispatch, navigate, location.state.game_id, handleUpdateGameState])
+    }, [dispatch, handleUpdateGameState, location.state.game_id])
 
     useEffect(() => {
         const handleReloadGame = async () => {
@@ -76,7 +90,7 @@ export default function Game() {
         }
 
         handleReloadGame();
-    })
+    }, [location.state.game_id, isPickDealer, playerAuth])
 
     const handleStartGame = useCallback(_ => {
         const startFunction = async () => {

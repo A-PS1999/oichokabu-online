@@ -11,6 +11,9 @@ const checkPlayersThirdCardsStatus = require('./checkPlayersThirdCardsStatus');
 const checkAllThirdCardsStatus = require('./checkAllThirdCardsStatus');
 const resolveBets = require('./resolveBets');
 const removePlayer = require('./removePlayer');
+const prepNextRound = require('./prepNextRound');
+const setNewShuffledDeck = require('./setNewShuffledDeck');
+const determineNextDealer = require('./determineNextDealer');
 
 module.exports = {
     startGame,
@@ -26,4 +29,7 @@ module.exports = {
     checkAllThirdCardsStatus,
     resolveBets,
     removePlayer,
+    prepNextRound,
+    setNewShuffledDeck,
+    determineNextDealer,
 }

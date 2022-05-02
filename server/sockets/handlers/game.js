@@ -15,7 +15,7 @@ const setGameSockets = (lobbySockets, gameSockets) => (gameId, userId) => {
 const tick = (socket, userId, gameId) => {
     let data = game_engine.getGameData(gameGlobals.get(gameId), userId);
     if (data.general_data.currentTurn > data.general_data.turnMax) {
-        endGame(gameId);
+        endGame(gameId, socket);
     }
     socket.emit(`game:${gameId}:update-game`, data);
 }
@@ -35,7 +35,8 @@ const startGame = gameSockets => async (gameId) => {
     }
 }
 
-const endGame = gameId => {
+const endGame = (gameId, socket) => {
+    socket.emit(`game:${gameId}:end-game`);
     const timersToDestroy = ongoingGames[gameId];
     for (let i = 0; i < timersToDestroy.length; i++) {
         clearInterval(timersToDestroy[i].timer);

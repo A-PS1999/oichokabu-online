@@ -15,7 +15,6 @@ const shuffle = cardsDeck => {
 
 const initGameUtility = Game => {
     Game.shuffle = shuffle;
-    Game.pendingForInput = null;
 }
 
 const initCardsDeck = Game => {

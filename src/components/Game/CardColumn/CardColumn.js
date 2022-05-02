@@ -27,7 +27,7 @@ export default function CardColumn({ column, columnIndex }) {
                         id={column.cards[1].id}
                         ownerColumn={columnIndex}
                         defaultHidden={secondCardHiddenBool}
-                        defaultDisabled={false}
+                        defaultDisabled={true}
                     />
                 : null
                 }

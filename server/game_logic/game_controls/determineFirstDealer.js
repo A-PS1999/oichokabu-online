@@ -19,6 +19,5 @@ module.exports = (Game) => {
     Game.players[firstDealerIndex].isDealer = true;
     Game.currentDealer = currentDealer;
     const firstDealerCard = Game.deck.pop();
-    firstDealerCard.userId = currentDealer.id;
     Game.currentDealer.cardBet.push(firstDealerCard);
 }
