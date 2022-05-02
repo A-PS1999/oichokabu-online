@@ -127,8 +127,15 @@ const game_engine = {
     commenceResolvingBets: (Game) => {
         Game.currentPhase = 'scoringPhase';
         game_controls.resolveBets({ Game });
+        Game.currentPhase = 'checkForBustPlayers';
+        setTimeout(() => game_engine.prepareNextRound(Game), 1000);
         Game.currentPhase = 'prepareNextRound';
-    }
+    },
+    prepareNextRound: (Game) => {
+        game_controls.prepNextRound({ Game });
+        Game.currentPhase = 'bettingPhase';
+        game_engine.handleStartTurn(Game);
+    },
 };
 
 module.exports = game_engine;

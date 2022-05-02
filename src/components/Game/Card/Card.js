@@ -33,6 +33,15 @@ export default function Card({id, value, src, ownerColumn, defaultHidden, defaul
         }
     }, [currentPhase]);
 
+    useEffect(() => {
+        if (currentPhase === 'prepareNextRound' && hasClicked === true) {
+            dispatch(setHasClicked(false));
+        }
+        if (currentPhase === 'prepareNextRound') {
+            setIsDisabled(false);
+        }
+    }, [dispatch, currentPhase, hasClicked])
+
     const determineDisabled = () => {
         if (isDisabled || hasClicked || (currentDealer && playerAuth.id === currentDealer.id)) {
             return true
@@ -50,7 +59,7 @@ export default function Card({id, value, src, ownerColumn, defaultHidden, defaul
                 setIsDisabled(true);
             }
             if (playerAuth.id && data.userId === playerAuth.id) {
-                dispatch(setHasClicked())
+                dispatch(setHasClicked(true));
             }
         }
         socket.on(`game:${gameId}:pickdealer-card-selected`, dealerDecideClickHandler)
@@ -65,7 +74,7 @@ export default function Card({id, value, src, ownerColumn, defaultHidden, defaul
                 setIsDisabled(true);
             }
             if (playerAuth.id && playerAuth.id === data.userId) {
-                dispatch(setHasClicked())
+                dispatch(setHasClicked(true));
             }
         }
         socket.on(`game:${gameId}:card-bet-made`, cardBetSocketHandler);

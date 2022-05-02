@@ -54,11 +54,8 @@ export const gameSlice = createSlice({
                 currentlySelectedCard: action.payload,
             }
         },
-        setHasClicked(state) {
-            return {
-                ...state,
-                hasClicked: !state.hasClicked,
-            }
+        setHasClicked(state, action) {
+            state.hasClicked = action.payload;
         },
         setGameState(state, action) {
             state.betMax = action.payload.general_data.betMax;

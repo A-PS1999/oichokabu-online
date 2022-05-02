@@ -11,7 +11,7 @@ export default function PickDealerScreen() {
 
     useEffect(() => {
         if (hasClicked && (pickDealerCards.length === Players.length)) {
-            dispatch(setHasClicked());
+            dispatch(setHasClicked(false));
         }
     }, [dispatch, pickDealerCards, Players, hasClicked])
 
