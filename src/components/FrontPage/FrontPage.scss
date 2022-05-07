@@ -1,6 +1,6 @@
 @use "./../../sass/abstracts/variables" as var;
 
-header {
+.frontpage-header {
 	margin: auto;
 	background: var.$japan-red;
 	display: flex;
@@ -10,22 +10,22 @@ header {
 	width: 20rem;
 	clip-path: circle(50% at 50% 50%);
 	margin-bottom: 4rem;
-}
 
-.header-text-box {
-	text-align: center;
-	margin: auto;
-}
+	&__text-box {
+		text-align: center;
+		margin: auto;
+	}
 
-.header-link {
-	text-decoration: none;
-	color: var.$color-white;
-	border-bottom: 1px solid transparent;
-	transition: all .1s;
-	font-size: 1.2rem;
+	&__header-link {
+		text-decoration: none;
+		color: var.$color-white;
+		border-bottom: 1px solid transparent;
+		transition: all .1s;
+		font-size: 1.2rem;
 	
-	&:hover {
-		border-bottom: 1px solid white;
+		&:hover {
+			border-bottom: 1px solid white;
+		}
 	}
 }
 
