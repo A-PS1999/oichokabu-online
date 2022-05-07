@@ -8,16 +8,9 @@ footer {
 	margin-top: auto;
 }
 
-li {
-	display: inline-block;	
-}
-
-.footer-container {
-	list-style: none;
-}
-
 .footer-text {
 	color: var.$color-white;
+	list-style: none;
 	font-size: 1.1rem;
 }
 
@@ -26,6 +19,10 @@ li {
 	display: flex;
 	justify-content: center;
 	flex-wrap: wrap;
+
+	&__li {
+		display: inline-block;	
+	}
 	
 	&__link-container {
 		padding: 0.7rem;

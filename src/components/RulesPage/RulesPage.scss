@@ -1,0 +1,237 @@
+@use "./../../sass/abstracts/variables" as var;
+@use "./../../sass/abstracts/mixins" as mix;
+
+.rules-header {
+    clip-path: circle(13rem at 50% 50%);
+    background: var.$japan-red;
+    color: var.$color-white;
+    text-align: center;
+    padding: 11.5rem 0px;
+    margin-bottom: 3rem;
+}
+
+.rules-contents {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 2rem;
+    padding: 2rem;
+    border: 2px solid var.$japan-red;
+    background-color: transparent;
+    max-width: 50%;
+    margin-bottom: 3rem;
+    margin-left: 25%;
+
+    &__title {
+        text-decoration: underline;
+    }
+
+    &__link {
+        font-size: 1.1rem;
+        text-align: center;
+        color: var.$japan-red;
+        text-decoration: none;
+        padding: 0.5rem;
+        border-radius: 1rem;
+        transition: all .1s;
+
+        &:hover {
+            color: var.$color-white;
+            background-color: var.$japan-red;
+        }
+    }
+}
+
+.section-objective {
+    background-color: var.$light-grey;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    &__title {
+        text-align: center;
+        margin-bottom: 1rem;
+        color: var.$color-white;
+        background-color: var.$japan-red;
+        border-radius: 5rem;
+        padding: 1.3rem;
+        max-width: 15rem;
+    }
+
+    &__text {
+        max-width: 45%;
+        text-align: center;
+        font-size: 1.1rem;
+    }
+}
+
+.rules-card {
+    max-width: 10rem;
+    margin-left: 1rem;
+    position: relative;
+    box-shadow: 1px 8px 15px 4px rgba(var.$color-black, .39);
+
+    &__value-container {
+        position: absolute;
+        top: -12px;
+        left: -12px;
+        z-index: 999999;
+        background: var.$japan-red;
+        color: var.$color-white;
+        padding: 1.3rem;
+        clip-path: polygon(0 0, 0% 100%, 100% 0);
+
+        &__value {
+            font-weight: 700;
+            position: relative;
+            top: -10px;
+            left: -10px;
+        }
+    }
+}
+
+.section-cards {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem 0;
+
+    &__title {
+        margin-bottom: 1rem;
+        text-decoration: underline;
+    }
+
+    &__text {
+        @extend .section-objective__text;
+        margin-bottom: 1.5rem;
+    }
+
+    &__cardcalc {
+        display: grid;
+        grid-template-columns: 1fr 15% 1fr 15% 10%;
+        grid-template-areas: "card1 plus card2 equals sum";
+        align-items: center;
+        margin-bottom: 1.5rem;
+
+        &__plus {
+            max-width: 10rem;
+        }
+
+        &__equals {
+            @extend .section-cards__cardcalc__plus;
+        }
+
+        &__value {
+            font-size: 7rem;
+            margin-left: 1rem;
+        }
+    }
+}
+
+.section-yaku {
+    background-color: var.$light-grey;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+
+    &__title {
+        @extend .section-objective__title;
+        max-width: 30%
+    }
+
+    &__text {
+        @extend .section-objective__text;
+    }
+
+    &__list {
+        list-style: none;
+        counter-reset: yaku-counter;
+        margin-bottom: 1.3rem;
+
+        &--continued {
+            margin-bottom: 1.3rem;
+            list-style: none;
+        }
+
+        &__item {
+            counter-increment: yaku-counter;
+            font-size: 1.1rem;
+            position: relative;
+            line-height: 2.5rem;
+            font-weight: 700;
+
+            &::before {
+                position: absolute;
+                content: counter(yaku-counter);
+                color: var.$color-white;
+                background: var.$japan-red;
+                border-radius: 50%;
+                padding: 0.5rem;
+                left: -2.5rem;
+                top: 0.3rem;
+                width: 2rem;
+                height: 2rem;
+                text-align: center;
+                line-height: 1.1rem;
+                font-weight: 700;
+            }
+        }
+    }
+
+    &__yaku-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        column-gap: 1rem;
+        margin-bottom: 1rem;
+
+        &--twocard {
+            @extend .section-yaku__yaku-container;
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+}
+
+.section-gameloop {
+    @extend .section-cards;
+
+    &__title {
+        @extend .section-cards__title;
+    }
+
+    &__text {
+        @extend .section-objective__text;
+    }
+
+    &__img {
+        max-width: 75%;
+    }
+}
+
+.section-end {
+    @extend .section-yaku;
+
+    &__text {
+        @extend .section-objective__text;
+    }
+
+    &__button-container {
+        display: flex;
+
+        &__link {
+            @include mix.red-button;
+            text-decoration: none;
+        }
+
+        &__backbutton {
+            @include mix.white-button;
+            padding: 1rem;
+            margin-left: 1.5rem;
+        }
+    }
+}

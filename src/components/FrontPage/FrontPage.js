@@ -10,12 +10,12 @@ export default function FrontPage() {
 		<>
 			<Navbar />
 			<div>
-				<header>
-					<div className="header-text-box">
+				<header className='frontpage-header'>
+					<div className="frontpage-header__text-box">
 						<h1 className="heading-primary">
 							Oicho Kabu Online
 						</h1>
-						<Link to="/register" className="header-link">
+						<Link to="/register" className="frontpage-header__header-link">
 							Sign up now!
 						</Link>
 					</div>

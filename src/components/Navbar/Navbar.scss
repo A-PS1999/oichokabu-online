@@ -1,4 +1,5 @@
 @use "./../../sass/abstracts/variables" as var;
+@use "./../../sass/abstracts/mixins" as mix;
 
 nav {
 	padding-bottom: 4rem;
@@ -26,23 +27,7 @@ nav {
 		
 		&:not(:first-child) {
 			margin: 0.7rem 1rem 0.7rem;
-			background: var.$color-white;
-			border-radius: 1rem;
-			transition: all .2s;
-			
-			&:hover	{
-				transform: translateY(-0.3rem);
-				
-				&::after {
-					transform: scaleX(1.4) scaleY(1.6);
-					opacity: 0;
-				}
-			}
-			
-			&:active,
-			&:focus {
-				transform: translateY(-0.1rem);
-			}
+			@include mix.white-button;
 		}
 	}
 }

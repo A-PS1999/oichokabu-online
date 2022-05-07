@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import { store } from './store/store.js';
 import './App.scss';
 import FrontPage from './components/FrontPage/FrontPage.js';
+import RulesPage from './components/RulesPage/RulesPage.js';
 import SignUp from './components/SignUp/SignUp.js';
 import Login from './components/Login/Login.js';
 import ForgotPassword from './components/ForgotPassword/ForgotPassword.js';
@@ -22,6 +23,7 @@ export default function App() {
 			<Router>
 				<Routes>
 					<Route exact path="/" element={<FrontPage />} />
+					<Route path="/rules" element={<RulesPage />} />
 					<Route path="/register" element={<SignUp />} />
 					<Route path="/log-in" element={<Login />} />
 					<Route path="/forgot-password" element={<ForgotPassword />} />

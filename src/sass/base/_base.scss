@@ -5,6 +5,7 @@
 	padding: 0;
 	/* inheriting box-sizing from body better practice for styling components */
 	box-sizing: inherit;
+	scroll-behavior: smooth;
 }
 
 html {
