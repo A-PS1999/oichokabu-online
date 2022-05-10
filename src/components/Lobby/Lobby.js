@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import './Lobby.scss';
 import { useSelector, useDispatch } from 'react-redux';
-import { lobbySelector, fetchGames, fetchUserId } from '../../store/lobbySlice.js';
+import { lobbySelector, fetchGames, fetchUserIdAndChips } from '../../store/lobbySlice.js';
 import { lobbyStateReset as clearState } from '../../store/lobbySlice.js';
 import { toastActions } from '../../store/toastSlice.js';
 import { modalActions } from '../../store/modalSlice.js';
@@ -12,18 +12,23 @@ import locale from 'rc-pagination/es/locale/en_US';
 import 'rc-pagination/assets/index.css';
 import usePagination from '../../utils/usePagination';
 import CreateGameForm from './CreateGameForm/CreateGameForm.js';
-import { PregameAPI, socket } from '../../services';
+import { PregameAPI, LobbyAPI, socket } from '../../services';
 import { useNavigate } from 'react-router-dom';
+
+const resetChips = (chips) => {
+	LobbyAPI.resetUserChips(chips);
+	window.location.reload();
+}
 
 export default function Lobby() {
 	
 	const dispatch = useDispatch();
 	let navigate = useNavigate();
-	const { isError, errorMessage, rooms, userId } = useSelector(lobbySelector);
+	const { isError, errorMessage, rooms, userId, chips } = useSelector(lobbySelector);
 	let { pageData, page, jumpPage } = usePagination(rooms, 10);
 
 	useEffect(() => {
-		dispatch(fetchUserId())
+		dispatch(fetchUserIdAndChips())
 	}, [dispatch])
 
 	useEffect(() => {
@@ -77,12 +82,20 @@ export default function Lobby() {
 			<div>
 				<main>
 					<section className="lobby-head">
+						<div className='lobby-head__chips-display'>
+							Your Chips: {chips}
+						</div>
+						<div className="lobby-head__button-container--left">
+							<button className="lobby-head__button" disabled={chips > 100} onClick={() => resetChips(chips)}>
+								Reset Chips
+							</button>
+						</div>
 						<div className="lobby-head__text">
 							<h1 className="lobby-head__text__title">Lobby</h1>
 							<h2>Create or join a game!</h2>
 						</div>
 						<div className="lobby-head__button-container">
-							<button className="lobby-head__button" onClick={async () => { await dispatch(modalActions.toggleModal()) }}>
+							<button className="lobby-head__button" disabled={chips < 100} onClick={async () => { await dispatch(modalActions.toggleModal()) }}>
 								Create Game
 							</button>
 						</div>
@@ -106,7 +119,7 @@ export default function Lobby() {
 									<div className="lobby-body__room__player-text">Players: {room.Players.length}/{room.player_cap}</div>
 									<div className="lobby-body__room__turn-text">Max Rounds: {room.turn_max}</div>
 									<div className="lobby-body__room__bet-text">Max Bet: {room.bet_max}</div>
-									<button className="lobby-body__room__button" onClick={() => PregameAPI.postJoinGame(room.game_id)} disabled={room.Players.length === room.player_cap}>
+									<button className="lobby-body__room__button" onClick={() => PregameAPI.postJoinGame(room.game_id)} disabled={room.Players.length === room.player_cap || chips < 100}>
 										Join Game
 									</button>
 								</div>

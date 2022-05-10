@@ -7,6 +7,8 @@ export const UserAPI = {
 export const LobbyAPI = {
 	getGames: () => API.get('/lobby/lobbies', {}),
 	postNewGame: (roomName, playerCap, turnMax, betMax) => API.post('/lobby/create-game', { roomName, playerCap, turnMax, betMax }),
+	getUserChips: () => API.get('/lobby/user-chips', {}),
+	resetUserChips: (chips) => API.post('/lobby/reset-chips', { chips }),
 }
 
 export const PregameAPI = {

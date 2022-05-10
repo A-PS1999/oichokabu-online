@@ -1,11 +1,10 @@
 const pushPlayerThirdCard = require('./pushPlayerThirdCard');
 
 module.exports = ({ Game }) => {
-    const nonDealerPlayers = Game.players.filter(player => player.isDealer !== true);
-
-    for (let i = 0; i < nonDealerPlayers.length; i++) {
+    const betPlayers = Game.players.filter(player => Game.cardBets.find(bet => (bet.userId === player.id)));
+    for (let i = 0; i < betPlayers.length; i++) {
         let secondCard = Game.deck.pop();
-        let playerIndex = Game.players.findIndex(player => player.id === nonDealerPlayers[i].id);
+        let playerIndex = Game.players.findIndex(player => player.id === betPlayers[i].id);
 
         for (let j = 0; j < 4; j++) {
             if (Game.cardsOnBoard[j].columnId === Game.players[playerIndex].cardBet[0].ownerColumn) {

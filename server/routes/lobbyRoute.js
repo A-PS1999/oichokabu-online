@@ -24,4 +24,23 @@ router.get('/api/lobby/lobbies', (request, response) => {
 	.catch(error => response.json({ error }));
 });
 
+router.get('/api/lobby/user-chips', checkLoggedIn, (request, response) => {
+	const userId = response.locals.user.id;
+	return LobbyDB.getUserChips(userId).then(chips => {
+		return response.json(chips)
+	})
+	.catch(error => response.json({ error }));
+})
+
+router.post('/api/lobby/reset-chips', checkLoggedIn, (request, response) => {
+	const chips = request.body.chips;
+	const userId = response.locals.user.id;
+	if (chips <= 100) {
+		LobbyDB.resetChips(userId);
+		response.sendStatus(204);
+	} else {
+		response.status(403).send("You don't need your chips resetting.")
+	}
+})
+
 module.exports = router;

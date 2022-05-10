@@ -1,4 +1,5 @@
 @use "./../../../sass/abstracts/variables" as var;
+@use "./../../../sass/abstracts/mixins" as mix;
 
 .game-form {
     display: block;
@@ -67,16 +68,10 @@
     }
 
     &__button {
+        @include mix.red-button;
         display: block;
         text-align: center;
-        transition: all .2s;
-        appearance: none;
         margin: 0 auto;
-        padding: 1rem;
-        border: none;
-        color: var.$color-white;
-        background-color: var.$japan-red;
-        border-radius: 1rem;
         box-shadow: 0px 2px 5px 1px rgba(0,0,0,0.38);
 
         &:hover {
@@ -87,11 +82,6 @@
             &::after {
                 transform: scaleX(1.2) scaleY(1.2);
             }
-        }
-
-        &:active,
-        &:focus {
-            transform: translateY(-0.1rem);
         }
     }
 }
