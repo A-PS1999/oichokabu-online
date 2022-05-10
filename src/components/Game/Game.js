@@ -45,10 +45,12 @@ export default function Game() {
 
     useEffect(() => {
         const endGameHandler = () => {
+            GameAPI.postUpdateChips(playerStatus.chips);
             navigate("/lobby");
             GameAPI.postRemovePlayer(location.state.game_id);
         }
         if (currentPhase === 'checkForBustPlayers' && playerStatus.chips < 100) {
+            GameAPI.postUpdateChips(playerStatus.chips);
             navigate("/lobby");
             GameAPI.postRemovePlayer(location.state.game_id);
         }

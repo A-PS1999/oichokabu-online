@@ -12,7 +12,8 @@ const findOngoingGames = db => () =>
 			as: 'Players',
 			attributes: ['player_id', 'player_gameid']
 		},
-	});
+	}
+);
 	
 const addGame = db => (player_userid, room_name, player_cap, turn_max, bet_max) =>
 	db.ok_games.create({ room_name, player_cap, turn_max, bet_max, status: 'open' }).then(game =>
@@ -26,8 +27,21 @@ const addGame = db => (player_userid, room_name, player_cap, turn_max, bet_max) 
 			.then(_ => Promise.resolve(game)),
 		),
 	);
+
+const getUserChips = db => (userId) => 
+	db.ok_users.findByPk(userId).then(user => {
+		return user.dataValues.user_chips;
+	}
+)
+
+const resetChips = db => (userId) =>
+	db.ok_users.findByPk(userId).then(user => 
+		user.update({ user_chips: 10000 })
+	)
 	
 module.exports = db => ({
 	findOngoingGames: findOngoingGames(db),
 	addGame: addGame(db),
+	getUserChips: getUserChips(db),
+	resetChips: resetChips(db),
 });

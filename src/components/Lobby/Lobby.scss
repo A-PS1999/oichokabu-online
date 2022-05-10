@@ -5,8 +5,9 @@
     display: grid;
     justify-items: center;
     align-items: center;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-areas: 'left center right';
+    grid-template-columns: 33% 1fr 1fr;
+    grid-template-areas: 'left center right'
+                         'btm-left center right';
     padding-bottom: 2.5rem;
     border-bottom: 1px solid var.$light-grey;
     margin-bottom: 2rem;
@@ -20,16 +21,39 @@
         }
     }
 
+    &__chips-display {
+        grid-area: left;
+        background-color: var.$light-grey;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        box-shadow: 0px 5px 15px 1px rgba(var.$color-black, .37);
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
     &__button-container {
         grid-area: right;
         background-color: var.$light-grey;
         border-radius: 1rem;
         padding: 1.5rem;
         box-shadow: 0px 5px 15px 1px rgba(var.$color-black, .37);
+
+        &--left {
+            @extend .lobby-head__button-container;
+            grid-area: btm-left;
+            margin-top: 1rem;
+        }
     }
 
     &__button {
         @include mix.red-button;
+
+        &:disabled {
+            background-color: var.$dark-grey;
+            color: var.$color-black;
+            transform: none;
+            transition: none;
+        }
     }
 }
 
@@ -113,13 +137,22 @@
             grid-row: 2 / 3;
 
             &:hover {
-                cursor: pointer;
-                transform: translateY(-0.3rem);
+                &:not([disabled]) {
+                    cursor: pointer;
+                    transform: translateY(-0.3rem);
+                }
             }
 
             &:active,
             &:focus {
                 transform: translateY(-0.1rem);
+            }
+
+            &:disabled {
+                background-color: var.$dark-grey;
+                color: var.$color-black;
+                transform: none;
+                transition: none;
             }
         }
     }

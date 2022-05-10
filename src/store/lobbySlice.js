@@ -1,15 +1,17 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { UserAPI, LobbyAPI } from '../services/api-functions.js';
 
-export const fetchUserId = createAsyncThunk(
+export const fetchUserIdAndChips = createAsyncThunk(
 	"lobby/fetchUserId",
 	async (_, thunkAPI) => {
 		try {
 			const response = await UserAPI.getUserId();
-			let result = response.data;
+			let idResult = response.data.id;
+			const chips = await LobbyAPI.getUserChips();
+			let chipsResult = chips.data;
 
 			if (response.status === 200) {
-				return result;
+				return { idResult, chipsResult };
 			} else {
 				throw thunkAPI.rejectWithValue(response.status);
 			}
@@ -57,6 +59,7 @@ export const createNewGame = createAsyncThunk(
 
 const initialLobbyState = () => ({
 	userId: null,
+	chips: 10000,
 	isFetching: false,
 	isError: false,
 	errorMessage: "",
@@ -75,14 +78,15 @@ export const lobbySlice = createSlice({
 		}
 	},
 	extraReducers: (builder) => {
-		builder.addCase(fetchUserId.fulfilled, (state, action) => {
-			state.userId = action.payload.id;
+		builder.addCase(fetchUserIdAndChips.fulfilled, (state, action) => {
+			state.userId = action.payload.idResult;
+			state.chips = action.payload.chipsResult;
 			state.isFetching = false;
 		})
-		builder.addCase(fetchUserId.pending, (state, action) => {
+		builder.addCase(fetchUserIdAndChips.pending, (state, action) => {
 			state.isFetching = true;
 		})
-		builder.addCase(fetchUserId.rejected, (state, action) => {
+		builder.addCase(fetchUserIdAndChips.rejected, (state, action) => {
 			state.isFetching = false;
 			state.isError = true;
 			state.errorMessage = action.payload;

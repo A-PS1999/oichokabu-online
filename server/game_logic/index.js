@@ -68,7 +68,12 @@ const game_engine = {
     handleEndTurn: (Game) => {
         Game.currentPlayerIndex = (Game.currentPlayerIndex + 1) % Game.playerCount;
         Game.currentPlayer = Game.players[Game.currentPlayerIndex];
-        game_engine.handleStartTurn(Game);
+        if (Game.currentOverallBet !== Game.betMax) {
+            game_engine.handleStartTurn(Game);
+        } else {
+            game_controls.setThirdCardBool(Game);
+            game_engine.handlePlayerSecondCard(Game);
+        }
     },
     pushPickDealerCardSelection: (Game, choiceInfo) => {
         Game.cardBets.push(choiceInfo);
