@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { userSelector, resetPassword, verifyResetPassword } from '../../store/userSlice';
@@ -12,10 +12,12 @@ import './ResetPassword.scss';
 export default function ResetPassword() {
 
     const { token } = useParams();
+    const newPasswordEntry = useRef({});
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, watch } = useForm();
     const { isSuccessful, isError, errorMessage } = useSelector(userSelector);
+    newPasswordEntry.current = watch("password", "");
 
     const submitData = (data) => {
         data.token = token;
@@ -50,8 +52,20 @@ export default function ResetPassword() {
                         <div className="form-container">
                             <div className="reset-password-form">
                                 <form onSubmit={handleSubmit(submitData)}>
-                                    <input {...register("password", { required: true })} placeholder="Password" type="password" />
-                                    <input {...register("confirmPassword", { required: true })} placeholder="Confirm Password" type="password" />
+                                    <input {...register("password", { 
+                                            required: true,
+                                            minLength: 8
+                                        })} 
+                                        placeholder="Password" 
+                                        type="password" 
+                                    />
+                                    <input {...register("confirmPassword", { 
+                                            required: true,
+                                            validate: value => value === newPasswordEntry.current
+                                        })} 
+                                        placeholder="Confirm Password" 
+                                        type="password" 
+                                    />
                                     <button className="reset-password-form__button" type="submit">Submit</button>
                                 </form>
                             </div>

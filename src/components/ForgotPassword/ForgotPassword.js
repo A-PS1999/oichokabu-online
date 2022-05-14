@@ -44,7 +44,12 @@ export default function ForgotPassword() {
                         <div className="form-container">
                             <div className="forgot-password-form">
                                 <form onSubmit={handleSubmit(submitData)}>
-                                    <input {...register("email", { required: true })} placeholder="E-Mail" />
+                                    <input {...register("email", { 
+                                            required: true,
+                                            pattern: /\S+@\S+\.\S+/
+                                        })} 
+                                        placeholder="E-Mail" 
+                                    />
                                     <button className="forgot-password-form__button" type="submit">Submit</button>
                                 </form>
                             </div>
