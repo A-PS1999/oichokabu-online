@@ -36,6 +36,7 @@
 		transition: all .4s ease-out;
 		transform-style: preserve-3d;
         transform: rotateY(180deg);
+        max-width: 97%;
 
         &--hidden {
             @extend .game-card__inner;

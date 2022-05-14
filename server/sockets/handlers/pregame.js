@@ -8,12 +8,13 @@ const enterLobby = (lobbySockets, preGameSockets) => (gameId, userId) => {
 	);
 };
 
-const leaveGame = preGameSockets => (gameId, userId, username) =>
+const leaveGame = preGameSockets => (gameId, userId, username, hostStatus) =>
 	preGameSockets.get(gameId).forEach(clientSocket =>
 		clientSocket.emit(`pregame-lobby:${gameId}:leave-game`, {
 			gameId,
 			userId,
 			username,
+			hostStatus,
 		}),
 	);
 
