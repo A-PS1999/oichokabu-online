@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { registerUser, userSelector } from '../../store/userSlice.js';
 import { userStateReset as clearState } from '../../store/userSlice.js';
@@ -14,8 +14,10 @@ export default function SignUp() {
 	
 	let navigate = useNavigate();
 	const dispatch = useDispatch();
-	const { register, handleSubmit } = useForm();
+	const passwordEntry = useRef({});
+	const { register, handleSubmit, watch } = useForm();
 	const { isSuccessful, isError, errorMessage } = useSelector(userSelector);
+	passwordEntry.current = watch("password", "");
 	
 	const submitData = (data) => {
 		dispatch(registerUser(data))
@@ -45,10 +47,35 @@ export default function SignUp() {
 					<div className="form-container">
 						<div className="signup-form">
 							<form onSubmit={handleSubmit(submitData)}>
-									<input {...register("username", { required: true })} placeholder="Username" />
-									<input {...register("email", { required: true })} placeholder="E-Mail" />
-									<input {...register("password", { required: true })} placeholder="Password" type="password" />
-									<input {...register("confirmPassword", { required: true })} placeholder="Confirm Password" type="password" />
+									<input 
+										{...register("username", { 
+											required: true, 
+											minLength: 3,
+											maxLength: 15
+										})} 
+										placeholder="Username" 
+									/>
+									<input 
+										{...register("email", { 
+											required: true, 
+											pattern: /\S+@\S+\.\S+/
+										})} 
+										placeholder="E-Mail" 
+									/>
+									<input {...register("password", { 
+											required: true,
+											minLength: 8
+										})} 
+										placeholder="Password" 
+										type="password" 
+									/>
+									<input {...register("confirmPassword", { 
+											required: true,
+											validate: value => value === passwordEntry.current
+										})} 
+										placeholder="Confirm Password" 
+										type="password" 
+									/>
 									<button className="signup-form__button" type="submit">Submit</button>
 							</form>
 						</div>

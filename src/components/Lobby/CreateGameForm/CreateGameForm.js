@@ -56,7 +56,14 @@ export default function CreateGameForm() {
 			<div className='game-form'>
 				<h2 className="game-form__heading">Create a new game</h2>
 				<form onSubmit={handleSubmit(submitData)}>
-					<input {...register("roomName", { required: true })} placeholder="Room Name" className="game-form__room-name"/>
+					<input {...register("roomName", { 
+							required: true,
+							minLength: 3,
+							maxLength: 15
+						})} 
+						placeholder="Room Name" 
+						className="game-form__room-name"
+					/>
 					<h3 className='game-form__heading'>Player Cap</h3>
 					<Controller
 						control={control}
