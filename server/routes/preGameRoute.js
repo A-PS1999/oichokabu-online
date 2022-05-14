@@ -39,12 +39,13 @@ router.post('/api/pregame-lobby/:gameId/join-game', checkLoggedIn, (request, res
 
 router.post('/api/pregame-lobby/:gameId/leave-game', checkLoggedIn, checkGamePlayer, (request, response) => {
 	const { gameId } = request.params;
+	const hostStatus = response.locals.player.host;
 	const userId = response.locals.user.id;
 	const username = response.locals.user.username;
 	return PreGameDB.exitGame(gameId, userId)
 		.then(result => {
 			LobbySockets.leaveGame(gameId, userId, username);
-			PreGameSockets.leaveGame(gameId, userId, username);
+			PreGameSockets.leaveGame(gameId, userId, username, hostStatus);
 			return response.json(result);
 		})
 		.catch(error => console.log(error));

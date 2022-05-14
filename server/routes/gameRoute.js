@@ -68,7 +68,7 @@ router.post('/api/game/:gameId/remove-player', checkLoggedIn, checkGamePlayer, (
 })
 
 router.post('/api/game/update-player-chips', checkLoggedIn, (request, response) => {
-    const { newChips } = request.params;
+    const newChips = request.body.newChips;
     const id = response.locals.user.id;
 
     GameDB.updateChips(id, newChips).then(result => {

@@ -37,6 +37,17 @@ export const fetchPlayerStatuses = createAsyncThunk(
     }
 )
 
+export const handleStartGame = createAsyncThunk(
+    "pregame/handleStartGame",
+    async (gameID, thunkAPI) => {
+        try {
+            await PregameAPI.postGameStart(gameID);
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error.message);
+        }
+    }
+)
+
 const initialPregameState = () => ({
     ready: false,
     playerInfo: [],
@@ -77,6 +88,17 @@ export const pregameSlice = createSlice({
             state.isFetching = false;
             state.isError = true;
             state.errorMessage = action.payload;
+        })
+        builder.addCase(handleStartGame.fulfilled, (state) => {
+            state.isFetching = false;
+        })
+        builder.addCase(handleStartGame.pending, (state) => {
+            state.isFetching = true;
+        })
+        builder.addCase(handleStartGame.rejected, (state) => {
+            state.isFetching = false;
+            state.isError = true;
+            state.errorMessage = "Only the host can start the game.";
         })
     },
 })
