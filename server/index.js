@@ -14,6 +14,8 @@ app.use(cors({
 // get cards as static images
 app.use(express.static(path.join(__dirname, '..', 'public/cards')));
 
+app.use(express.static(path.join(__dirname, '..','build')));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(session);
