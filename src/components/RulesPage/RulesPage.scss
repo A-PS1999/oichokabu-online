@@ -197,6 +197,13 @@
     }
 }
 
+@media only screen and (max-width: 480px) {
+    .section-yaku__title {
+        @extend .section-objective__title;
+        max-width: 60%;
+    }
+}
+
 .section-gameloop {
     @extend .section-cards;
 

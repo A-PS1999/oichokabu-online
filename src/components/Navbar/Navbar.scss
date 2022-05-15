@@ -41,3 +41,20 @@ nav {
 	position: absolute;
 	right: 6.3rem;
 }
+
+@media only screen and (max-width: 480px) {
+	.navbar {
+		display: flex;
+		align-items: center;
+		background-color: var.$purple;
+		justify-content: space-between;
+		box-shadow: 0 0.1rem 0.1rem 0.1rem rgba(var.$color-black, .2);
+	}
+
+	.navbar__link:first-child {
+		font-size: 1.6rem;
+		font-weight: 700;
+		color: var.$color-white;
+		margin-top: -0.2rem;
+	}
+}

@@ -55,3 +55,10 @@ input {
 	text-align: center;
 	margin-top: 4rem;
 }
+
+@media only screen and (max-width: 480px) {
+	.forgot-password-link {
+		margin-top: 2rem;
+		margin-bottom: 2rem;
+	}
+}
