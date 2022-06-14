@@ -54,5 +54,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "msw": "^0.42.1"
+  },
+  "jest": {
+    "transformIgnorePatterns": ["node_modules/(?!rc-pagination/)"]
   }
 }

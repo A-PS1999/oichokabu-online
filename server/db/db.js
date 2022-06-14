@@ -1,7 +1,6 @@
 require('dotenv').config();
 const { Sequelize } = require('sequelize');
 
-
 const pass = process.env.DB_PASS;
 
 const db = new Sequelize(

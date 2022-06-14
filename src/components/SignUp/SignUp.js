@@ -15,7 +15,7 @@ export default function SignUp() {
 	let navigate = useNavigate();
 	const dispatch = useDispatch();
 	const passwordEntry = useRef({});
-	const { register, handleSubmit, watch } = useForm();
+	const { register, handleSubmit, watch, formState: { errors, isSubmitted }, reset } = useForm();
 	const { isSuccessful, isError, errorMessage } = useSelector(userSelector);
 	passwordEntry.current = watch("password", "");
 	
@@ -37,6 +37,40 @@ export default function SignUp() {
 			dispatch(clearState());
 		}
 	}, [isSuccessful, isError, dispatch, navigate, errorMessage]);
+
+	useEffect(() => {
+		if (isSubmitted && errors) {
+			if (errors.confirmPassword && errors.confirmPassword.type === 'validate') {
+				dispatch(toastActions.createToast({
+					message: "Password entries do not match",
+					type: "error",
+				}));
+				dispatch(clearState());
+			}
+			if (errors.password && errors.password.type === "minLength") {
+				dispatch(toastActions.createToast({
+					message: "Passwords must be at least 8 characters long",
+					type: "error",
+				}));
+				dispatch(clearState());
+			}
+			if (errors.username) {
+				dispatch(toastActions.createToast({
+					message: "Usernames must be between 3 and 15 characters long",
+					type: "error",
+				}));
+				dispatch(clearState());
+			}
+			if (errors.email && errors.email.type === "pattern") {
+				dispatch(toastActions.createToast({
+					message: "E-mail address not formatted correctly",
+					type: "error",
+				}));
+				dispatch(clearState());
+			}
+			reset();
+		}
+	}, [errors, isSubmitted, dispatch, reset])
 	
 	return (
 		<>

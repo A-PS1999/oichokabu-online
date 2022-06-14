@@ -32,9 +32,9 @@ export default function Navbar() {
 	
 	return (
 		<nav>
-			<ul className="navbar">
+			<div className="navbar">
 				<Link to="/" className="navbar__link">
-					<li>Oicho Kabu Online</li>
+					Oicho Kabu Online
 				</Link>
 				{
 					isLoggedIn 
@@ -44,20 +44,20 @@ export default function Navbar() {
 							Lobby
 						</Link>
 						<Link to="/" onClick={async () => { await dispatch(logoutUser()) }} className="navbar__link">
-							<li>Log Out</li>
+							Log Out
 						</Link>
 					</>
 					:
 					<>
 						<Link to="/register" className="navbar__link sign-up">
-							<li>Sign Up</li>
+							Sign Up
 						</Link>
 						<Link to="/log-in" className="navbar__link">
-							<li>Log In</li>
+							Log In
 						</Link>
 					</>
 				}
-			</ul>
+			</div>
 		</nav>
 	)
 }
