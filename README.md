@@ -10,6 +10,7 @@ People can join an open room and, using websockets, receive updates on page stat
 ### Technologies used
 * React
 * SCSS for styling, with a few libraries for certain components
+* Redux Toolkit for state management
 * Node and Express.js backend
 * Socket.io
 * PostgreSQL database via Sequelize ORM
