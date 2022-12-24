@@ -1,6 +1,6 @@
 ## Oicho Kabu Online
 
-### 🎴 Visit the site: https://oichokabu-online.herokuapp.com/
+### 🎴 ~~Visit the site: https://oichokabu-online.herokuapp.com/~~ Currently not hosted
 
 ### Description
 A client side and server side for my implementation of the tradiitonal Japanese card game, oicho kabu. Users create an account and can create a game room with various settings (e.g. number of players, max number of rounds and bets). 
