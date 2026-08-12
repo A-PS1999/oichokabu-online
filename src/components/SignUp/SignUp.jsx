@@ -7,8 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { toastActions } from '../../store/toastSlice.js';
 import { useForm } from 'react-hook-form';
 import './SignUp.scss'
-import Navbar from '../Navbar/Navbar.js';
-import Footer from '../Footer/Footer.js';
+import Navbar from '../Navbar/Navbar.jsx';
+import Footer from '../Footer/Footer.jsx';
 
 export default function SignUp() {
 	

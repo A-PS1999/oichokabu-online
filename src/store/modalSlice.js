@@ -12,10 +12,7 @@ export const modalSlice = createSlice({
 				isOpen: !state.isOpen
 			}
 		}
-	},
-	extraReducers: {
-		
-	},
+	}
 });
 
 export const modalActions = modalSlice.actions;

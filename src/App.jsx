@@ -2,17 +2,17 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { store } from './store/store.js';
 import './App.scss';
-import FrontPage from './components/FrontPage/FrontPage.js';
-import RulesPage from './components/RulesPage/RulesPage.js';
-import SignUp from './components/SignUp/SignUp.js';
-import Login from './components/Login/Login.js';
-import ForgotPassword from './components/ForgotPassword/ForgotPassword.js';
-import ResetPassword from './components/ResetPassword/ResetPassword.js';
-import Lobby from './components/Lobby/Lobby.js';
-import PregameLobby from './components/PregameLobby/PregameLobby.js';
-import Game from './components/Game/Game.js';
-import NotFound from './components/NotFound/NotFound.js';
-import ToastPortal from './components/Toast/ToastPortal.js';
+import FrontPage from './components/FrontPage/FrontPage.jsx';
+import RulesPage from './components/RulesPage/RulesPage.jsx';
+import SignUp from './components/SignUp/SignUp.jsx';
+import Login from './components/Login/Login.jsx';
+import ForgotPassword from './components/ForgotPassword/ForgotPassword.jsx';
+import ResetPassword from './components/ResetPassword/ResetPassword.jsx';
+import Lobby from './components/Lobby/Lobby.jsx';
+import PregameLobby from './components/PregameLobby/PregameLobby.jsx';
+import Game from './components/Game/Game.jsx';
+import NotFound from './components/NotFound/NotFound.jsx';
+import ToastPortal from './components/Toast/ToastPortal.jsx';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 export default function App() {
