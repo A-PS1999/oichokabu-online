@@ -5,8 +5,8 @@ import { userSelector, resetPassword, verifyResetPassword } from '../../store/us
 import { userStateReset as clearState } from '../../store/userSlice.js';
 import { toastActions } from '../../store/toastSlice.js';
 import { useForm } from 'react-hook-form';
-import Navbar from '../Navbar/Navbar.js';
-import Footer from '../Footer/Footer.js';
+import Navbar from '../Navbar/Navbar.jsx';
+import Footer from '../Footer/Footer.jsx';
 import './ResetPassword.scss';
 
 export default function ResetPassword() {

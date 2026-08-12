@@ -12,10 +12,7 @@ export const toastSlice = createSlice({
 				type: action.payload.type
 			});
 		}
-	},
-	extraReducers: {
-		
-	},
+	}
 });
 
 export const toastActions = toastSlice.actions;

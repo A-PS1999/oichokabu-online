@@ -5,13 +5,13 @@ import { lobbySelector, fetchGames, fetchUserIdAndChips } from '../../store/lobb
 import { lobbyStateReset as clearState } from '../../store/lobbySlice.js';
 import { toastActions } from '../../store/toastSlice.js';
 import { modalActions } from '../../store/modalSlice.js';
-import Navbar from '../Navbar/Navbar.js';
-import Modal from '../Modal/Modal.js';
+import Navbar from '../Navbar/Navbar.jsx';
+import Modal from '../Modal/Modal.jsx';
 import Pagination from 'rc-pagination';
 import locale from 'rc-pagination/es/locale/en_US';
 import 'rc-pagination/assets/index.css';
 import usePagination from '../../utils/usePagination';
-import CreateGameForm from './CreateGameForm/CreateGameForm.js';
+import CreateGameForm from './CreateGameForm/CreateGameForm.jsx';
 import { PregameAPI, LobbyAPI, socket } from '../../services';
 import { useNavigate } from 'react-router-dom';
 

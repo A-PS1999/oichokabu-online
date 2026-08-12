@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { gameSelector, setHasClicked } from '../../../store/gameSlice.js';
-import Card from '../Card/Card.js';
+import Card from '../Card/Card.jsx';
 import './PickDealerScreen.scss';
 
 export default function PickDealerScreen() {

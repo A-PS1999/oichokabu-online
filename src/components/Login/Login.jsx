@@ -6,8 +6,8 @@ import { loginUser, userSelector } from '../../store/userSlice.js';
 import { userStateReset as clearState } from '../../store/userSlice.js';
 import { toggleLoggedIn as setLoggedIn } from '../../store/userSlice.js';
 import { toastActions } from '../../store/toastSlice.js';
-import Navbar from '../Navbar/Navbar.js';
-import Footer from '../Footer/Footer.js';
+import Navbar from '../Navbar/Navbar.jsx';
+import Footer from '../Footer/Footer.jsx';
 import './Login.scss';
 
 export default function Login() {

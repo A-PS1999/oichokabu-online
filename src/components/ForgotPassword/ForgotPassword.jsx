@@ -4,8 +4,8 @@ import { userSelector, submitForgotPassword } from '../../store/userSlice';
 import { userStateReset as clearState } from '../../store/userSlice.js';
 import { toastActions } from '../../store/toastSlice.js';
 import { useForm } from 'react-hook-form';
-import Navbar from '../Navbar/Navbar.js';
-import Footer from '../Footer/Footer.js';
+import Navbar from '../Navbar/Navbar.jsx';
+import Footer from '../Footer/Footer.jsx';
 import './ForgotPassword.scss';
 
 export default function ForgotPassword() {

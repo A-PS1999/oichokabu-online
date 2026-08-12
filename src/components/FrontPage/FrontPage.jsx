@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './FrontPage.scss';
-import Navbar from '../Navbar/Navbar.js';
-import Footer from '../Footer/Footer.js';
+import Navbar from '../Navbar/Navbar.jsx';
+import Footer from '../Footer/Footer.jsx';
  
 export default function FrontPage() {
 	
