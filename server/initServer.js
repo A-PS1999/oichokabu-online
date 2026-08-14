@@ -1,3 +1,8 @@
+if (!process.env.DATABASE_URL) {
+    console.error("DATABASE_URL is not set. Please set it in your .env file.");
+    process.exit(1);
+}
+
 let app = require('./index');
 let { init: SocketInit } = require('./sockets');
 const { createServer } = require('http');

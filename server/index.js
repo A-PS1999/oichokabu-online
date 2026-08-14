@@ -26,7 +26,7 @@ app.use(passport.session());
 
 app.use(require('./routes'));
 
-app.get('*', function(req, res, next) {
+app.get(/(.*)/, function(req, res, next) {
 	res.sendFile(path.join(__dirname, '..', 'public/index.html'));
 });
 
