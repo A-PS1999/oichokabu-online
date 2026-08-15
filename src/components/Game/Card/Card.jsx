@@ -66,7 +66,7 @@ export default function Card({id, value, src, ownerColumn, defaultHidden, defaul
         return () => {
             socket.off(`game:${gameId}:pickdealer-card-selected`, dealerDecideClickHandler);
         }
-    }, [dispatch, gameId, playerAuth, id])
+    }, [dispatch, gameId, playerAuth.id, id])
 
     useEffect(() => {
         const cardBetSocketHandler = (data) => {
@@ -81,7 +81,7 @@ export default function Card({id, value, src, ownerColumn, defaultHidden, defaul
         return () => {
             socket.off(`game:${gameId}:card-bet-made`, cardBetSocketHandler)
         }
-    }, [dispatch, gameId, playerAuth, id, value])
+    }, [dispatch, gameId, playerAuth.id, id, value])
 
     return (
         <>

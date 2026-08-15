@@ -4,17 +4,13 @@ import { PregameAPI } from '../services';
 export const fetchPlayerInfo = createAsyncThunk(
     "pregame/fetchPlayerInfo",
     async (gameID, thunkAPI) => {
-        try {
-            const response = await PregameAPI.getPlayerInfo(gameID);
-            let result = response.data;
+        const response = await PregameAPI.getPlayerInfo(gameID);
+        let result = response.data;
 
-            if (response.status === 200) {
-                return result;
-            } else {
-                throw thunkAPI.rejectWithValue(response.status);
-            }
-        } catch (error) {
-            return thunkAPI.rejectWithValue(error.message);
+        if (response.status === 200) {
+            return result;
+        } else {
+            return thunkAPI.rejectWithValue(response.status);
         }
     }
 )
@@ -22,17 +18,13 @@ export const fetchPlayerInfo = createAsyncThunk(
 export const fetchPlayerStatuses = createAsyncThunk(
     "pregame/fetchPlayerStatuses",
     async (gameID, thunkAPI) => {
-        try {
-            const response = await PregameAPI.getPlayerStatuses(gameID);
-            let result = response.data;
+        const response = await PregameAPI.getPlayerStatuses(gameID);
+        let result = response.data;
 
-            if (response.status === 200) {
-                return result;
-            } else {
-                throw thunkAPI.rejectWithValue(response.status);
-            }
-        } catch (error) {
-            return thunkAPI.rejectWithValue(error.message)
+        if (response.status === 200) {
+            return result;
+        } else {
+            return thunkAPI.rejectWithValue(response.status);
         }
     }
 )
@@ -66,9 +58,9 @@ export const pregameSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(fetchPlayerInfo.fulfilled, (state, action) => {
-			state.isFetching = false;
-			state.playerInfo = action.payload;
-		})
+            state.isFetching = false;
+            state.playerInfo = action.payload;
+        })
         builder.addCase(fetchPlayerInfo.pending, (state) => {
             state.isFetching = true;
         })

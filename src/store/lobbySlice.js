@@ -4,19 +4,15 @@ import { UserAPI, LobbyAPI } from '../services/api-functions.js';
 export const fetchUserIdAndChips = createAsyncThunk(
 	"lobby/fetchUserId",
 	async (_, thunkAPI) => {
-		try {
-			const response = await UserAPI.getUserId();
-			let idResult = response.data.id;
-			const chips = await LobbyAPI.getUserChips();
-			let chipsResult = chips.data;
+		const response = await UserAPI.getUserId();
+		let idResult = response.data.id;
+		const chips = await LobbyAPI.getUserChips();
+		let chipsResult = chips.data;
 
-			if (response.status === 200) {
-				return { idResult, chipsResult };
-			} else {
-				throw thunkAPI.rejectWithValue(response.status);
-			}
-		} catch (error) {
-			return thunkAPI.rejectWithValue(error.message);
+		if (response.status === 200) {
+			return { idResult, chipsResult };
+		} else {
+			return thunkAPI.rejectWithValue(response.status);
 		}
 	}
 );
@@ -24,35 +20,27 @@ export const fetchUserIdAndChips = createAsyncThunk(
 export const fetchGames = createAsyncThunk(
 	"lobby/fetchGames",
 	async (_, thunkAPI) => {
-		try {
-			const response = await LobbyAPI.getGames();
-			let games = response.data;
-		
-			if (response.status === 200) {
-				return games;
-			} else {
-				throw thunkAPI.rejectWithValue(response.status)
-			}
-		} catch (error) {
-			return thunkAPI.rejectWithValue(error.message)
+		const response = await LobbyAPI.getGames();
+		let games = response.data;
+
+		if (response.status === 200) {
+			return games;
+		} else {
+			return thunkAPI.rejectWithValue(response.status)
 		}
 	}
 );
 
 export const createNewGame = createAsyncThunk(
 	"lobby/createNewGame",
-	async ({roomName, playerCap, turnMax, betMax}, thunkAPI) => {
-		try {
-			const response = await LobbyAPI.postNewGame(roomName, playerCap, turnMax, betMax);
-			let { game } = response.data;
-			
-			if (response.status === 200) {
-				return { game }
-			} else {
-				throw thunkAPI.rejectWithValue(response.status)
-			}
-		} catch (error) {
-			return thunkAPI.rejectWithValue(error.message)
+	async ({ roomName, playerCap, turnMax, betMax }, thunkAPI) => {
+		const response = await LobbyAPI.postNewGame(roomName, playerCap, turnMax, betMax);
+		let { game } = response.data;
+
+		if (response.status === 200) {
+			return { game }
+		} else {
+			return thunkAPI.rejectWithValue(response.status)
 		}
 	}
 );
@@ -105,7 +93,7 @@ export const lobbySlice = createSlice({
 		})
 		builder.addCase(createNewGame.fulfilled, (state, action) => {
 			state.isFetching = false;
-			state.rooms = { ...state, rooms: { ...state.rooms, ...action.payload } };
+			state.rooms = [...state.rooms, action.payload.game];
 		})
 		builder.addCase(createNewGame.pending, (state) => {
 			state.isFetching = true;

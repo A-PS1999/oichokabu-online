@@ -19,24 +19,20 @@ const initialGameState = {
     playerAuth: null,
     gameId: null,
     isFetching: false,
-	isError: false,
-	errorMessage: "",
+    isError: false,
+    errorMessage: "",
 }
 
 export const fetchPlayerAuth = createAsyncThunk(
     "game/fetchPlayerAuth",
     async (gameId, thunkAPI) => {
-        try {
-            const response = await GameAPI.getPlayerAuth(gameId);
-            let playerData = response.data;
+        const response = await GameAPI.getPlayerAuth(gameId);
+        let playerData = response.data;
 
-            if (response.status === 200) {
-                return playerData;
-            } else {
-                throw thunkAPI.rejectWithValue(response.status)
-            }
-        } catch (error) {
-            return thunkAPI.rejectWithValue(error.message);
+        if (response.status === 200) {
+            return playerData;
+        } else {
+            return thunkAPI.rejectWithValue(response.status)
         }
     }
 )

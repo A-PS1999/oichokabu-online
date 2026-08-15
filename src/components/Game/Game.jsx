@@ -44,27 +44,23 @@ export default function Game() {
     }, [dispatch])
 
     useEffect(() => {
-        const endGameHandler = () => {
+        const endBustHandler = () => {
             GameAPI.postUpdateChips(playerStatus.chips);
             navigate("/lobby");
             GameAPI.postRemovePlayer(location.state.game_id);
         }
-        if (currentPhase === 'checkForBustPlayers' && playerStatus.chips < 100) {
-            GameAPI.postUpdateChips(playerStatus.chips);
-            navigate("/lobby");
-            GameAPI.postRemovePlayer(location.state.game_id);
+        if ((currentPhase === 'checkForBustPlayers' && playerStatus.chips < 100) ||
+            currentPhase === 'endGame') {
+            endBustHandler();
         }
-        if (currentPhase === 'endGame') {
-            endGameHandler();
-        }
-        socket.on(`game:${location.state.game_id}:end-game`, endGameHandler);
+        socket.on(`game:${location.state.game_id}:end-game`, endBustHandler);
 
         return () => {
             if (playerAuth) {
                 socket.off(`game:${location.state.game_id}:end-game`);
             }
         }
-    }, [navigate, currentPhase, playerStatus, location.state.game_id])
+    }, [navigate, currentPhase, playerStatus.chips, location.state.game_id])
 
     useEffect(() => {
         const initGame = async () => {
@@ -85,9 +81,7 @@ export default function Game() {
         initGame();
 
         return () => {
-            if (playerAuth) {
-                socket.off(`game:${location.state.game_id}:update-game`);
-            }
+            socket.off(`game:${location.state.game_id}:update-game`);
         }
     }, [dispatch, handleUpdateGameState, location.state.game_id])
 

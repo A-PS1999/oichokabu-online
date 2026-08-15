@@ -12,9 +12,12 @@ export default function Toast() {
 		if (toasts.length > 0) {
 			setToast(toasts[toasts.length - 1]);
 			setShowToast(true);
-			setTimeout(() => {
+			let toastTimer = setTimeout(() => {
 				setShowToast(false);
 			}, 5500);
+		}
+		return () => {
+			clearTimeout(toastTimer);
 		}
 	}, [toasts]);
 	
