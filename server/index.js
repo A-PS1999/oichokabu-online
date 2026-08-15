@@ -7,7 +7,7 @@ const sockets = require('./sockets');
 const { passport } = require('./passport');
 
 app.use(cors({
-	origin: process.env.DEV_ORIGIN,
+	origin: process.env.CORS_ORIGIN,
 	credentials: true,
 }));
 
