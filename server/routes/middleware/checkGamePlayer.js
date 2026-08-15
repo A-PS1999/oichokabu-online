@@ -8,7 +8,7 @@ module.exports = (request, response, next) => {
             next();
             return result;
         } else {
-            return response.sendStatus(401);
+            return response.status(401).json({ error: "NOT_IN_GAME" });
         }
     })
     .catch(error => {

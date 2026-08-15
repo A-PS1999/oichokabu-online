@@ -8,13 +8,6 @@ const sendUserId = require('./middleware/sendUserId');
 
 router.get('/api/game/:gameId/authenticate-player', checkLoggedIn, checkGamePlayer, sendUserId);
 
-router.post('/api/game/:gameId/join', checkLoggedIn, (request, response) => {
-    const { gameId } = request.params;
-    const id = response.locals.user.id;
-    GameSockets.setGameSockets(gameId, id);
-    response.sendStatus(204);
-});
-
 router.post('/api/game/:gameId/start', checkLoggedIn, checkGamePlayer, checkGameHost, (request, response) => {
     const { gameId } = request.params;
     GameSockets.startGame(gameId);
@@ -25,13 +18,6 @@ router.post('/api/game/:gameId/update', checkLoggedIn, checkGamePlayer, (request
     const { gameId } = request.params;
     const id = response.locals.user.id;
     GameSockets.updateGame(gameId, id);
-    response.sendStatus(204);
-})
-
-router.post('/api/game/:gameId/reload', checkLoggedIn, checkGamePlayer, (request, response) => {
-    const { gameId } = request.params;
-    const id = response.locals.user.id;
-    GameSockets.reloadGame(gameId, id);
     response.sendStatus(204);
 })
 
@@ -46,7 +32,8 @@ router.post('/api/game/:gameId/pickdealer-card-selected', checkLoggedIn, checkGa
 
 router.post('/api/game/:gameId/card-bet', checkLoggedIn, (request, response) => {
     const { gameId } = request.params;
-    const { betAmount: { user_id: userId, current_card: { id: cardId, ownerColumn }, betAmount } } = request.body;
+    const userId = response.locals.user.id;
+    const { betAmount: { current_card: { id: cardId, ownerColumn }, betAmount } } = request.body;
     GameSockets.cardBetMade(gameId, userId, cardId, ownerColumn, betAmount);
     response.sendStatus(204);
 })
