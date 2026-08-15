@@ -14,7 +14,14 @@ export default function PregameLobby() {
     const { playerInfo, playerStatuses, isError, errorMessage } = useSelector(pregameSelector);
 
     useEffect(() => {
-        PregameAPI.postEnterLobby(location.state.game_id);
+        socket.emit('pregame:rejoin', { gameId: location.state.game_id }, (res) => {
+            if (res && !res.ok) {
+                dispatch(toastActions.createToast({
+                    message: "Failed to join lobby",
+                    type: "error"
+                }));
+            }
+        });
         dispatch(fetchPlayerStatuses(location.state.game_id));
         dispatch(fetchPlayerInfo(location.state.game_id));
 
@@ -56,9 +63,11 @@ export default function PregameLobby() {
 
     useEffect(() => {
         const startGameSocketHandler = () => {
-            navigate(`/game/${location.state.game_id}`, { state: {
-                game_id: location.state.game_id,
-            }});
+            navigate(`/game/${location.state.game_id}`, {
+                state: {
+                    game_id: location.state.game_id,
+                }
+            });
         }
         socket.on(`pregame-lobby:${location.state.game_id}:start-game`, startGameSocketHandler)
         return () => {
@@ -98,19 +107,19 @@ export default function PregameLobby() {
                                         <div className="players-container__player__chipcount">Chips: {playerStatus.user_chips}</div>
                                         {playerStatus.Players[0].host ? (<img className="player-icon--host" src="/crown.svg" alt="Host" />) : null}
                                         <div className="players-container__player__ready-heading">Ready?</div>
-                                        {playerStatus.Players[0].ready ? 
-                                            (<img className="player-icon--status" src="/tick-mark.svg" alt="Ready" />) 
+                                        {playerStatus.Players[0].ready ?
+                                            (<img className="player-icon--status" src="/tick-mark.svg" alt="Ready" />)
                                             : (<img className="player-icon--status" src="/x-mark.svg" alt="Not ready" />)
                                         }
                                     </div>
                                 </React.Fragment>
                             )
                         })
-                        : <>
-                            <div>
-                                <h2>Fetching player statuses...</h2>
-                            </div>
-                        </>
+                            : <>
+                                <div>
+                                    <h2>Fetching player statuses...</h2>
+                                </div>
+                            </>
                         }
                     </div>
                     <div className="pregame-options">
