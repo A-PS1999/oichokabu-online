@@ -20,7 +20,7 @@ export default function Game() {
     const location = useLocation();
     let navigate = useNavigate();
     const playerStatus = useSelector(selectPlayerStatus);
-    const { isPickDealer, 
+    const { isPickDealer,
         Players,
         cardsOnBoard,
         currentTurn,
@@ -29,8 +29,8 @@ export default function Game() {
         currentDealer,
         currentPhase,
         isError,
-        playerAuth, 
-        errorMessage 
+        playerAuth,
+        errorMessage
     } = useSelector(gameSelector);
 
     useEffect(() => {
@@ -69,7 +69,15 @@ export default function Game() {
     useEffect(() => {
         const initGame = async () => {
             dispatch(fetchPlayerAuth(location.state.game_id));
-            await GameAPI.postJoinGame(location.state.game_id);
+            socket.emit('game:rejoin', { gameId: location.state.game_id }, (res) => {
+                if (res && !res.ok) {
+                    dispatch(toastActions.createToast({
+                        message: "Failed to join game. Game has ended or " +
+                            "an error occurred. Redirecting...",
+                        type: "error"
+                    }))
+                }
+            });
 
             socket.on(`game:${location.state.game_id}:update-game`, handleUpdateGameState);
         };
@@ -87,7 +95,16 @@ export default function Game() {
         const handleReloadGame = async () => {
             const { data: gameLobbyInfo } = await PregameAPI.getPlayerInfo(location.state.game_id);
             if (playerAuth && gameLobbyInfo.status === 'running' && isPickDealer === null) {
-                await GameAPI.postReloadGame(location.state.game_id);
+                socket.emit('game:rejoin', { gameId: location.state.game_id }, (res) => {
+                    if (res && !res.ok) {
+                        dispatch(toastActions.createToast({
+                            message: "Failed to join game. Game has ended or " +
+                                "an error occurred. Redirecting...",
+                            type: "error"
+                        }));
+                        navigate("/lobby");
+                    }
+                });
             }
         }
 
@@ -116,7 +133,7 @@ export default function Game() {
         return (
             <PickDealerScreen />
         )
-    } 
+    }
 
     if (isPickDealer === false) {
         return (
@@ -138,7 +155,7 @@ export default function Game() {
                                 {currentDealer.cardBet.map(card => {
                                     return (
                                         <Card
-                                            key={card.id} 
+                                            key={card.id}
                                             id={card.id}
                                             value={card.value}
                                             src={card.src}
@@ -157,8 +174,8 @@ export default function Game() {
                                 <CardColumn key={index} column={column} columnIndex={index} />
                             )
                         })
-                        : <h2>Loading...</h2>
-                    }
+                            : <h2>Loading...</h2>
+                        }
                     </div>
                     <div className="maingame__players-container">
                         <p className="maingame__players-container__heading">Players</p>

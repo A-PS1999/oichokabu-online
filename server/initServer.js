@@ -1,3 +1,5 @@
+checkEnvVariables();
+
 let app = require('./index');
 let { init: SocketInit } = require('./sockets');
 const { createServer } = require('http');
@@ -11,4 +13,14 @@ httpServer.on('listening', onListen)
 
 function onListen() {
     console.log(`Listening on port ${PORT}`)
+}
+
+function checkEnvVariables() {
+    const requiredEnvVars = ['DATABASE_URL', 'SESSION_SECRET', 'CORS_ORIGIN'];
+    const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+
+    if (missingVars.length > 0) {
+        console.error("Missing environment variables: " + missingVars.join(", "));
+        process.exit(1);
+    }
 }
