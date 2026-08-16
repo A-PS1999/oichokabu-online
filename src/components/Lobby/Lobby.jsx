@@ -12,7 +12,7 @@ import locale from 'rc-pagination/es/locale/en_US';
 import 'rc-pagination/assets/index.css';
 import usePagination from '../../utils/usePagination';
 import CreateGameForm from './CreateGameForm/CreateGameForm.jsx';
-import { PregameAPI, LobbyAPI, socket } from '../../services';
+import { PregameAPI, LobbyAPI } from '../../services';
 import { useNavigate } from 'react-router-dom';
 
 const resetChips = (chips) => {
@@ -23,9 +23,10 @@ const resetChips = (chips) => {
 export default function Lobby() {
 	
 	const dispatch = useDispatch();
-	let navigate = useNavigate();
+	const navigate = useNavigate();
+	const socket = useSocket();
 	const { isError, errorMessage, rooms, userId, chips } = useSelector(lobbySelector);
-	let { pageData, page, jumpPage } = usePagination(rooms, 10);
+	const { pageData, page, jumpPage } = usePagination(rooms, 10);
 
 	useEffect(() => {
 		dispatch(fetchUserIdAndChips())

@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { gameSelector, setHasClicked } from '../../../store/gameSlice.js';
+import { selectPickDealerCards, selectPlayersData, selectHasClicked, setHasClicked } from '../../../store/gameSlice.js';
 import Card from '../Card/Card.jsx';
 import './PickDealerScreen.scss';
 
 export default function PickDealerScreen() {
 
-    const { pickDealerCards, Players, hasClicked } = useSelector(gameSelector);
+    const pickDealerCards = useSelector(selectPickDealerCards);
+    const Players = useSelector(selectPlayersData);
+    const hasClicked = useSelector(selectHasClicked);
     const dispatch = useDispatch();
 
     useEffect(() => {

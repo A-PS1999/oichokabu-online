@@ -1,23 +1,26 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { registerUser, userSelector } from '../../store/userSlice.js';
 import { userStateReset as clearState } from '../../store/userSlice.js';
 import { toggleLoggedIn as setLoggedIn } from '../../store/userSlice.js';
 import { useNavigate } from 'react-router-dom';
 import { toastActions } from '../../store/toastSlice.js';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import './SignUp.scss'
 import Navbar from '../Navbar/Navbar.jsx';
 import Footer from '../Footer/Footer.jsx';
 
 export default function SignUp() {
 	
-	let navigate = useNavigate();
+	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const passwordEntry = useRef({});
-	const { register, handleSubmit, watch, formState: { errors, isSubmitted }, reset } = useForm();
+	const { register, handleSubmit, formState: { errors, isSubmitted }, reset, control } = useForm();
 	const { isSuccessful, isError, errorMessage } = useSelector(userSelector);
-	passwordEntry.current = watch("password", "");
+
+	const passwordEntry = useWatch({ control, 
+		name: "password", 
+		defaultValue: "" 
+	});
 	
 	const submitData = (data) => {
 		dispatch(registerUser(data))
@@ -93,7 +96,8 @@ export default function SignUp() {
 										{...register("email", { 
 											required: true, 
 											pattern: /\S+@\S+\.\S+/
-										})} 
+										})}
+										type="email"
 										placeholder="E-Mail" 
 									/>
 									<input {...register("password", { 
@@ -105,7 +109,7 @@ export default function SignUp() {
 									/>
 									<input {...register("confirmPassword", { 
 											required: true,
-											validate: value => value === passwordEntry.current
+											validate: value => value === passwordEntry
 										})} 
 										placeholder="Confirm Password" 
 										type="password" 

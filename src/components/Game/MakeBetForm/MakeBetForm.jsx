@@ -1,7 +1,7 @@
 import React from 'react';
 import './MakeBetForm.scss';
 import { useSelector, useDispatch } from 'react-redux';
-import { gameSelector } from '../../../store/gameSlice';
+import { selectTotalBetAmount, selectBetMax, selectPlayerAuth, selectCurrentlySelectedCard, selectGameId } from '../../../store/gameSlice';
 import { modalActions } from '../../../store/modalSlice';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { GameAPI } from '../../../services';
@@ -20,7 +20,11 @@ function BetAmountWatched({ control }) {
 export default function MakeBetForm() {
 
     const dispatch = useDispatch();
-    const { totalBetAmount, betMax, playerAuth, currentlySelectedCard, gameId} = useSelector(gameSelector);
+    const totalBetAmount = useSelector(selectTotalBetAmount);
+    const betMax = useSelector(selectBetMax);
+    const playerAuth = useSelector(selectPlayerAuth);
+    const currentlySelectedCard = useSelector(selectCurrentlySelectedCard);
+    const gameId = useSelector(selectGameId);
     const { register, handleSubmit, control } = useForm();
 
     const submitData = (data) => {

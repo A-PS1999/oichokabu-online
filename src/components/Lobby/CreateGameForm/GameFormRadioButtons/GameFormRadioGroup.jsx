@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function GameFormRadioGroup({ onChange }) {
+export default function GameFormRadioGroup({ currValue, onChange }) {
 
     return (
         <div className="game-form__radio-group">
@@ -9,6 +9,7 @@ export default function GameFormRadioGroup({ onChange }) {
 					type="radio"
 					name="playerCap"
 					value="2"
+					checked={currValue === "2"}
 					className="game-form__radio-subgroup-input"
                     onChange={e => {
 						onChange(parseInt(e.target.value))
@@ -21,6 +22,7 @@ export default function GameFormRadioGroup({ onChange }) {
 					type="radio"
 					name="playerCap"
 					value="3"
+					checked={currValue === "3"}
 					className="game-form__radio-subgroup-input"
                     onChange={e => {
 						onChange(parseInt(e.target.value))
@@ -33,6 +35,7 @@ export default function GameFormRadioGroup({ onChange }) {
 					type="radio"
 					name="playerCap"
 					value="4"
+					checked={currValue === "4"}
 					className="game-form__radio-subgroup-input"
                     onChange={e => {
 						onChange(parseInt(e.target.value))
@@ -45,6 +48,7 @@ export default function GameFormRadioGroup({ onChange }) {
 					type="radio"
 					name="playerCap"
 					value="5"
+					checked={currValue === "5"}
 					className="game-form__radio-subgroup-input"
                     onChange={e => {
 						onChange(parseInt(e.target.value))

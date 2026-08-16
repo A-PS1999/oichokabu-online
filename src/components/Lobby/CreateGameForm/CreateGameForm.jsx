@@ -68,11 +68,11 @@ export default function CreateGameForm() {
 					<Controller
 						control={control}
 						name="playerCap"
-						defaultValue={null}
+						defaultValue={"2"}
 						render={({ field: { onChange, value } }) => (
 							<GameFormRadioGroup
+								currValue={value}
 								onChange={onChange}
-								value={value}
 							/>
 						)}
 					/>

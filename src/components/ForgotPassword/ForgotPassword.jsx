@@ -47,7 +47,8 @@ export default function ForgotPassword() {
                                     <input {...register("email", { 
                                             required: true,
                                             pattern: /\S+@\S+\.\S+/
-                                        })} 
+                                        })}
+                                        type="email"
                                         placeholder="E-Mail" 
                                     />
                                     <button className="forgot-password-form__button" type="submit">Submit</button>

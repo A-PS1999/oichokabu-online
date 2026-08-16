@@ -4,13 +4,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { pregameSelector, fetchPlayerInfo, fetchPlayerStatuses, handleStartGame } from '../../store/pregameSlice';
 import { toastActions } from '../../store/toastSlice.js';
-import { socket, PregameAPI } from '../../services';
+import { PregameAPI } from '../../services';
+import { useSocket } from '../../hooks/useSocket.js';
 
 export default function PregameLobby() {
 
     const dispatch = useDispatch();
-    let navigate = useNavigate();
+    const navigate = useNavigate();
     const location = useLocation();
+    const socket = useSocket();
     const { playerInfo, playerStatuses, isError, errorMessage } = useSelector(pregameSelector);
 
     useEffect(() => {

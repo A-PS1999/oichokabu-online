@@ -12,7 +12,7 @@ import './Login.scss';
 
 export default function Login() {
 	
-	let navigate = useNavigate();
+	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const { register, handleSubmit } = useForm();
 	const { isSuccessful, isError, errorMessage } = useSelector(userSelector);

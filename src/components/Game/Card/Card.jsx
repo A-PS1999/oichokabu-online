@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { socket } from '../../../services';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentSelection, setHasClicked, gameSelector } from '../../../store/gameSlice';
+import { setCurrentSelection, setHasClicked,
+    selectPlayerAuth, selectHasClicked, selectIsPickDealer,
+    selectCurrentDealerData, selectCurrentPlayer, selectCurrentPhase, selectGameId
+} from '../../../store/gameSlice';
 import { modalActions } from '../../../store/modalSlice';
 import { GameAPI } from '../../../services';
 import './Card.scss';
@@ -12,20 +14,22 @@ const handlePickDealerCardSelection = (gameId, cardId, cardVal) => {
 
 export default function Card({id, value, src, ownerColumn, defaultHidden, defaultDisabled}) {
 
-    const [cardValue, setCardValue] = useState(null);
     const [isHidden, setIsHidden] = useState(defaultHidden);
     const [isDisabled, setIsDisabled] = useState(defaultDisabled);
-    const { playerAuth, hasClicked, isPickDealer, currentDealer, currentPlayer, currentPhase, gameId } = useSelector(gameSelector);
+    const playerAuth = useSelector(selectPlayerAuth);
+    const hasClicked = useSelector(selectHasClicked);
+    const isPickDealer = useSelector(selectIsPickDealer);
+    const currentDealer = useSelector(selectCurrentDealerData);
+    const currentPlayer = useSelector(selectCurrentPlayer);
+    const currentPhase = useSelector(selectCurrentPhase);
+    const gameId = useSelector(selectGameId);
     const dispatch = useDispatch();
+    const socket = useSocket();
 
     const handleMainGameCardClick = () => {
         dispatch(modalActions.toggleModal());
         dispatch(setCurrentSelection({ id, ownerColumn }))
     }
-
-    useEffect(() => {
-        setCardValue(value);
-    }, [value])
 
     useEffect(() => {
         if (currentPhase === 'scoringPhase') {
@@ -89,12 +93,12 @@ export default function Card({id, value, src, ownerColumn, defaultHidden, defaul
                 { isHidden ? null : 
                     <div className='game-card__value-container'>
                         <div className="game-card__value-container__value">
-                            {cardValue}
+                            {value}
                         </div>
                     </div> 
                 }
                 <button className='game-card__button' disabled={determineDisabled()} 
-                    onClick={() => { isPickDealer ? handlePickDealerCardSelection(gameId, id, cardValue) : handleMainGameCardClick() }}>
+                    onClick={() => { isPickDealer ? handlePickDealerCardSelection(gameId, id, value) : handleMainGameCardClick() }}>
                     <div className={isHidden ? "game-card__inner--hidden" : "game-card__inner"}>
                         <div className="game-card__side game-card__side--front">
                             <img src={src} alt="Front of an Oicho Kabu card" id={id} />

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { gameSelector, selectIsDealerBool } from '../../../store/gameSlice';
+import { selectGameId, selectIsDealerBool } from '../../../store/gameSlice';
 import { GameAPI } from '../../../services';
 import { modalActions } from '../../../store/modalSlice';
 import './ThirdCardModal.scss';
@@ -9,7 +9,7 @@ import './ThirdCardModal.scss';
 export default function ThirdCardModal() {
 
     const dispatch = useDispatch();
-    const { gameId } = useSelector(gameSelector);
+    const gameId = useSelector(selectGameId);
     const isDealer = useSelector(selectIsDealerBool);
 
     const handleChoice = (event, isDealer) => {

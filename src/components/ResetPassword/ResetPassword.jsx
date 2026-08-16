@@ -15,9 +15,14 @@ export default function ResetPassword() {
     const newPasswordEntry = useRef({});
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { register, handleSubmit, watch } = useForm();
+    const { register, control, handleSubmit, useWatch } = useForm();
     const { isSuccessful, isError, errorMessage } = useSelector(userSelector);
-    newPasswordEntry.current = watch("password", "");
+    
+    const newPasswordEntry = useWatch({
+        control,
+        name: "password",
+        defaultValue: ""
+    });
 
     const submitData = (data) => {
         data.token = token;
@@ -61,7 +66,7 @@ export default function ResetPassword() {
                                     />
                                     <input {...register("confirmPassword", { 
                                             required: true,
-                                            validate: value => value === newPasswordEntry.current
+                                            validate: value => value === newPasswordEntry
                                         })} 
                                         placeholder="Confirm Password" 
                                         type="password" 

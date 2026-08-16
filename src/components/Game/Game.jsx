@@ -1,10 +1,15 @@
 import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { gameSelector } from '../../store/gameSlice';
 import { toastActions } from '../../store/toastSlice.js';
-import { fetchPlayerAuth, setGameId, setGameState, selectPlayerStatus } from '../../store/gameSlice';
+import {
+    fetchPlayerAuth, setGameId, setGameState, selectPlayerStatus,
+    selectIsPickDealer, selectPlayersData, selectCardsOnBoard,
+    selectCurrentTurn, selectTurnMax, selectCurrentPlayer,
+    selectCurrentDealerData, selectCurrentPhase, selectPlayerAuth,
+    selectGameIsError, selectGameErrorMessage
+} from '../../store/gameSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { GameAPI, PregameAPI, socket } from '../../services';
+import { GameAPI, PregameAPI } from '../../services';
 import './Game.scss';
 import CardColumn from './CardColumn/CardColumn';
 import CardsValueCounter from './CardsValueCounter/CardsValueCounter';
@@ -13,25 +18,26 @@ import Modal from '../Modal/Modal';
 import PickDealerScreen from './PickDealerScreen/PickDealerScreen';
 import MakeBetForm from './MakeBetForm/MakeBetForm';
 import ThirdCardModal from './ThirdCardModal/ThirdCardModal';
+import { useSocket } from '../../hooks/useSocket.js';
 
 export default function Game() {
 
     const dispatch = useDispatch();
     const location = useLocation();
-    let navigate = useNavigate();
+    const navigate = useNavigate();
+    const socket = useSocket();
     const playerStatus = useSelector(selectPlayerStatus);
-    const { isPickDealer,
-        Players,
-        cardsOnBoard,
-        currentTurn,
-        turnMax,
-        currentPlayer,
-        currentDealer,
-        currentPhase,
-        isError,
-        playerAuth,
-        errorMessage
-    } = useSelector(gameSelector);
+    const isPickDealer = useSelector(selectIsPickDealer);
+    const Players = useSelector(selectPlayersData);
+    const cardsOnBoard = useSelector(selectCardsOnBoard);
+    const currentTurn = useSelector(selectCurrentTurn);
+    const turnMax = useSelector(selectTurnMax);
+    const currentPlayer = useSelector(selectCurrentPlayer);
+    const currentDealer = useSelector(selectCurrentDealerData);
+    const currentPhase = useSelector(selectCurrentPhase);
+    const playerAuth = useSelector(selectPlayerAuth);
+    const isError = useSelector(selectGameIsError);
+    const errorMessage = useSelector(selectGameErrorMessage);
 
     useEffect(() => {
         const game_id = location.state.game_id;
@@ -39,7 +45,6 @@ export default function Game() {
     }, [dispatch, location.state.game_id])
 
     const handleUpdateGameState = useCallback(gameData => {
-        console.log(gameData);
         dispatch(setGameState(gameData));
     }, [dispatch])
 

@@ -95,6 +95,23 @@ const selectCurrentDealer = state => state.game.currentDealer;
 const selectPlayers = state => state.game.Players;
 const selectPlayerId = state => state.game.playerAuth;
 
+export const selectCurrentTurn = state => state.game.currentTurn;
+export const selectTurnMax = state => state.game.turnMax;
+export const selectBetMax = state => state.game.betMax;
+export const selectTotalBetAmount = state => state.game.totalBetAmount;
+export const selectCurrentlySelectedCard = state => state.game.currentlySelectedCard;
+export const selectIsPickDealer = state => state.game.isPickDealer;
+export const selectPickDealerCards = state => state.game.pickDealerCards;
+export const selectCardsOnBoard = state => state.game.cardsOnBoard;
+export const selectCurrentPhase = state => state.game.currentPhase;
+export const selectHasClicked = state => state.game.hasClicked;
+export const selectCurrentPlayer = state => state.game.currentPlayer;
+export const selectCurrentDealerData = state => state.game.currentDealer;
+export const selectPlayerAuth = state => state.game.playerAuth;
+export const selectGameId = state => state.game.gameId;
+export const selectGameIsError = state => state.game.isError;
+export const selectGameErrorMessage = state => state.game.errorMessage;
+
 export const gameSelector = state => state.game;
 
 export const selectPlayerCardBet = createSelector([selectCardBets, selectPlayerId], (cardBets, playerAuth) => {
