@@ -16,4 +16,3 @@ export const toastSlice = createSlice({
 });
 
 export const toastActions = toastSlice.actions;
-export default toastSlice;

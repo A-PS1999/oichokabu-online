@@ -3,45 +3,27 @@ import { UserAPI, LobbyAPI } from '../services/api-functions.js';
 
 export const fetchUserIdAndChips = createAsyncThunk(
 	"lobby/fetchUserId",
-	async (_, thunkAPI) => {
-		const response = await UserAPI.getUserId();
-		let idResult = response.data.id;
-		const chips = await LobbyAPI.getUserChips();
-		let chipsResult = chips.data;
+	async () => {
+		const [idRes, chipsRes]= await Promise.all([
+			UserAPI.getUserId(),
+			LobbyAPI.getUserChips()
+		]);
 
-		if (response.status === 200) {
-			return { idResult, chipsResult };
-		} else {
-			return thunkAPI.rejectWithValue(response.status);
-		}
+		return { idRes, chipsRes };
 	}
 );
 
 export const fetchGames = createAsyncThunk(
 	"lobby/fetchGames",
-	async (_, thunkAPI) => {
-		const response = await LobbyAPI.getGames();
-		let games = response.data;
-
-		if (response.status === 200) {
-			return games;
-		} else {
-			return thunkAPI.rejectWithValue(response.status)
-		}
+	async () => {
+		return await LobbyAPI.getGames();
 	}
 );
 
 export const createNewGame = createAsyncThunk(
 	"lobby/createNewGame",
-	async ({ roomName, playerCap, turnMax, betMax }, thunkAPI) => {
-		const response = await LobbyAPI.postNewGame(roomName, playerCap, turnMax, betMax);
-		let { game } = response.data;
-
-		if (response.status === 200) {
-			return { game }
-		} else {
-			return thunkAPI.rejectWithValue(response.status)
-		}
+	async ({ roomName, playerCap, turnMax, betMax }) => {
+		return await LobbyAPI.postNewGame(roomName, playerCap, turnMax, betMax);
 	}
 );
 
@@ -59,10 +41,13 @@ export const lobbySlice = createSlice({
 	initialState: initialLobbyState(),
 	reducers: {
 		lobbyStateReset(state) {
-			return {
-				...initialLobbyState(),
-				rooms: state.rooms
-			}
+			const nextState = initialLobbyState();
+			state.userId = nextState.userId;
+			state.chips = nextState.chips;
+			state.isFetching = nextState.isFetching;
+			state.isError = nextState.isError;
+			state.errorMessage = nextState.errorMessage;
+			state.rooms = state.rooms;
 		}
 	},
 	extraReducers: (builder) => {

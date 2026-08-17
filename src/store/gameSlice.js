@@ -25,15 +25,8 @@ const initialGameState = {
 
 export const fetchPlayerAuth = createAsyncThunk(
     "game/fetchPlayerAuth",
-    async (gameId, thunkAPI) => {
-        const response = await GameAPI.getPlayerAuth(gameId);
-        let playerData = response.data;
-
-        if (response.status === 200) {
-            return playerData;
-        } else {
-            return thunkAPI.rejectWithValue(response.status)
-        }
+    async (gameId) => {
+        return await GameAPI.getPlayerAuth(gameId);
     }
 )
 
@@ -45,10 +38,7 @@ export const gameSlice = createSlice({
             state.gameId = action.payload;
         },
         setCurrentSelection(state, action) {
-            return {
-                ...state,
-                currentlySelectedCard: action.payload,
-            }
+            state.currentlySelectedCard = action.payload;
         },
         setHasClicked(state, action) {
             state.hasClicked = action.payload;
@@ -85,7 +75,7 @@ export const gameSlice = createSlice({
         builder.addCase(fetchPlayerAuth.rejected, (state, action) => {
             state.isFetching = false;
             state.isError = true;
-            state.errorMessage = action.payload;
+            state.errorMessage = action.error.message;
         })
     }
 })

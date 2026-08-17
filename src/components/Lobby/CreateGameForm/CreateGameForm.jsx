@@ -7,6 +7,7 @@ import { toastActions } from '../../../store/toastSlice.js';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import GameFormRadioGroup from './GameFormRadioButtons/GameFormRadioGroup';
 import Slider from 'react-input-slider';
+import { sliderStyles } from '../../shared/sliderStyles.js';
 
 function TurnMaxWatched({ control }) {
 	const turnMaxValue = useWatch({
@@ -90,15 +91,7 @@ export default function CreateGameForm() {
 								xstep={1}
 								onChange={({ x }) => onChange(x)}
 								x={value}
-								styles={{
-									active: {
-										backgroundColor: '#BC002D'
-									},
-									track: {
-										marginBottom: '1.3rem',
-										width: '292px'
-									}
-								}}
+								styles={sliderStyles}
 							/>
 						)}
 					/>
@@ -116,15 +109,7 @@ export default function CreateGameForm() {
 								xstep={100}
 								onChange={({ x }) => onChange(x)}
 								x={value}
-								styles={{
-									active: {
-										backgroundColor: '#BC002D'
-									},
-									track: {
-										marginBottom: '1.3rem',
-										width: '292px'
-									}
-								}}
+								styles={sliderStyles}
 							/>
 						)}
 					/>

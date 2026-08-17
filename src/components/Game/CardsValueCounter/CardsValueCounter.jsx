@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectCurrentPhase, selectPlayerCardBet, selectIsDealerBool, selectPlayerStatus } from '../../../store/gameSlice';
 import { modalActions } from '../../../store/modalSlice';
-import useCardsValue from '../../../utils/useCardsValue';
+import useCardsValue from '../../../hooks/useCardsValue';
 import './CardsValueCounter.scss';
 
 export default function CardsValueCounter({ cards, parentColumn }) {

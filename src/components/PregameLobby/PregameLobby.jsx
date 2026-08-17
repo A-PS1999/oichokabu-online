@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import './PregameLobby.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { pregameSelector, fetchPlayerInfo, fetchPlayerStatuses, handleStartGame } from '../../store/pregameSlice';
+import { pregameSelector, fetchPlayerInfo, fetchPlayerStatuses, handleStartGame, pregameStateReset } from '../../store/pregameSlice';
 import { toastActions } from '../../store/toastSlice.js';
 import { PregameAPI } from '../../services';
 import { useSocket } from '../../hooks/useSocket.js';
@@ -44,6 +44,7 @@ export default function PregameLobby() {
             socket.off(`pregame-lobby:${location.state.game_id}:enter-game`, pregameSocketHandler);
             socket.off(`pregame-lobby:${location.state.game_id}:player-ready`, pregameSocketHandler);
             socket.off(`pregame-lobby:${location.state.game_id}:player-unready`, pregameSocketHandler);
+            dispatch(pregameStateReset());
         }
     }, [dispatch, isError, errorMessage, navigate, location.state.game_id])
 

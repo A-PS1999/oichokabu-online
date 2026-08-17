@@ -6,6 +6,7 @@ import { modalActions } from '../../../store/modalSlice';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { GameAPI } from '../../../services';
 import Slider from 'react-input-slider';
+import { sliderStyles } from '../../shared/sliderStyles';
 
 function BetAmountWatched({ control }) {
     const betAmountValue = useWatch({
@@ -40,27 +41,19 @@ export default function MakeBetForm() {
                     <input type="hidden" {...register("user_id", { value: playerAuth.id })} />
                     <input type="hidden" {...register("current_card", { value: currentlySelectedCard })} />
                     <BetAmountWatched control={control} />
-                    <Controller 
+                    <Controller
                         control={control}
                         name="betAmount"
                         defaultValue={100}
                         render={({ field: { value, onChange } }) => (
-                            <Slider 
+                            <Slider
                                 axis={"x"}
                                 xmax={betMax - totalBetAmount}
                                 xmin={100}
                                 xstep={100}
                                 onChange={({ x }) => onChange(x)}
                                 x={value}
-                                styles={{
-									active: {
-										backgroundColor: '#BC002D'
-									},
-									track: {
-										marginBottom: '1.3rem',
-										width: '292px'
-									}
-								}}
+                                styles={sliderStyles}
                             />
                         )}
                     />
