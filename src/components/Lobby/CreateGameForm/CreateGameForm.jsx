@@ -8,26 +8,7 @@ import { useForm, Controller, useWatch } from 'react-hook-form';
 import GameFormRadioGroup from './GameFormRadioButtons/GameFormRadioGroup';
 import Slider from 'react-input-slider';
 import { sliderStyles } from '../../shared/sliderStyles.js';
-
-function TurnMaxWatched({ control }) {
-	const turnMaxValue = useWatch({
-		control,
-		name: "turnMax",
-		defaultValue: 12
-	});
-
-	return <div className='game-form__slider-heading'>Max turns: {turnMaxValue}</div>
-}
-
-function BetMaxWatched({ control }) {
-	const betMaxValue = useWatch({
-		control,
-		name: "betMax",
-		defaultValue: 500
-	});
-
-	return <div className='game-form__slider-heading'>Max bet: {betMaxValue}</div>
-}
+import WatchedValue from '../../shared/WatchedValue.jsx';
 
 export default function CreateGameForm() {
 	
@@ -78,7 +59,13 @@ export default function CreateGameForm() {
 						)}
 					/>
 					<h3 className='game-form__heading'>Game Turns</h3>
-					<TurnMaxWatched control={control} />
+					<WatchedValue 
+						control={control}
+						name="turnMax"
+						defaultVal={12}
+						formTitle="game"
+						description="Max turns:"
+					/>
 					<Controller
 						control={control}
 						name="turnMax"
@@ -96,7 +83,13 @@ export default function CreateGameForm() {
 						)}
 					/>
 					<h3 className='game-form__heading'>Max bet per round</h3>
-					<BetMaxWatched control={control} />
+					<WatchedValue 
+						control={control}
+						name="betMax"
+						defaultVal={500}
+						formTitle="game"
+						description="Max bet:"
+					/>
 					<Controller 
 						control={control}
 						name="betMax"

@@ -81,7 +81,7 @@ export const pregameSlice = createSlice({
         builder.addCase(handleStartGame.rejected, (state, action) => {
             state.isFetching = false;
             state.isError = true;
-            state.errorMessage = action.payload || "Only the host can start the game.";
+            state.errorMessage = action.payload;
         })
     },
 })

@@ -11,21 +11,22 @@ import Navbar from '../Navbar/Navbar.jsx';
 import Footer from '../Footer/Footer.jsx';
 
 export default function SignUp() {
-	
+
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const { register, handleSubmit, formState: { errors, isSubmitted }, reset, control } = useForm();
 	const { isSuccessful, isError, errorMessage } = useSelector(userSelector);
 
-	const passwordEntry = useWatch({ control, 
-		name: "password", 
-		defaultValue: "" 
+	const passwordEntry = useWatch({
+		control,
+		name: "password",
+		defaultValue: ""
 	});
-	
+
 	const submitData = (data) => {
 		dispatch(registerUser(data))
 	};
-	
+
 	useEffect(() => {
 		if (isSuccessful) {
 			dispatch(clearState());
@@ -48,21 +49,18 @@ export default function SignUp() {
 					message: "Password entries do not match",
 					type: "error",
 				}));
-				dispatch(clearState());
 			}
 			if (errors.password && errors.password.type === "minLength") {
 				dispatch(toastActions.createToast({
 					message: "Passwords must be at least 8 characters long",
 					type: "error",
 				}));
-				dispatch(clearState());
 			}
 			if (errors.username) {
 				dispatch(toastActions.createToast({
 					message: "Usernames must be between 3 and 15 characters long",
 					type: "error",
 				}));
-				dispatch(clearState());
 			}
 			if (errors.email && errors.email.type === "pattern") {
 				dispatch(toastActions.createToast({
@@ -71,10 +69,11 @@ export default function SignUp() {
 				}));
 				dispatch(clearState());
 			}
+			dispatch(clearState());
 			reset();
 		}
 	}, [errors, isSubmitted, dispatch, reset])
-	
+
 	return (
 		<>
 			<Navbar />
@@ -84,37 +83,37 @@ export default function SignUp() {
 					<div className="form-container">
 						<div className="signup-form">
 							<form onSubmit={handleSubmit(submitData)}>
-									<input 
-										{...register("username", { 
-											required: true, 
-											minLength: 3,
-											maxLength: 15
-										})} 
-										placeholder="Username" 
-									/>
-									<input 
-										{...register("email", { 
-											required: true, 
-											pattern: /\S+@\S+\.\S+/
-										})}
-										type="email"
-										placeholder="E-Mail" 
-									/>
-									<input {...register("password", { 
-											required: true,
-											minLength: 8
-										})} 
-										placeholder="Password" 
-										type="password" 
-									/>
-									<input {...register("confirmPassword", { 
-											required: true,
-											validate: value => value === passwordEntry
-										})} 
-										placeholder="Confirm Password" 
-										type="password" 
-									/>
-									<button className="signup-form__button" type="submit">Submit</button>
+								<input
+									{...register("username", {
+										required: true,
+										minLength: 3,
+										maxLength: 15
+									})}
+									placeholder="Username"
+								/>
+								<input
+									{...register("email", {
+										required: true,
+										pattern: /\S+@\S+\.\S+/
+									})}
+									type="email"
+									placeholder="E-Mail"
+								/>
+								<input {...register("password", {
+									required: true,
+									minLength: 8
+								})}
+									placeholder="Password"
+									type="password"
+								/>
+								<input {...register("confirmPassword", {
+									required: true,
+									validate: value => value === passwordEntry
+								})}
+									placeholder="Confirm Password"
+									type="password"
+								/>
+								<button className="signup-form__button" type="submit">Submit</button>
 							</form>
 						</div>
 					</div>

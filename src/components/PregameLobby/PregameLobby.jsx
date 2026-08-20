@@ -34,19 +34,22 @@ export default function PregameLobby() {
         socket.on(`pregame-lobby:${location.state.game_id}:player-ready`, pregameSocketHandler);
         socket.on(`pregame-lobby:${location.state.game_id}:player-unready`, pregameSocketHandler);
 
-        if (isError) {
-            dispatch(toastActions.createToast({
-                message: errorMessage,
-                type: "error",
-            }));
-        }
         return () => {
             socket.off(`pregame-lobby:${location.state.game_id}:enter-game`, pregameSocketHandler);
             socket.off(`pregame-lobby:${location.state.game_id}:player-ready`, pregameSocketHandler);
             socket.off(`pregame-lobby:${location.state.game_id}:player-unready`, pregameSocketHandler);
             dispatch(pregameStateReset());
         }
-    }, [dispatch, isError, errorMessage, navigate, location.state.game_id])
+    }, [dispatch, location.state.game_id])
+
+    useEffect(() => {
+        if (isError) {
+            dispatch(toastActions.createToast({
+                message: errorMessage,
+                type: "error",
+            }));
+        }
+    }, [dispatch, isError, errorMessage])
 
     useEffect(() => {
         const leaveGameSocketHandler = (data) => {

@@ -11,6 +11,17 @@ const scrollToTop = () => {
     });
 }
 
+const RuleCard = ({ value, src }) => (
+    <div className="rules-card">
+        <div className='rules-card__value-container'>
+            <div className="rules-card__value-container__value">
+                {value}
+            </div>
+        </div> 
+        <img src={src} alt={`Oicho kabu card with value of ${value}`} />
+    </div>
+);
+
 export default function RulesPage() {
 
     return (
@@ -42,23 +53,9 @@ export default function RulesPage() {
                             oicho kabu, so the game is typically played with a single-suit <em>kabufuda </em> deck.
                         </p>
                         <div className="section-cards__cardcalc">
-                            <div className="rules-card">
-                                <div className='rules-card__value-container'>
-                                    <div className="rules-card__value-container__value">
-                                        7
-                                    </div>
-                                </div> 
-                                <img src="/cards/card7.jpg" alt="Oicho kabu card with value of 7" />
-                            </div>
+                            <RuleCard value={7} src="/cards/card7.jpg" />
                             <img src="/plus-sign.svg" alt="Plus sign" className="section-cards__cardcalc__plus" />
-                            <div className="rules-card">
-                            <div className='rules-card__value-container'>
-                                    <div className="rules-card__value-container__value">
-                                        5
-                                    </div>
-                                </div>
-                                <img src="/cards/card5.jpg" alt="Oicho kabu card with value of 5" />
-                            </div>
+                            <RuleCard value={5} src="/cards/card5.jpg" />
                             <img src="/equals-sign.svg" alt="Equals sign" className="section-cards__cardcalc__equals" />
                             <h1 className="section-cards__cardcalc__value">2</h1>
                         </div>
@@ -80,30 +77,9 @@ export default function RulesPage() {
                             <li className='section-yaku__list__item'>Arashi kabu</li>
                         </ol>
                         <div className="section-yaku__yaku-container">
-                            <div className="rules-card">
-                                <div className='rules-card__value-container'>
-                                    <div className="rules-card__value-container__value">
-                                        3
-                                    </div>
-                                </div> 
-                                <img src="/cards/card3.jpg" alt="Oicho kabu card with value of 7" />
-                            </div>
-                            <div className="rules-card">
-                                <div className='rules-card__value-container'>
-                                    <div className="rules-card__value-container__value">
-                                        3
-                                    </div>
-                                </div> 
-                                <img src="/cards/card3.jpg" alt="Oicho kabu card with value of 7" />
-                            </div>
-                            <div className="rules-card">
-                                <div className='rules-card__value-container'>
-                                    <div className="rules-card__value-container__value">
-                                        3
-                                    </div>
-                                </div> 
-                                <img src="/cards/card3.jpg" alt="Oicho kabu card with value of 7" />
-                            </div>
+                            <RuleCard value={3} src="/cards/card3.jpg" />
+                            <RuleCard value={3} src="/cards/card3.jpg" />
+                            <RuleCard value={3} src="/cards/card3.jpg" />
                         </div>
                         <p className='section-yaku__text slight-margin'>
                             3 cards with a value of 3 add up precisely to 9 and all match, making this the most valuable <em>yaku. </em>
@@ -113,30 +89,9 @@ export default function RulesPage() {
                             <li className='section-yaku__list__item'>Arashi</li>
                         </ol>
                         <div className="section-yaku__yaku-container">
-                            <div className="rules-card">
-                                <div className='rules-card__value-container'>
-                                    <div className="rules-card__value-container__value">
-                                        5
-                                    </div>
-                                </div> 
-                                <img src="/cards/card5.jpg" alt="Oicho kabu card with value of 7" />
-                            </div>
-                            <div className="rules-card">
-                                <div className='rules-card__value-container'>
-                                    <div className="rules-card__value-container__value">
-                                        5
-                                    </div>
-                                </div> 
-                                <img src="/cards/card5.jpg" alt="Oicho kabu card with value of 7" />
-                            </div>
-                            <div className="rules-card">
-                                <div className='rules-card__value-container'>
-                                    <div className="rules-card__value-container__value">
-                                        5
-                                    </div>
-                                </div> 
-                                <img src="/cards/card5.jpg" alt="Oicho kabu card with value of 7" />
-                            </div>
+                            <RuleCard value={5} src="/cards/card5.jpg" />
+                            <RuleCard value={5} src="/cards/card5.jpg" />
+                            <RuleCard value={5} src="/cards/card5.jpg" />
                         </div>
                         <p className="section-yaku__text slight-margin">
                             Any other set of 3 matching cards nets the player their bet times 3. Even if an <em>arashi </em> adds up to less than the 
@@ -146,30 +101,9 @@ export default function RulesPage() {
                             <li className='section-yaku__list__item'>Kudari</li>
                         </ol>
                         <div className="section-yaku__yaku-container">
-                            <div className="rules-card">
-                                <div className='rules-card__value-container'>
-                                    <div className="rules-card__value-container__value">
-                                        8
-                                    </div>
-                                </div> 
-                                <img src="/cards/card8.jpg" alt="Oicho kabu card with value of 7" />
-                            </div>
-                            <div className="rules-card">
-                                <div className='rules-card__value-container'>
-                                    <div className="rules-card__value-container__value">
-                                        7
-                                    </div>
-                                </div> 
-                                <img src="/cards/card7.jpg" alt="Oicho kabu card with value of 7" />
-                            </div>
-                            <div className="rules-card">
-                                <div className='rules-card__value-container'>
-                                    <div className="rules-card__value-container__value">
-                                        6
-                                    </div>
-                                </div> 
-                                <img src="/cards/card6.jpg" alt="Oicho kabu card with value of 7" />
-                            </div>
+                            <RuleCard value={8} src="/cards/card8.jpg" />
+                            <RuleCard value={7} src="/cards/card7.jpg" />
+                            <RuleCard value={6} src="/cards/card6.jpg" />
                         </div>
                         <p className='section-yaku__text slight-margin'>
                             A descending series of 3 cards awards the player their bet times 2. The cards must be numerically adjacent (e.g. 8, 7, 6).
@@ -178,30 +112,9 @@ export default function RulesPage() {
                             <li className='section-yaku__list__item'>Nobori</li>
                         </ol>
                         <div className="section-yaku__yaku-container">
-                            <div className="rules-card">
-                                <div className='rules-card__value-container'>
-                                    <div className="rules-card__value-container__value">
-                                        3
-                                    </div>
-                                </div> 
-                                <img src="/cards/card3.jpg" alt="Oicho kabu card with value of 7" />
-                            </div>
-                            <div className="rules-card">
-                                <div className='rules-card__value-container'>
-                                    <div className="rules-card__value-container__value">
-                                        4
-                                    </div>
-                                </div> 
-                                <img src="/cards/card4.jpg" alt="Oicho kabu card with value of 7" />
-                            </div>
-                            <div className="rules-card">
-                                <div className='rules-card__value-container'>
-                                    <div className="rules-card__value-container__value">
-                                        5
-                                    </div>
-                                </div> 
-                                <img src="/cards/card5.jpg" alt="Oicho kabu card with value of 7" />
-                            </div>
+                            <RuleCard value={3} src="/cards/card3.jpg" />
+                            <RuleCard value={4} src="/cards/card4.jpg" />
+                            <RuleCard value={5} src="/cards/card5.jpg" />
                         </div>
                         <p className='section-yaku__text slight-margin'>
                             An ascending series of cards also results in a reward of one's bet times 2. Like the <em>kudari</em>, the cards must be 
@@ -211,22 +124,8 @@ export default function RulesPage() {
                             <li className='section-yaku__list__item'>Shippin</li>
                         </ol>
                         <div className="section-yaku__yaku-container--twocard">
-                            <div className="rules-card">
-                                <div className='rules-card__value-container'>
-                                    <div className="rules-card__value-container__value">
-                                        4
-                                    </div>
-                                </div> 
-                                <img src="/cards/card4.jpg" alt="Oicho kabu card with value of 7" />
-                            </div>
-                            <div className="rules-card">
-                                <div className='rules-card__value-container'>
-                                    <div className="rules-card__value-container__value">
-                                        1
-                                    </div>
-                                </div> 
-                                <img src="/cards/card1.jpg" alt="Oicho kabu card with value of 7" />
-                            </div>
+                            <RuleCard value={4} src="/cards/card4.jpg" />
+                            <RuleCard value={1} src="/cards/card1.jpg" />
                         </div>
                         <p className='section-yaku__text slight-margin'>
                             Obtaining 2 cards with the values 4 and 1 in any order and choosing not to draw a third card gives the player their bet 

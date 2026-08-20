@@ -6,17 +6,7 @@ import { modalActions } from '../../../store/modalSlice';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { GameAPI } from '../../../services';
 import Slider from 'react-input-slider';
-import { sliderStyles } from '../../shared/sliderStyles';
-
-function BetAmountWatched({ control }) {
-    const betAmountValue = useWatch({
-        control,
-        name: "betAmount",
-        defaultValue: 100
-    })
-
-    return <div className="makebet-form__slider-heading">Bet amount: {betAmountValue}</div>
-}
+import { WatchedValue, sliderStyles } from '../../shared/sliderStyles';
 
 export default function MakeBetForm() {
 
@@ -40,7 +30,12 @@ export default function MakeBetForm() {
                 <form onSubmit={handleSubmit(submitData)}>
                     <input type="hidden" {...register("user_id", { value: playerAuth.id })} />
                     <input type="hidden" {...register("current_card", { value: currentlySelectedCard })} />
-                    <BetAmountWatched control={control} />
+                    <WatchedValue control={control} 
+                        name="betAmount"
+                        defaultVal={100}
+                        formTitle="makebet"
+                        description="Bet amount:"
+                    />
                     <Controller
                         control={control}
                         name="betAmount"

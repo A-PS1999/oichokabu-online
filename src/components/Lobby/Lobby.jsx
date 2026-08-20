@@ -15,11 +15,6 @@ import CreateGameForm from './CreateGameForm/CreateGameForm.jsx';
 import { PregameAPI, LobbyAPI } from '../../services';
 import { useNavigate } from 'react-router-dom';
 
-const resetChips = (chips) => {
-	LobbyAPI.resetUserChips(chips);
-	window.location.reload();
-}
-
 export default function Lobby() {
 	
 	const dispatch = useDispatch();
@@ -28,12 +23,17 @@ export default function Lobby() {
 	const { isError, errorMessage, rooms, userId, chips } = useSelector(lobbySelector);
 	const { pageData, page, jumpPage } = usePagination(rooms, 10);
 
+	const resetChips = async (chips) => {
+		await LobbyAPI.resetUserChips(chips);
+		dispatch(fetchUserIdAndChips());
+	};
+
 	useEffect(() => {
-		dispatch(fetchUserIdAndChips())
+		dispatch(fetchUserIdAndChips());
+		dispatch(fetchGames());
 	}, [dispatch])
 
 	useEffect(() => {
-		dispatch(fetchGames());
 		const createGameSocketHandler = (data) => {
 			const gameId = parseInt(data.gameId, 10);
 			dispatch(fetchGames());
@@ -60,6 +60,13 @@ export default function Lobby() {
 		}
 		socket.on('lobby:join-game', joinGameSocketHandler);
 
+		return () => {
+			socket.off('lobby:create-game', createGameSocketHandler);
+			socket.off('lobby:join-game', joinGameSocketHandler);
+		}
+	}, [dispatch, navigate, userId])
+
+	useEffect(() => {
 		if (isError) {
 			dispatch(toastActions.createToast({
 				message: errorMessage,
@@ -68,11 +75,7 @@ export default function Lobby() {
 			dispatch(clearState());
 			navigate("/log-in");
 		}
-		return () => {
-			socket.off('lobby:create-game', createGameSocketHandler);
-			socket.off('lobby:join-game', joinGameSocketHandler);
-		}
-	}, [dispatch, errorMessage, isError, navigate, userId])
+	}, [dispatch, isError, errorMessage])
 
 	return (
 		<>
