@@ -2,9 +2,8 @@ import React, { useEffect } from 'react';
 import './PregameLobby.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { pregameSelector, fetchPlayerInfo, fetchPlayerStatuses, handleStartGame, pregameStateReset } from '../../store/pregameSlice';
+import { pregameSelector, fetchPlayerInfo, fetchPlayerStatuses, handleStartGame, toggleReady, leaveGame, pregameStateReset } from '../../store/pregameSlice';
 import { toastActions } from '../../store/toastSlice.js';
-import { PregameAPI } from '../../services';
 import { useSocket } from '../../hooks/useSocket.js';
 
 export default function PregameLobby() {
@@ -129,13 +128,13 @@ export default function PregameLobby() {
                         }
                     </div>
                     <div className="pregame-options">
-                        <button className="pregame-options__button" onClick={() => PregameAPI.postReadyStatus(location.state.game_id)}>
+                        <button className="pregame-options__button" onClick={() => dispatch(toggleReady(location.state.game_id))}>
                             Toggle Ready
                         </button>
                         <button className="pregame-options__button--start" disabled={!determineGameStartable()} onClick={async () => await dispatch(handleStartGame(location.state.game_id))}>
                             Start Game
                         </button>
-                        <button className="pregame-options__button" onClick={() => PregameAPI.postLeaveGame(location.state.game_id)}>
+                        <button className="pregame-options__button" onClick={() => dispatch(leaveGame(location.state.game_id))}>
                             Leave Game
                         </button>
                     </div>

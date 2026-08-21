@@ -22,6 +22,20 @@ export const handleStartGame = createAsyncThunk(
     }
 )
 
+export const toggleReady = createAsyncThunk(
+    "pregame/toggleReady",
+    async (gameID) => {
+        return await PregameAPI.postReadyStatus(gameID);
+    }
+)
+
+export const leaveGame = createAsyncThunk(
+    "pregame/leaveGame",
+    async (gameID) => {
+        return await PregameAPI.postLeaveGame(gameID);
+    }
+)
+
 const initialPregameState = () => ({
     ready: false,
     playerInfo: [],
@@ -79,6 +93,28 @@ export const pregameSlice = createSlice({
             state.isFetching = true;
         })
         builder.addCase(handleStartGame.rejected, (state, action) => {
+            state.isFetching = false;
+            state.isError = true;
+            state.errorMessage = action.payload;
+        })
+        builder.addCase(toggleReady.pending, (state) => {
+            state.isFetching = true;
+        })
+        builder.addCase(toggleReady.fulfilled, (state) => {
+            state.isFetching = false;
+        })
+        builder.addCase(toggleReady.rejected, (state, action) => {
+            state.isFetching = false;
+            state.isError = true;
+            state.errorMessage = action.payload;
+        })
+        builder.addCase(leaveGame.pending, (state) => {
+            state.isFetching = true;
+        })
+        builder.addCase(leaveGame.fulfilled, (state) => {
+            state.isFetching = false;
+        })
+        builder.addCase(leaveGame.rejected, (state, action) => {
             state.isFetching = false;
             state.isError = true;
             state.errorMessage = action.payload;

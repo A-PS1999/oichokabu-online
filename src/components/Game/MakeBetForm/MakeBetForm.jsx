@@ -1,10 +1,9 @@
 import React from 'react';
 import './MakeBetForm.scss';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectTotalBetAmount, selectBetMax, selectPlayerAuth, selectCurrentlySelectedCard, selectGameId } from '../../../store/gameSlice';
+import { selectTotalBetAmount, selectBetMax, selectPlayerAuth, selectCurrentlySelectedCard, selectGameId, postCardBet } from '../../../store/gameSlice';
 import { modalActions } from '../../../store/modalSlice';
 import { useForm, Controller, useWatch } from 'react-hook-form';
-import { GameAPI } from '../../../services';
 import Slider from 'react-input-slider';
 import { WatchedValue, sliderStyles } from '../../shared/sliderStyles';
 
@@ -19,7 +18,7 @@ export default function MakeBetForm() {
     const { register, handleSubmit, control } = useForm();
 
     const submitData = (data) => {
-        GameAPI.postCardBet(gameId, data);
+        dispatch(postCardBet({ gameId, betData: data }));
         dispatch(modalActions.toggleModal());
     }
 

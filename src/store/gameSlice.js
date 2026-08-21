@@ -30,6 +30,27 @@ export const fetchPlayerAuth = createAsyncThunk(
     }
 )
 
+export const postCardBet = createAsyncThunk(
+    "game/postCardBet",
+    async ({ gameId, betData }) => {
+        return await GameAPI.postCardBet(gameId, betData);
+    }
+)
+
+export const postThirdCardChoice = createAsyncThunk(
+    "game/postThirdCardChoice",
+    async ({ gameId, choiceMade, isDealer }) => {
+        return await GameAPI.postThirdCardChoice(gameId, choiceMade, isDealer);
+    }
+)
+
+export const postDealerCardSelected = createAsyncThunk(
+    "game/postDealerCardSelected",
+    async ({ gameId, cardId, cardVal }) => {
+        return await GameAPI.postDealerCardSelected(gameId, cardId, cardVal);
+    }
+)
+
 export const gameSlice = createSlice({
     name: 'game',
     initialState: initialGameState,

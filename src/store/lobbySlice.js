@@ -1,10 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { UserAPI, LobbyAPI } from '../services/api-functions.js';
+import { UserAPI, LobbyAPI, PregameAPI } from '../services/api-functions.js';
 
 export const fetchUserIdAndChips = createAsyncThunk(
 	"lobby/fetchUserId",
 	async () => {
-		const [idRes, chipsRes]= await Promise.all([
+		const [idRes, chipsRes] = await Promise.all([
 			UserAPI.getUserId(),
 			LobbyAPI.getUserChips()
 		]);
@@ -24,6 +24,25 @@ export const createNewGame = createAsyncThunk(
 	"lobby/createNewGame",
 	async ({ roomName, playerCap, turnMax, betMax }) => {
 		return await LobbyAPI.postNewGame(roomName, playerCap, turnMax, betMax);
+	}
+);
+
+export const joinGame = createAsyncThunk(
+	"lobby/joinGame",
+	async (gameId) => {
+		return await PregameAPI.postJoinGame(gameId);
+	}
+);
+
+export const resetUserChips = createAsyncThunk(
+	"lobby/resetUserChips",
+	async (chips) => {
+		await LobbyAPI.resetUserChips(chips);
+		const [idRes, chipsRes] = await Promise.all([
+			UserAPI.getUserId(),
+			LobbyAPI.getUserChips()
+		]);
+		return { idRes, chipsRes };
 	}
 );
 
@@ -84,6 +103,30 @@ export const lobbySlice = createSlice({
 			state.isFetching = true;
 		})
 		builder.addCase(createNewGame.rejected, (state, action) => {
+			state.isFetching = false;
+			state.isError = true;
+			state.errorMessage = action.payload;
+		})
+		builder.addCase(joinGame.pending, (state) => {
+			state.isFetching = true;
+		})
+		builder.addCase(joinGame.fulfilled, (state) => {
+			state.isFetching = false;
+		})
+		builder.addCase(joinGame.rejected, (state, action) => {
+			state.isFetching = false;
+			state.isError = true;
+			state.errorMessage = action.payload;
+		})
+		builder.addCase(resetUserChips.pending, (state) => {
+			state.isFetching = true;
+		})
+		builder.addCase(resetUserChips.fulfilled, (state, action) => {
+			state.userId = action.payload.idRes;
+			state.chips = action.payload.chipsRes;
+			state.isFetching = false;
+		})
+		builder.addCase(resetUserChips.rejected, (state, action) => {
 			state.isFetching = false;
 			state.isError = true;
 			state.errorMessage = action.payload;

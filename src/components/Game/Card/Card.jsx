@@ -2,15 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentSelection, setHasClicked,
     selectPlayerAuth, selectHasClicked, selectIsPickDealer,
-    selectCurrentDealerData, selectCurrentPlayer, selectCurrentPhase, selectGameId
+    selectCurrentDealerData, selectCurrentPlayer, selectCurrentPhase, selectGameId,
+    postDealerCardSelected
 } from '../../../store/gameSlice';
 import { modalActions } from '../../../store/modalSlice';
-import { GameAPI } from '../../../services';
 import './Card.scss';
-
-const handlePickDealerCardSelection = (gameId, cardId, cardVal) => {
-    GameAPI.postDealerCardSelected(gameId, cardId, cardVal)
-}
 
 export default function Card({id, value, src, ownerColumn, defaultHidden, defaultDisabled}) {
 
@@ -98,7 +94,7 @@ export default function Card({id, value, src, ownerColumn, defaultHidden, defaul
                     </div> 
                 }
                 <button className='game-card__button' disabled={determineDisabled()} 
-                    onClick={() => { isPickDealer ? handlePickDealerCardSelection(gameId, id, value) : handleMainGameCardClick() }}>
+                    onClick={() => { isPickDealer ? dispatch(postDealerCardSelected({ gameId, cardId: id, cardVal: value })) : handleMainGameCardClick() }}>
                     <div className={isHidden ? "game-card__inner--hidden" : "game-card__inner"}>
                         <div className="game-card__side game-card__side--front">
                             <img src={src} alt="Front of an Oicho Kabu card" id={id} />
