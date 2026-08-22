@@ -6,7 +6,6 @@ import { lobbyStateReset as clearState } from '../../store/lobbySlice.js';
 import { toastActions } from '../../store/toastSlice.js';
 import { modalActions } from '../../store/modalSlice.js';
 import Navbar from '../Navbar/Navbar.jsx';
-import Modal from '../Modal/Modal.jsx';
 import Pagination from 'rc-pagination';
 import locale from 'rc-pagination/es/locale/en_US';
 import 'rc-pagination/assets/index.css';
@@ -82,9 +81,7 @@ export default function Lobby() {
 	return (
 		<>
 			<Navbar />
-			<Modal>
-				<CreateGameForm />
-			</Modal>
+			<CreateGameForm />
 			<div>
 				<main>
 					<section className="lobby-head">

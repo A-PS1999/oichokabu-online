@@ -3,8 +3,9 @@ import './MakeBetForm.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectTotalBetAmount, selectBetMax, selectPlayerAuth, selectCurrentlySelectedCard, selectGameId, postCardBet } from '../../../store/gameSlice';
 import { modalActions } from '../../../store/modalSlice';
-import { useForm, Controller, useWatch } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import Slider from 'react-input-slider';
+import Modal from '../../Modal/Modal';
 import { WatchedValue, sliderStyles } from '../../shared/sliderStyles';
 
 export default function MakeBetForm() {
@@ -24,36 +25,40 @@ export default function MakeBetForm() {
 
     return (
         <>
-            <div className='makebet-form'>
-                <h2 className="makebet-form__heading">How much would you like to bet on this card?</h2>
-                <form onSubmit={handleSubmit(submitData)}>
-                    <input type="hidden" {...register("user_id", { value: playerAuth.id })} />
-                    <input type="hidden" {...register("current_card", { value: currentlySelectedCard })} />
-                    <WatchedValue control={control} 
-                        name="betAmount"
-                        defaultVal={100}
-                        formTitle="makebet"
-                        description="Bet amount:"
-                    />
-                    <Controller
-                        control={control}
-                        name="betAmount"
-                        defaultValue={100}
-                        render={({ field: { value, onChange } }) => (
-                            <Slider
-                                axis={"x"}
-                                xmax={betMax - totalBetAmount}
-                                xmin={100}
-                                xstep={100}
-                                onChange={({ x }) => onChange(x)}
-                                x={value}
-                                styles={sliderStyles}
-                            />
-                        )}
-                    />
-                    <button type="submit" className='makebet-form__button'>Submit Bet</button>
-                </form>
-            </div>
+            <Modal aria-label="Place your bet" aria-labelledby="makebet-heading">
+                <div className='makebet-form'>
+                    <h2 id="makebet-heading" className="makebet-form__heading">
+                        How much would you like to bet on this card?
+                    </h2>
+                    <form onSubmit={handleSubmit(submitData)}>
+                        <input type="hidden" {...register("user_id", { value: playerAuth.id })} />
+                        <input type="hidden" {...register("current_card", { value: currentlySelectedCard })} />
+                        <WatchedValue control={control}
+                            name="betAmount"
+                            defaultVal={100}
+                            formTitle="makebet"
+                            description="Bet amount:"
+                        />
+                        <Controller
+                            control={control}
+                            name="betAmount"
+                            defaultValue={100}
+                            render={({ field: { value, onChange } }) => (
+                                <Slider
+                                    axis={"x"}
+                                    xmax={betMax - totalBetAmount}
+                                    xmin={100}
+                                    xstep={100}
+                                    onChange={({ x }) => onChange(x)}
+                                    x={value}
+                                    styles={sliderStyles}
+                                />
+                            )}
+                        />
+                        <button type="submit" className='makebet-form__button'>Submit Bet</button>
+                    </form>
+                </div>
+            </Modal>
         </>
     )
 }

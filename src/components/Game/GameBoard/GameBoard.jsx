@@ -8,7 +8,6 @@ import {
 import CardColumn from '../CardColumn/CardColumn';
 import CardsValueCounter from '../CardsValueCounter/CardsValueCounter';
 import Card from '../Card/Card';
-import Modal from '../../Modal/Modal';
 import MakeBetForm from '../MakeBetForm/MakeBetForm';
 import ThirdCardModal from '../ThirdCardModal/ThirdCardModal';
 import './GameBoard.scss';
@@ -24,9 +23,7 @@ export default function GameBoard() {
 
     return (
         <>
-            <Modal>
-                {currentPhase === "bettingPhase" ? <MakeBetForm /> : <ThirdCardModal />}
-            </Modal>
+            {currentPhase === "bettingPhase" ? <MakeBetForm /> : <ThirdCardModal />}
             <div className="maingame">
                 <div className="maingame__turninfo">
                     <h2 className="maingame__turninfo__text">Turn: {currentTurn}/{turnMax}</h2>
