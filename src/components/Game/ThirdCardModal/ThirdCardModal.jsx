@@ -1,36 +1,45 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
-import { gameSelector, selectIsDealerBool } from '../../../store/gameSlice';
-import { GameAPI } from '../../../services';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectGameId, selectIsDealerBool, postThirdCardChoice } from '../../../store/gameSlice';
 import { modalActions } from '../../../store/modalSlice';
+import Modal from '../../Modal/Modal';
 import './ThirdCardModal.scss';
 
 export default function ThirdCardModal() {
 
     const dispatch = useDispatch();
-    const { gameId } = useSelector(gameSelector);
+    const gameId = useSelector(selectGameId);
     const isDealer = useSelector(selectIsDealerBool);
 
-    const handleChoice = (event, isDealer) => {
+    const handleChoice = (event) => {
         const choiceMade = event.target.id;
-        GameAPI.postThirdCardChoice(gameId, choiceMade, isDealer);
+        dispatch(postThirdCardChoice({ gameId, choiceMade, isDealer }));
         dispatch(modalActions.toggleModal());
     }
 
     return (
         <>
-            <div className="cardmodal">
-                <h2 className="cardmodal__heading">Would you like a third card?</h2>
-                <div className="cardmodal__button-container">
-                    <button className="cardmodal__button-container__yesbutton" id="yes" onClick={(event) => handleChoice(event, isDealer)}>
-                        Yes please
-                    </button>
-                    <button className="cardmodal__button-container__nobutton" id="no" onClick={(event) => handleChoice(event, isDealer)}>
-                        No thanks
-                    </button>
+            <Modal
+                aria-label="Choose whether to draw a third card"
+                aria-labelledby="third-card-heading"
+            >
+                <div className="cardmodal">
+                    <h2 id="third-card-heading" className="cardmodal__heading">Would you like a third card?</h2>
+                    <div className="cardmodal__button-container">
+                        <button
+                            autoFocus={true}
+                            className="cardmodal__button-container__yesbutton"
+                            id="yes"
+                            onClick={handleChoice}
+                        >
+                            Yes please
+                        </button>
+                        <button className="cardmodal__button-container__nobutton" id="no" onClick={handleChoice}>
+                            No thanks
+                        </button>
+                    </div>
                 </div>
-            </div>
+            </Modal>
         </>
     )
 }

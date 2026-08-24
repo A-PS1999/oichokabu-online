@@ -1,31 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import './Toast.scss';
+import { removeToast } from '../../store/toastSlice';
 
 export default function Toast() {
 	
 	const { toasts } = useSelector(state => state.toasts);
-	const [toast, setToast] = useState({ message: "", type: "" });
-	const [showToast, setShowToast] = useState(false);
+	const dispatch = useDispatch();
 	
-	useEffect(() => {
-		if (toasts.length > 0) {
-			setToast(toasts[toasts.length - 1]);
-			setShowToast(true);
-			setTimeout(() => {
-				setShowToast(false);
-			}, 5500);
-		}
-	}, [toasts]);
-	
-	const closeToast = () => {
-		setShowToast(false);
-	};
-	
-	return showToast ? (
-		<div className="toast">
+	return toasts.length > 0 ? toasts.map((toast, idx) =>
+		<div className="toast" key={toast.id} style={{ bottom: `calc(13% + ${idx * 60}px)` }}>
 			<div className="toast__inner">
-				<button className="toast__button toast__inner--top" onClick={closeToast}>&#10006;</button>
+				<button className="toast__button toast__inner--top" onClick={async () => await dispatch(removeToast(toast.id))}>
+					&#10006;
+				</button>
 				<div>
 					{toast.message}
 				</div>

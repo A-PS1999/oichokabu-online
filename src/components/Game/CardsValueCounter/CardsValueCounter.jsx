@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { gameSelector, selectPlayerCardBet, selectIsDealerBool, selectPlayerStatus } from '../../../store/gameSlice';
+import { selectCurrentPhase, selectPlayerCardBet, selectIsDealerBool, selectPlayerStatus } from '../../../store/gameSlice';
 import { modalActions } from '../../../store/modalSlice';
-import useCardsValue from '../../../utils/useCardsValue';
+import useCardsValue from '../../../hooks/useCardsValue';
 import './CardsValueCounter.scss';
 
 export default function CardsValueCounter({ cards, parentColumn }) {
     const [countSecondCard, setCountSecondCard] = useState(false);
     const [modalNotOpened, setModalNotOpened] = useState(true);
-    const { currentPhase } = useSelector(gameSelector);
+    const currentPhase = useSelector(selectCurrentPhase);
     const userBet = useSelector(selectPlayerCardBet);
     const playerStatus = useSelector(selectPlayerStatus);
     const isDealer = useSelector(selectIsDealerBool);

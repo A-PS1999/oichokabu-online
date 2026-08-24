@@ -2,21 +2,22 @@ import React, { useEffect } from 'react';
 import './PregameLobby.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { pregameSelector, fetchPlayerInfo, fetchPlayerStatuses, handleStartGame } from '../../store/pregameSlice';
-import { toastActions } from '../../store/toastSlice.js';
-import { socket, PregameAPI } from '../../services';
+import { pregameSelector, fetchPlayerInfo, fetchPlayerStatuses, handleStartGame, toggleReady, leaveGame, pregameStateReset } from '../../store/pregameSlice';
+import { createToast } from '../../store/toastSlice.js';
+import { useSocket } from '../../hooks/useSocket.js';
 
 export default function PregameLobby() {
 
     const dispatch = useDispatch();
-    let navigate = useNavigate();
+    const navigate = useNavigate();
     const location = useLocation();
+    const socket = useSocket();
     const { playerInfo, playerStatuses, isError, errorMessage } = useSelector(pregameSelector);
 
     useEffect(() => {
         socket.emit('pregame:rejoin', { gameId: location.state.game_id }, (res) => {
             if (res && !res.ok) {
-                dispatch(toastActions.createToast({
+                dispatch(createToast({
                     message: "Failed to join lobby",
                     type: "error"
                 }));
@@ -32,18 +33,22 @@ export default function PregameLobby() {
         socket.on(`pregame-lobby:${location.state.game_id}:player-ready`, pregameSocketHandler);
         socket.on(`pregame-lobby:${location.state.game_id}:player-unready`, pregameSocketHandler);
 
-        if (isError) {
-            dispatch(toastActions.createToast({
-                message: errorMessage,
-                type: "error",
-            }));
-        }
         return () => {
             socket.off(`pregame-lobby:${location.state.game_id}:enter-game`, pregameSocketHandler);
             socket.off(`pregame-lobby:${location.state.game_id}:player-ready`, pregameSocketHandler);
             socket.off(`pregame-lobby:${location.state.game_id}:player-unready`, pregameSocketHandler);
+            dispatch(pregameStateReset());
         }
-    }, [dispatch, isError, errorMessage, navigate, location.state.game_id])
+    }, [dispatch, location.state.game_id])
+
+    useEffect(() => {
+        if (isError) {
+            dispatch(createToast({
+                message: errorMessage,
+                type: "error",
+            }));
+        }
+    }, [dispatch, isError, errorMessage])
 
     useEffect(() => {
         const leaveGameSocketHandler = (data) => {
@@ -123,13 +128,13 @@ export default function PregameLobby() {
                         }
                     </div>
                     <div className="pregame-options">
-                        <button className="pregame-options__button" onClick={() => PregameAPI.postReadyStatus(location.state.game_id)}>
+                        <button className="pregame-options__button" onClick={() => dispatch(toggleReady(location.state.game_id))}>
                             Toggle Ready
                         </button>
                         <button className="pregame-options__button--start" disabled={!determineGameStartable()} onClick={async () => await dispatch(handleStartGame(location.state.game_id))}>
                             Start Game
                         </button>
-                        <button className="pregame-options__button" onClick={() => PregameAPI.postLeaveGame(location.state.game_id)}>
+                        <button className="pregame-options__button" onClick={() => dispatch(leaveGame(location.state.game_id))}>
                             Leave Game
                         </button>
                     </div>

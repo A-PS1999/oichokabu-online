@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { userSelector, logoutUser, getSessID } from '../../store/userSlice.js';
 import { userStateReset as clearState } from '../../store/userSlice.js';
-import { toastActions } from '../../store/toastSlice.js';
+import { createToast } from '../../store/toastSlice.js';
 import './Navbar.scss';
 
 export default function Navbar() {
@@ -22,13 +22,17 @@ export default function Navbar() {
 			dispatch(clearState())
 		}
 		if (isError) {
-			dispatch(toastActions.createToast({
+			dispatch(createToast({
 				message: errorMessage,
 				type: "error",
 			}));
 			dispatch(clearState());
 		}
 	}, [dispatch, isSuccessful, isError, errorMessage])
+
+	const handleLogout = useCallback(async () => {
+		await dispatch(logoutUser())
+	}, [dispatch])
 	
 	return (
 		<nav>
@@ -43,7 +47,7 @@ export default function Navbar() {
 						<Link to="/lobby" className="navbar__link lobby-button">
 							Lobby
 						</Link>
-						<Link to="/" onClick={async () => { await dispatch(logoutUser()) }} className="navbar__link">
+						<Link to="/" onClick={handleLogout} className="navbar__link">
 							Log Out
 						</Link>
 					</>
