@@ -37,10 +37,9 @@ app.use(function(req, res, next) {
 
 // handler for other errors
 app.use((err, req, res, next) => {
-	if (err) {
-		req.logout();
-		next();
-	}
+	req.logout((err) => {
+		if (err) { return next(err); }
+	});
 	console.error(err.stack);
 	res.status(err.status || 500).send(err.message);
 });

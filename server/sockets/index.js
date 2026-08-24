@@ -1,12 +1,10 @@
-const io = require('socket.io')();
+const { Server } = require('socket.io');
 const session = require('../db/session');
 const { LobbyHandler, PreGameHandler, GameHandler } = require('./handlers');
 
-const init = server => {
-	io.use(({ request }, next) => {
-		session(request, request.res, next);
-	});
+const io = new Server();
 
+const init = server => {
 	io.attach(server, {
 		cors: {
 			origin: process.env.CORS_ORIGIN,
@@ -14,6 +12,8 @@ const init = server => {
 			credentials: true
 		}
 	});
+
+	io.engine.use(session);
 }
 
 // socketId -> { socket, userId }

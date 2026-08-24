@@ -36,7 +36,13 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "db:migrate": "NODE_ENV=development sequelize-cli db:migrate",
+    "db:migrate:prod": "NODE_ENV=production sequelize-cli db:migrate",
+    "db:migrate:undo": "NODE_ENV=development sequelize-cli db:migrate:undo",
+    "db:migrate:undo:prod": "NODE_ENV=production sequelize-cli db:migrate:undo",
+    "db:seed": "NODE_ENV=development sequelize-cli db:seed:all",
+    "db:seed:prod": "NODE_ENV=production sequelize-cli db:seed:all"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^7.0.1",
