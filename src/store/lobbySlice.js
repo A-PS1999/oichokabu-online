@@ -71,8 +71,9 @@ export const lobbySlice = createSlice({
 	},
 	extraReducers: (builder) => {
 		builder.addCase(fetchUserIdAndChips.fulfilled, (state, action) => {
-			state.userId = action.payload.idResult;
-			state.chips = action.payload.chipsResult;
+			const { idRes, chipsRes } = action.payload;
+			state.userId = idRes;
+			state.chips = chipsRes;
 			state.isFetching = false;
 		})
 		builder.addCase(fetchUserIdAndChips.pending, (state, action) => {
@@ -122,8 +123,9 @@ export const lobbySlice = createSlice({
 			state.isFetching = true;
 		})
 		builder.addCase(resetUserChips.fulfilled, (state, action) => {
-			state.userId = action.payload.idRes;
-			state.chips = action.payload.chipsRes;
+			const { idRes, chipsRes } = action.payload;
+			state.userId = idRes;
+			state.chips = chipsRes;
 			state.isFetching = false;
 		})
 		builder.addCase(resetUserChips.rejected, (state, action) => {

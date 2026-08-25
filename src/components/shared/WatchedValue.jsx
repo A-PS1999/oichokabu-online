@@ -12,7 +12,7 @@ export default function WatchedValue({ control,
         defaultValue: defaultVal
     });
 
-    return <div classname={`${formTitle}-form__slider-heading`}>
+    return <div className={`${formTitle}-form__slider-heading`}>
         {description} {watchedVal}
     </div>
 }
