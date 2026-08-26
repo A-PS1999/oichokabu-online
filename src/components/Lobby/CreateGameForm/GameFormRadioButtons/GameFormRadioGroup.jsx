@@ -15,7 +15,7 @@ export default function GameFormRadioGroup({ currValue, onChange }) {
 								type="radio"
 								name="playerCap"
 								value={val}
-								checked={currValue == { val }}
+								checked={currValue == val}
 								className="game-form__radio-subgroup-input"
 								onChange={e => {
 									onChange(parseInt(e.target.value))
