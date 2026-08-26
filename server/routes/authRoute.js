@@ -10,20 +10,10 @@ const { Auth } = require('../db/api');
 router.get('/api/get-user-id', checkLoggedIn, sendUserId);
 
 router.post('/api/get-session', async (request, response) => {
-	if (request.session) {
-		const userSessId = request.session.id;
-		
-		try {
-			return Auth.findSessionById(userSessId)
-			.then(result => {
-				return response.json({ result });
-			})
-		} catch (error) {
-			response.status(403).send({ error: new Error('No session found for that ID.') })
-		}
-	} else {
-		return response.status(418).send({ message: "No session or ID available." })
+	if (request.isAuthenticated()) {
+		return response.json({ authenticated: true });
 	}
+	return response.json({ authenticated: false });
 });
 
 router.post('/api/register', async (request, response) => {
@@ -65,11 +55,13 @@ router.post('/api/log-in', (request, response) => {
 	});
 });
 
-router.post('/api/log-out', (request, response) => {
-	request.logout();
-	request.session.destroy();
-	response.sendStatus(200);
-	return null;
+router.post('/api/log-out', (request, response, next) => {
+	request.session.destroy(err => {
+		if (err) return next(err);
+		request.user = null;
+		response.clearCookie('connect.sid');
+		response.sendStatus(200);
+	});
 });
 
 router.post('/api/forgot-password', checkNotLoggedIn, (request, response) => {

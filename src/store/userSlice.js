@@ -77,8 +77,7 @@ export const getSessID = createAsyncThunk(
 	"users/getSessId",
 	async (_, thunkAPI) => {
 		const response = await API.post('/get-session')
-		const session = response?.result;
-		if (session !== null && session !== undefined) {
+		if (response.authenticated) {
 			return null;
 		} else {
 			return thunkAPI.rejectWithValue('No active session')
