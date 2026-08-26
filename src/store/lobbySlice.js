@@ -8,8 +8,9 @@ export const fetchUserIdAndChips = createAsyncThunk(
 			UserAPI.getUserId(),
 			LobbyAPI.getUserChips()
 		]);
+		const idVal = idRes.id;
 
-		return { idRes, chipsRes };
+		return { idVal, chipsRes };
 	}
 );
 
@@ -50,6 +51,7 @@ const initialLobbyState = () => ({
 	userId: null,
 	chips: 10000,
 	isFetching: false,
+	isSuccessful: false,
 	isError: false,
 	errorMessage: "",
 	rooms: [],
@@ -64,6 +66,7 @@ export const lobbySlice = createSlice({
 			state.userId = nextState.userId;
 			state.chips = nextState.chips;
 			state.isFetching = nextState.isFetching;
+			state.isSuccessful = nextState.isSuccessful;
 			state.isError = nextState.isError;
 			state.errorMessage = nextState.errorMessage;
 			state.rooms = state.rooms;
@@ -98,7 +101,8 @@ export const lobbySlice = createSlice({
 		})
 		builder.addCase(createNewGame.fulfilled, (state, action) => {
 			state.isFetching = false;
-			state.rooms = [...state.rooms, action.payload.game];
+			state.isSuccessful = true;
+			state.rooms = [...state.rooms, action.payload];
 		})
 		builder.addCase(createNewGame.pending, (state) => {
 			state.isFetching = true;
