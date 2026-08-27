@@ -8,7 +8,7 @@ export const toastSlice = createSlice({
 	reducers: {
 		createToast: (state, action) => {
 			state.toasts.push({
-				id: Date.now(),
+				id: `${Date.now()}-${action.payload.message}`,
 				message: action.payload.message,
 				type: action.payload.type,
 				duration: action.payload.duration || 4000

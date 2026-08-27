@@ -15,7 +15,7 @@ export default function AuthFormLayout({
             <Navbar />
             <div>
                 <main>
-                    <h2 className={`auth-heading ${className}`}>
+                    <h2 className={`auth-heading ${className}-heading`}>
                         {heading}
                     </h2>
                     {subheading &&
@@ -24,7 +24,7 @@ export default function AuthFormLayout({
                         </p>
                     }
                     <div className="form-container">
-                        <div className={`auth-form ${className}`}>
+                        <div className={`auth-form ${className}-form`}>
                             {children}
                         </div>
                     </div>

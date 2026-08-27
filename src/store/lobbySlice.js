@@ -74,8 +74,8 @@ export const lobbySlice = createSlice({
 	},
 	extraReducers: (builder) => {
 		builder.addCase(fetchUserIdAndChips.fulfilled, (state, action) => {
-			const { idRes, chipsRes } = action.payload;
-			state.userId = idRes;
+			const { idVal, chipsRes } = action.payload;
+			state.userId = idVal;
 			state.chips = chipsRes;
 			state.isFetching = false;
 		})
