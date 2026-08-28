@@ -27,6 +27,9 @@ const getPlayerStatuses = db => player_gameid =>
 				where: { player_gameid },
 			},
 		],
+		order: [
+			[{ model: db.ok_players, as: 'Players' }, 'player_id', 'ASC' ],
+		],
 	});
 	
 const joinGame = db => (player_gameid, player_userid) =>
