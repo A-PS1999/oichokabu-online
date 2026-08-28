@@ -76,7 +76,7 @@ router.post('/api/pregame-lobby/:gameId/toggle-ready', checkLoggedIn, checkGameP
 			PreGameSockets.playerUnready(gameId, userId, username);
 		}
 		
-		return response.json(result);
+		return response.sendStatus(200);
 	})
 	.catch(error => console.log(error));
 });

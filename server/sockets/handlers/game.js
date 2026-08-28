@@ -49,8 +49,9 @@ module.exports = (gameSockets) => {
     };
 
     const startGame = async (gameId) => {
+        if (ongoingGames[gameId]) return;
         try {
-            Game.runGame(gameId);
+            await Game.runGame(gameId);
             const ok_users = await Game.getUserIdsAndUsernames(gameId);
             const constants = await Game.getGameConstants(gameId);
             gameGlobals.set(gameId, game_engine.start(ok_users, constants));
@@ -69,7 +70,7 @@ module.exports = (gameSockets) => {
         clearInterval(game.timer);
         delete ongoingGames[gameId];
 
-        broadcastToGame(gameId, socket => socket.emit(`game:${gameId}:end-game`));
+        broadcastToGame(gameId, (socket, _userId) => socket.emit(`game:${gameId}:end-game`));
 
         gameGlobals.delete(gameId);
         gameSockets.delete(gameId);
@@ -83,10 +84,15 @@ module.exports = (gameSockets) => {
         });
     };
 
-    const rejoinGame = (gameId, userId, socket, ack) => {
-        if (!gameGlobals.has(gameId)) {
+    const rejoinGame = async (gameId, userId, socket, ack) => {
+        const gameStatus = await Game.getStatus(gameId);
+        if (gameStatus === 'ended') {
             socket.emit(`game:${gameId}:end-game`);
             return ack?.({ ok: false, reason: 'GAME_ENDED' });
+        }
+        if (gameStatus === 'started') {
+            setGameSockets(gameId, userId, socket);
+            return ack?.({ ok: true });
         }
         setGameSockets(gameId, userId, socket);
         const data = game_engine.getGameData(gameGlobals.get(gameId), userId);
@@ -124,7 +130,8 @@ module.exports = (gameSockets) => {
     };
 
     const removePlayer = (gameId, userId) => {
-        game_engine.handleRemovePlayer(gameGlobals.get(gameId), userId);
+        const game = gameGlobals.get(gameId);
+        if (game) game_engine.handleRemovePlayer(game, userId);
         Game.removePlayer(gameId, userId).then(_ => {
             broadcastToGame(gameId, (socket, uid) => {
                 const data = game_engine.getGameData(gameGlobals.get(gameId), uid);
