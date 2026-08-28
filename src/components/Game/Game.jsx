@@ -33,7 +33,6 @@ export default function Game() {
         gameId,
         currentPhase,
         playerChips: playerStatus?.chips,
-        isPickDealer,
         playerAuth
     });
 
