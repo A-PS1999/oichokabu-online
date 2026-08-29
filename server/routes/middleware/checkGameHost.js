@@ -3,7 +3,9 @@ module.exports = (_, response, next) => {
 		if (response.locals.player.host && 'closed' !== game.status) {
 			return next();
 		} else {
-			return response.sendStatus(401);
+			return response.status(401).json({
+				errorMsg: "You are not the host, or the game has ended."
+			});
 		}
 	});
 };
