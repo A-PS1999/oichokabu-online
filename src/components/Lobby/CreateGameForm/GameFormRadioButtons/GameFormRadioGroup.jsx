@@ -1,57 +1,31 @@
 import React from "react";
 
-export default function GameFormRadioGroup({ onChange }) {
+export default function GameFormRadioGroup({ currValue, onChange }) {
 
-    return (
-        <div className="game-form__radio-group">
-			<label className='game-form__radio-group-label game-form__radio-subgroup'>
-				<input 
-					type="radio"
-					name="playerCap"
-					value="2"
-					className="game-form__radio-subgroup-input"
-                    onChange={e => {
-						onChange(parseInt(e.target.value))
-					}}
-				/>
-				2
-			</label>
-			<label className='game-form__radio-group-label game-form__radio-subgroup'>
-				<input 
-					type="radio"
-					name="playerCap"
-					value="3"
-					className="game-form__radio-subgroup-input"
-                    onChange={e => {
-						onChange(parseInt(e.target.value))
-					}}
-				/>
-				3
-			</label>
-			<label className='game-form__radio-group-label game-form__radio-subgroup'>
-				<input 
-					type="radio"
-					name="playerCap"
-					value="4"
-					className="game-form__radio-subgroup-input"
-                    onChange={e => {
-						onChange(parseInt(e.target.value))
-					}}
-				/>
-				4
-			</label>
-			<label className='game-form__radio-group-label game-form__radio-subgroup'>
-				<input 
-					type="radio"
-					name="playerCap"
-					value="5"
-					className="game-form__radio-subgroup-input"
-                    onChange={e => {
-						onChange(parseInt(e.target.value))
-					}}
-				/>
-				5
-			</label>
+	const buttonVals = ["2", "3", "4", "5"];
+
+	return (
+		<div className="game-form__radio-group">
+			<fieldset>
+				<legend>Select the player cap</legend>
+				{buttonVals.map((val, idx) => {
+					return (
+						<label key={idx} className='game-form__radio-group-label game-form__radio-subgroup'>
+							<input
+								type="radio"
+								name="playerCap"
+								value={val}
+								checked={currValue == val}
+								className="game-form__radio-subgroup-input"
+								onChange={e => {
+									onChange(parseInt(e.target.value))
+								}}
+							/>
+							{val}
+						</label>
+					)
+				})}
+			</fieldset>
 		</div>
-    )
+	)
 }

@@ -3,48 +3,36 @@ import { PregameAPI } from '../services';
 
 export const fetchPlayerInfo = createAsyncThunk(
     "pregame/fetchPlayerInfo",
-    async (gameID, thunkAPI) => {
-        try {
-            const response = await PregameAPI.getPlayerInfo(gameID);
-            let result = response.data;
-
-            if (response.status === 200) {
-                return result;
-            } else {
-                throw thunkAPI.rejectWithValue(response.status);
-            }
-        } catch (error) {
-            return thunkAPI.rejectWithValue(error.message);
-        }
+    async (gameID) => {
+        return await PregameAPI.getPlayerInfo(gameID);
     }
 )
 
 export const fetchPlayerStatuses = createAsyncThunk(
     "pregame/fetchPlayerStatuses",
-    async (gameID, thunkAPI) => {
-        try {
-            const response = await PregameAPI.getPlayerStatuses(gameID);
-            let result = response.data;
-
-            if (response.status === 200) {
-                return result;
-            } else {
-                throw thunkAPI.rejectWithValue(response.status);
-            }
-        } catch (error) {
-            return thunkAPI.rejectWithValue(error.message)
-        }
+    async (gameID) => {
+        return await PregameAPI.getPlayerStatuses(gameID);
     }
 )
 
 export const handleStartGame = createAsyncThunk(
     "pregame/handleStartGame",
-    async (gameID, thunkAPI) => {
-        try {
-            await PregameAPI.postGameStart(gameID);
-        } catch (error) {
-            return thunkAPI.rejectWithValue(error.message);
-        }
+    async (gameID) => {
+        return await PregameAPI.postGameStart(gameID);
+    }
+)
+
+export const toggleReady = createAsyncThunk(
+    "pregame/toggleReady",
+    async (gameID) => {
+        return await PregameAPI.postReadyStatus(gameID);
+    }
+)
+
+export const leaveGame = createAsyncThunk(
+    "pregame/leaveGame",
+    async (gameID) => {
+        return await PregameAPI.postLeaveGame(gameID);
     }
 )
 
@@ -62,13 +50,22 @@ export const pregameSlice = createSlice({
     name: 'pregame',
     initialState: initialPregameState(),
     reducers: {
-
+        pregameStateReset: (state) => {
+            const nextState = initialPregameState();
+            state.ready = nextState.ready;
+            state.playerInfo = nextState.playerInfo;
+            state.playerStatuses = nextState.playerStatuses;
+            state.gameStatus = nextState.gameStatus;
+            state.isFetching = nextState.isFetching;
+            state.isError = nextState.isError;
+            state.errorMessage = nextState.errorMessage;
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(fetchPlayerInfo.fulfilled, (state, action) => {
-			state.isFetching = false;
-			state.playerInfo = action.payload;
-		})
+            state.isFetching = false;
+            state.playerInfo = action.payload;
+        })
         builder.addCase(fetchPlayerInfo.pending, (state) => {
             state.isFetching = true;
         })
@@ -95,12 +92,35 @@ export const pregameSlice = createSlice({
         builder.addCase(handleStartGame.pending, (state) => {
             state.isFetching = true;
         })
-        builder.addCase(handleStartGame.rejected, (state) => {
+        builder.addCase(handleStartGame.rejected, (state, action) => {
             state.isFetching = false;
             state.isError = true;
-            state.errorMessage = "Only the host can start the game.";
+            state.errorMessage = action.payload;
+        })
+        builder.addCase(toggleReady.pending, (state) => {
+            state.isFetching = true;
+        })
+        builder.addCase(toggleReady.fulfilled, (state) => {
+            state.isFetching = false;
+        })
+        builder.addCase(toggleReady.rejected, (state, action) => {
+            state.isFetching = false;
+            state.isError = true;
+            state.errorMessage = action.payload;
+        })
+        builder.addCase(leaveGame.pending, (state) => {
+            state.isFetching = true;
+        })
+        builder.addCase(leaveGame.fulfilled, (state) => {
+            state.isFetching = false;
+        })
+        builder.addCase(leaveGame.rejected, (state, action) => {
+            state.isFetching = false;
+            state.isError = true;
+            state.errorMessage = action.payload;
         })
     },
 })
 
+export const { pregameStateReset } = pregameSlice.actions;
 export const pregameSelector = state => state.pregame;

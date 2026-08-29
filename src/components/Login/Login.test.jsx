@@ -33,9 +33,9 @@ describe('Login', () => {
     const loginDetails = { username: "test_user", password: "testpass" };
 
     it('redirects the user when successful', async () => {
-        userEvent.type(getUserInput(), loginDetails.username);
-        userEvent.type(getPasswordInput(), loginDetails.password);
-        userEvent.click(getSubmitBtn());
+        await userEvent.type(getUserInput(), loginDetails.username);
+        await userEvent.type(getPasswordInput(), loginDetails.password);
+        await userEvent.click(getSubmitBtn());
 
         await screen.findByText("Create or join a game!")
     })
@@ -50,16 +50,16 @@ describe('Login', () => {
             })
         )
 
-        userEvent.type(getUserInput(), loginDetails.username);
-        userEvent.type(getPasswordInput(), "wrongpass");
-        userEvent.click(getSubmitBtn());
+        await userEvent.type(getUserInput(), loginDetails.username);
+        await userEvent.type(getPasswordInput(), "wrongpass");
+        await userEvent.click(getSubmitBtn());
 
         await screen.findByText("Request failed with status code 503: Username or password may be incorrect.");
     })
 
-    it('goes to forgot password page on link click', () => {
+    it('goes to forgot password page on link click', async () => {
         const forgotPasswordLink = screen.getByRole('link', { name: /click here/i });
-        userEvent.click(forgotPasswordLink);
+        await userEvent.click(forgotPasswordLink);
 
         screen.findByText("Reset Your Password");
     })

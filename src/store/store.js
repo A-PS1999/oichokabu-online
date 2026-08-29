@@ -5,6 +5,7 @@ import { toastSlice } from './toastSlice';
 import { modalSlice } from './modalSlice';
 import { pregameSlice } from './pregameSlice';
 import { gameSlice } from './gameSlice';
+import { toastMiddleware } from './middleware';
 
 export const store = configureStore({
 	reducer: {
@@ -15,4 +16,6 @@ export const store = configureStore({
 		pregame: pregameSlice.reducer,
 		game: gameSlice.reducer,
 	},
+	middleware: (getDefaultMiddleware) =>
+		getDefaultMiddleware().prepend(toastMiddleware.middleware)
 })

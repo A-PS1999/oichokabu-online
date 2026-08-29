@@ -1,59 +1,53 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { UserAPI, LobbyAPI } from '../services/api-functions.js';
+import { UserAPI, LobbyAPI, PregameAPI } from '../services/api-functions.js';
 
 export const fetchUserIdAndChips = createAsyncThunk(
 	"lobby/fetchUserId",
 	async (_, thunkAPI) => {
 		try {
-			const response = await UserAPI.getUserId();
-			let idResult = response.data.id;
-			const chips = await LobbyAPI.getUserChips();
-			let chipsResult = chips.data;
+			const [idRes, chipsRes] = await Promise.all([
+				UserAPI.getUserId(),
+				LobbyAPI.getUserChips()
+			]);
+			const idVal = idRes.id;
 
-			if (response.status === 200) {
-				return { idResult, chipsResult };
-			} else {
-				throw thunkAPI.rejectWithValue(response.status);
-			}
+			return { idVal, chipsRes };
 		} catch (error) {
-			return thunkAPI.rejectWithValue(error.message);
+			return thunkAPI.rejectWithValue(error.errorMsg);
 		}
 	}
 );
 
 export const fetchGames = createAsyncThunk(
 	"lobby/fetchGames",
-	async (_, thunkAPI) => {
-		try {
-			const response = await LobbyAPI.getGames();
-			let games = response.data;
-		
-			if (response.status === 200) {
-				return games;
-			} else {
-				throw thunkAPI.rejectWithValue(response.status)
-			}
-		} catch (error) {
-			return thunkAPI.rejectWithValue(error.message)
-		}
+	async () => {
+		return await LobbyAPI.getGames();
 	}
 );
 
 export const createNewGame = createAsyncThunk(
 	"lobby/createNewGame",
-	async ({roomName, playerCap, turnMax, betMax}, thunkAPI) => {
-		try {
-			const response = await LobbyAPI.postNewGame(roomName, playerCap, turnMax, betMax);
-			let { game } = response.data;
-			
-			if (response.status === 200) {
-				return { game }
-			} else {
-				throw thunkAPI.rejectWithValue(response.status)
-			}
-		} catch (error) {
-			return thunkAPI.rejectWithValue(error.message)
-		}
+	async ({ roomName, playerCap, turnMax, betMax }) => {
+		return await LobbyAPI.postNewGame(roomName, playerCap, turnMax, betMax);
+	}
+);
+
+export const joinGame = createAsyncThunk(
+	"lobby/joinGame",
+	async (gameId) => {
+		return await PregameAPI.postJoinGame(gameId);
+	}
+);
+
+export const resetUserChips = createAsyncThunk(
+	"lobby/resetUserChips",
+	async (chips) => {
+		await LobbyAPI.resetUserChips(chips);
+		const [idRes, chipsRes] = await Promise.all([
+			UserAPI.getUserId(),
+			LobbyAPI.getUserChips()
+		]);
+		return { idRes, chipsRes };
 	}
 );
 
@@ -61,6 +55,7 @@ const initialLobbyState = () => ({
 	userId: null,
 	chips: 10000,
 	isFetching: false,
+	isSuccessful: false,
 	isError: false,
 	errorMessage: "",
 	rooms: [],
@@ -71,16 +66,21 @@ export const lobbySlice = createSlice({
 	initialState: initialLobbyState(),
 	reducers: {
 		lobbyStateReset(state) {
-			return {
-				...initialLobbyState(),
-				rooms: state.rooms
-			}
+			const nextState = initialLobbyState();
+			state.userId = nextState.userId;
+			state.chips = nextState.chips;
+			state.isFetching = nextState.isFetching;
+			state.isSuccessful = nextState.isSuccessful;
+			state.isError = nextState.isError;
+			state.errorMessage = nextState.errorMessage;
+			state.rooms = state.rooms;
 		}
 	},
 	extraReducers: (builder) => {
 		builder.addCase(fetchUserIdAndChips.fulfilled, (state, action) => {
-			state.userId = action.payload.idResult;
-			state.chips = action.payload.chipsResult;
+			const { idVal, chipsRes } = action.payload;
+			state.userId = idVal;
+			state.chips = chipsRes;
 			state.isFetching = false;
 		})
 		builder.addCase(fetchUserIdAndChips.pending, (state, action) => {
@@ -105,12 +105,38 @@ export const lobbySlice = createSlice({
 		})
 		builder.addCase(createNewGame.fulfilled, (state, action) => {
 			state.isFetching = false;
-			state.rooms = { ...state, rooms: { ...state.rooms, ...action.payload } };
+			state.isSuccessful = true;
+			state.rooms = [...state.rooms, action.payload];
 		})
 		builder.addCase(createNewGame.pending, (state) => {
 			state.isFetching = true;
 		})
 		builder.addCase(createNewGame.rejected, (state, action) => {
+			state.isFetching = false;
+			state.isError = true;
+			state.errorMessage = action.payload;
+		})
+		builder.addCase(joinGame.pending, (state) => {
+			state.isFetching = true;
+		})
+		builder.addCase(joinGame.fulfilled, (state) => {
+			state.isFetching = false;
+		})
+		builder.addCase(joinGame.rejected, (state, action) => {
+			state.isFetching = false;
+			state.isError = true;
+			state.errorMessage = action.payload;
+		})
+		builder.addCase(resetUserChips.pending, (state) => {
+			state.isFetching = true;
+		})
+		builder.addCase(resetUserChips.fulfilled, (state, action) => {
+			const { idRes, chipsRes } = action.payload;
+			state.userId = idRes;
+			state.chips = chipsRes;
+			state.isFetching = false;
+		})
+		builder.addCase(resetUserChips.rejected, (state, action) => {
 			state.isFetching = false;
 			state.isError = true;
 			state.errorMessage = action.payload;

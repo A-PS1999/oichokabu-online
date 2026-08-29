@@ -7,4 +7,14 @@ const API = axios.create({
 	withCredentials: true
 });
 
+API.interceptors.response.use(
+	(response) => {
+		return response.data;
+	},
+	(error) => {
+		const data = error.response ? error.response.data : "API call error";
+		return Promise.reject(data);
+	}
+)
+
 export default API;

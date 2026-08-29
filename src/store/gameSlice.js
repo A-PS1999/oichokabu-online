@@ -19,25 +19,35 @@ const initialGameState = {
     playerAuth: null,
     gameId: null,
     isFetching: false,
-	isError: false,
-	errorMessage: "",
+    isError: false,
+    errorMessage: "",
 }
 
 export const fetchPlayerAuth = createAsyncThunk(
     "game/fetchPlayerAuth",
-    async (gameId, thunkAPI) => {
-        try {
-            const response = await GameAPI.getPlayerAuth(gameId);
-            let playerData = response.data;
+    async (gameId) => {
+        return await GameAPI.getPlayerAuth(gameId);
+    }
+)
 
-            if (response.status === 200) {
-                return playerData;
-            } else {
-                throw thunkAPI.rejectWithValue(response.status)
-            }
-        } catch (error) {
-            return thunkAPI.rejectWithValue(error.message);
-        }
+export const postCardBet = createAsyncThunk(
+    "game/postCardBet",
+    async ({ gameId, betData }) => {
+        return await GameAPI.postCardBet(gameId, betData);
+    }
+)
+
+export const postThirdCardChoice = createAsyncThunk(
+    "game/postThirdCardChoice",
+    async ({ gameId, choiceMade, isDealer }) => {
+        return await GameAPI.postThirdCardChoice(gameId, choiceMade, isDealer);
+    }
+)
+
+export const postDealerCardSelected = createAsyncThunk(
+    "game/postDealerCardSelected",
+    async ({ gameId, cardId, cardVal }) => {
+        return await GameAPI.postDealerCardSelected(gameId, cardId, cardVal);
     }
 )
 
@@ -49,10 +59,7 @@ export const gameSlice = createSlice({
             state.gameId = action.payload;
         },
         setCurrentSelection(state, action) {
-            return {
-                ...state,
-                currentlySelectedCard: action.payload,
-            }
+            state.currentlySelectedCard = action.payload;
         },
         setHasClicked(state, action) {
             state.hasClicked = action.payload;
@@ -89,15 +96,32 @@ export const gameSlice = createSlice({
         builder.addCase(fetchPlayerAuth.rejected, (state, action) => {
             state.isFetching = false;
             state.isError = true;
-            state.errorMessage = action.payload;
+            state.errorMessage = action.error.message;
         })
     }
 })
 
 const selectCardBets = state => state.game.cardBets;
 const selectCurrentDealer = state => state.game.currentDealer;
-const selectPlayers = state => state.game.Players;
+export const selectPlayers = state => state.game.Players;
 const selectPlayerId = state => state.game.playerAuth;
+
+export const selectCurrentTurn = state => state.game.currentTurn;
+export const selectTurnMax = state => state.game.turnMax;
+export const selectBetMax = state => state.game.betMax;
+export const selectTotalBetAmount = state => state.game.totalBetAmount;
+export const selectCurrentlySelectedCard = state => state.game.currentlySelectedCard;
+export const selectIsPickDealer = state => state.game.isPickDealer;
+export const selectPickDealerCards = state => state.game.pickDealerCards;
+export const selectCardsOnBoard = state => state.game.cardsOnBoard;
+export const selectCurrentPhase = state => state.game.currentPhase;
+export const selectHasClicked = state => state.game.hasClicked;
+export const selectCurrentPlayer = state => state.game.currentPlayer;
+export const selectCurrentDealerData = state => state.game.currentDealer;
+export const selectPlayerAuth = state => state.game.playerAuth;
+export const selectGameId = state => state.game.gameId;
+export const selectGameIsError = state => state.game.isError;
+export const selectGameErrorMessage = state => state.game.errorMessage;
 
 export const gameSelector = state => state.game;
 

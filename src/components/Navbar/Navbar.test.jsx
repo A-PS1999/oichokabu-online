@@ -36,7 +36,7 @@ describe('Navbar', () => {
         await screen.findByText("Log Out");
     })
 
-    it("renders with 'Sign Up' and 'Log In' when no session exists", () => {
+    it("renders with 'Sign Up' and 'Log In' when no session exists", async () => {
         server.use(
             rest.post(`${serverAddress}/api/get-session`, (req, res, ctx) => {
                 return res(
@@ -44,34 +44,34 @@ describe('Navbar', () => {
                 )
             })
         )
-        screen.findByText("Sign Up");
-        screen.findByText("Log In");
+        await screen.findByText("Sign Up");
+        await screen.findByText("Log In");
     })
 
-    it("directs to lobby when 'Lobby' clicked", () => {
-        userEvent.click(getLobbyLink());
+    it("directs to lobby when 'Lobby' clicked", async () => {
+        await userEvent.click(getLobbyLink());
 
-        screen.findByText("Create or join a game!");
+        await screen.findByText("Create or join a game!");
     })
 
-    it("directs to front page when 'Oicho Kabu Online' clicked", () => {
-        userEvent.click(getLobbyLink());
-        screen.findByText("Create or join a game!");
+    it("directs to front page when 'Oicho Kabu Online' clicked", async () => {
+        await userEvent.click(getLobbyLink());
+        await screen.findByText("Create or join a game!");
 
-        userEvent.click(getFrontPageLink());
-        screen.findByText("What is Oicho Kabu?");
+        await userEvent.click(getFrontPageLink());
+        await screen.findByText("What is Oicho Kabu?");
     })
 
-    it("directs to front page and changes navbar buttons when 'Log Out' clicked", () => {
-        userEvent.click(getLobbyLink());
-        screen.findByText("Create or join a game!");
+    it("directs to front page and changes navbar buttons when 'Log Out' clicked", async () => {
+        await userEvent.click(getLobbyLink());
+        await screen.findByText("Create or join a game!");
 
-        userEvent.click(getLogoutLink());
-        screen.findByText("Log In");
-        screen.findByText("What is Oicho Kabu?");
+        await userEvent.click(getLogoutLink());
+        await screen.findByText("Log In");
+        await screen.findByText("What is Oicho Kabu?");
     })
 
-    it('directs to login and sign up page when respective links clicked', () => {
+    it('directs to login and sign up page when respective links clicked', async () => {
         server.use(
             rest.post(`${serverAddress}/api/get-session`, (req, res, ctx) => {
                 return res(
@@ -79,11 +79,11 @@ describe('Navbar', () => {
                 )
             })
         )
-        userEvent.click(getLoginLink());
-        screen.findByText("Forgotten your password?");
+        await userEvent.click(getLoginLink());
+        await screen.findByText("Forgotten your password?");
 
-        userEvent.click(getSignUpLink());
-        screen.findByRole('heading', { level: 2, name: /sign up/i })
+        await userEvent.click(getSignUpLink());
+        await screen.findByRole('heading', { level: 2, name: /sign up/i })
     })
 })
 

@@ -3,7 +3,7 @@
 
 .modal {
 
-	&--visible {
+	&--backdrop {
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -19,15 +19,16 @@
 		animation: appearSlowly 0.1s ease-out;
 	}
 
-	&--hidden {
-		display: none;
-	}
-
 	&__inner-container {
 		background-color: var.$color-white;
 		padding: 2.5rem;
 		border-radius: 1rem;
 		max-width: 75%;
+
+		&:focus-visible {
+			outline: 2px solid var.$color-black;
+            outline-offset: 2px;
+		}
 	}
 
 	&__button {
@@ -36,6 +37,7 @@
 		border-radius: 1rem;
 		padding: 0.4rem;
 		border: none;
+		cursor: pointer;
 
 		&:hover {
 			background-color: var.$light-grey;

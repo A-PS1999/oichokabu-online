@@ -4,71 +4,38 @@ import { API, refreshSocketConnection } from '../services';
 export const registerUser = createAsyncThunk(
 	"users/registerUser",
 	async ({ username, email, password, confirmPassword }, thunkAPI) => {
-		try {
-			if (password !== confirmPassword) {
-				throw thunkAPI.rejectWithValue("Password entries do not match")
-			}
-			
-			const response = await API.post('/register', { username, email, password })
-			let { auth } = response.data;
-		
-			if (response.status === 200) {
-				refreshSocketConnection();
-				return { ...auth, username: username, email: email, password: password }
-			} else {
-				throw thunkAPI.rejectWithValue(response.status)
-			}
-		} catch (error) {
-			return thunkAPI.rejectWithValue(error.message)
+		if (password !== confirmPassword) {
+			throw thunkAPI.rejectWithValue("Password entries do not match")
 		}
+
+		const { auth } = await API.post('/register', { username, email, password });
+
+		refreshSocketConnection();
+		return { ...auth, username: username, email: email, password: password }
 	}
 );
 
 export const loginUser = createAsyncThunk(
 	"users/login",
 	async ({ username, password }, thunkAPI) => {
-		try {
-			const response = await API.post('/log-in', { username, password })
-			let data = response.data;
-			
-			if (response.status === 200) {
-				refreshSocketConnection();
-				return data
-			} else {
-				throw thunkAPI.rejectWithValue(response.status)
-			}
-		} catch (error) {
-			return thunkAPI.rejectWithValue(error.message)
-		}
+		const response = await API.post('/log-in', { username, password })
+
+		refreshSocketConnection();
+		return response;
 	}
 );
 
 export const logoutUser = createAsyncThunk(
 	"users/logout",
 	async (_, thunkAPI) => {
-		try {
-			const response = await API.post('/log-out');
-			if (response.status === 200) {
-				return null;
-			}
-		} catch (error) {
-			return thunkAPI.rejectWithValue(error.message)
-		}
+		return await API.post('/log-out');
 	}
 );
 
 export const submitForgotPassword = createAsyncThunk(
 	"users/sendPasswordResetEmail",
 	async ({ email }, thunkAPI) => {
-		try {
-			const response = await API.post('/forgot-password', { email })
-
-			if (response.status === 204) {
-				return null;
-			}
-		} catch (error) {
-			return thunkAPI.rejectWithValue(error.message)
-		}
+		return await API.post('/forgot-password', { email })
 	}
 );
 
@@ -109,15 +76,11 @@ export const verifyResetPassword = createAsyncThunk(
 export const getSessID = createAsyncThunk(
 	"users/getSessId",
 	async (_, thunkAPI) => {
-		try {
-			const response = await API.post('/get-session')
-			if (response.status === 200 && response.data.result.sid != null) {
-				return null;
-			} else {
-				throw thunkAPI.rejectWithValue(response.status)
-			}
-		} catch (error) {
-			return thunkAPI.rejectWithValue(error.message)
+		const response = await API.post('/get-session')
+		if (response.authenticated) {
+			return null;
+		} else {
+			return thunkAPI.rejectWithValue('No active session')
 		}
 	}
 )
@@ -125,8 +88,6 @@ export const getSessID = createAsyncThunk(
 const initialUserSliceState = () => ({
 	username: "",
 	email: "",
-	password: "",
-	confirmPassword: "",
 	isLoggedIn: false,
 	isFetching: false,
 	isSuccessful: false,
@@ -138,12 +99,16 @@ export const userSlice = createSlice({
 	name: 'user',
 	initialState: initialUserSliceState(),
 	reducers: {
-		userStateReset: (state) => initialUserSliceState(),
+		userStateReset: (state) => {
+			state.username = "";
+			state.email = "";
+			state.isFetching = false;
+			state.isSuccessful = false;
+			state.isError = false;
+			state.errorMessage = "";
+		},
 		toggleLoggedIn(state) {
-			return {
-				...state,
-				isLoggedIn: !state.isLoggedIn
-			}
+			state.isLoggedIn = !state.isLoggedIn;
 		}
 	},
 	extraReducers: (builder) => {
@@ -152,7 +117,6 @@ export const userSlice = createSlice({
 			state.isSuccessful = true;
 			state.username = action.payload.username;
 			state.email = action.payload.email;
-			state.password = action.payload.password;
 		})
 		builder.addCase(registerUser.pending, (state) => {
 			state.isFetching = true;
@@ -166,10 +130,9 @@ export const userSlice = createSlice({
 			state.isFetching = false;
 			state.isSuccessful = true;
 			state.username = action.payload.username;
-			state.password = action.payload.password;
 		})
 		builder.addCase(loginUser.pending, (state) => {
-			state.isPending = true;
+			state.isFetching = true;
 		})
 		builder.addCase(loginUser.rejected, (state, action) => {
 			state.isFetching = false;
@@ -177,8 +140,13 @@ export const userSlice = createSlice({
 			state.errorMessage = `${action.payload}: Username or password may be incorrect.`;
 		})
 		builder.addCase(logoutUser.fulfilled, (state) => {
+			state.username = "";
+			state.email = "";
 			state.isLoggedIn = false;
+			state.isFetching = false;
 			state.isSuccessful = true;
+			state.isError = false;
+			state.errorMessage = "";
 		})
 		builder.addCase(logoutUser.pending, (state) => {
 			state.isFetching = true;

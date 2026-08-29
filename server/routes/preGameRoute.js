@@ -18,7 +18,7 @@ router.get('/api/pregame-lobby/:gameId/player-status', checkLoggedIn, (request, 
 );
 
 router.post('/api/pregame-lobby/:gameId/join-game', checkLoggedIn, (request, response) => {
-	const { gameId } = request.params;
+	const gameId = Number(request.params.gameId);
 	const userId = response.locals.user.id;
 	const username = response.locals.user.username;
 	return PreGameDB.joinGame(gameId, userId)
@@ -31,7 +31,7 @@ router.post('/api/pregame-lobby/:gameId/join-game', checkLoggedIn, (request, res
 );
 
 router.post('/api/pregame-lobby/:gameId/leave-game', checkLoggedIn, checkGamePlayer, (request, response) => {
-	const { gameId } = request.params;
+	const gameId = Number(request.params.gameId);
 	const hostStatus = response.locals.player.host;
 	const userId = response.locals.user.id;
 	const username = response.locals.user.username;
@@ -46,7 +46,7 @@ router.post('/api/pregame-lobby/:gameId/leave-game', checkLoggedIn, checkGamePla
 );
 
 router.post('/api/pregame-lobby/:gameId/start-game', checkLoggedIn, checkGamePlayer, checkGameHost, (request, response) => {
-	const { gameId } = request.params;
+	const gameId = Number(request.params.gameId);
 	const userId = response.locals.user.id;
 	const username = response.locals.user.username;
 	return PreGameDB.setGameReady(gameId)
@@ -66,7 +66,7 @@ router.post('/api/pregame-lobby/:gameId/start-game', checkLoggedIn, checkGamePla
 );
 
 router.post('/api/pregame-lobby/:gameId/toggle-ready', checkLoggedIn, checkGamePlayer, (request, response) => {
-	const { gameId } = request.params;
+	const gameId = Number(request.params.gameId);
 	const userId = response.locals.user.id;
 	const username = response.locals.user.username;
 	return PreGameDB.togglePlayerReady(gameId, userId).then(result => {
@@ -76,7 +76,7 @@ router.post('/api/pregame-lobby/:gameId/toggle-ready', checkLoggedIn, checkGameP
 			PreGameSockets.playerUnready(gameId, userId, username);
 		}
 		
-		return response.json(result);
+		return response.sendStatus(200);
 	})
 	.catch(error => console.log(error));
 });

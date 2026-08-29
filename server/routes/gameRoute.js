@@ -9,20 +9,20 @@ const sendUserId = require('./middleware/sendUserId');
 router.get('/api/game/:gameId/authenticate-player', checkLoggedIn, checkGamePlayer, sendUserId);
 
 router.post('/api/game/:gameId/start', checkLoggedIn, checkGamePlayer, checkGameHost, (request, response) => {
-    const { gameId } = request.params;
+    const gameId = Number(request.params.gameId);
     GameSockets.startGame(gameId);
     response.sendStatus(204);
 })
 
 router.post('/api/game/:gameId/update', checkLoggedIn, checkGamePlayer, (request, response) => {
-    const { gameId } = request.params;
+    const gameId = Number(request.params.gameId);
     const id = response.locals.user.id;
     GameSockets.updateGame(gameId, id);
     response.sendStatus(204);
 })
 
 router.post('/api/game/:gameId/pickdealer-card-selected', checkLoggedIn, checkGamePlayer, (request, response) => {
-    const { gameId } = request.params;
+    const gameId = Number(request.params.gameId);
     const cardValue = request.body.cardVal;
     const cardId = request.body.cardId;
     const userId = response.locals.user.id;
@@ -31,15 +31,19 @@ router.post('/api/game/:gameId/pickdealer-card-selected', checkLoggedIn, checkGa
 })
 
 router.post('/api/game/:gameId/card-bet', checkLoggedIn, (request, response) => {
-    const { gameId } = request.params;
+    const gameId = Number(request.params.gameId);
     const userId = response.locals.user.id;
-    const { betAmount: { current_card: { id: cardId, ownerColumn }, betAmount } } = request.body;
+    const { currentCard, betAmount } = request.body.betData;
+    if (!currentCard) {
+        return response.status(400).json({ error: "Card selection not present" });
+    }
+    const { id: cardId, ownerColumn } = currentCard;
     GameSockets.cardBetMade(gameId, userId, cardId, ownerColumn, betAmount);
     response.sendStatus(204);
 })
 
 router.post('/api/game/:gameId/decide-third-card', checkLoggedIn, (request, response) => {
-    const { gameId } = request.params;
+    const gameId = Number(request.params.gameId);
     const userId = response.locals.user.id;
     const choiceMade = request.body.choiceMade;
     const isDealer = request.body.isDealer;
@@ -48,7 +52,7 @@ router.post('/api/game/:gameId/decide-third-card', checkLoggedIn, (request, resp
 })
 
 router.post('/api/game/:gameId/remove-player', checkLoggedIn, checkGamePlayer, (request, response) => {
-    const { gameId } = request.params;
+    const gameId = Number(request.params.gameId);
     const userId = response.locals.user.id;
     GameSockets.removePlayer(gameId, userId);
     response.sendStatus(204);

@@ -1,5 +1,5 @@
 @use "./../../../sass/abstracts/variables" as var;
-@use "./../Game.scss";
+@use "../StartScreen/StartScreen.scss";
 
 .pickdealer-container {
     @extend .startscreen;

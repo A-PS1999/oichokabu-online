@@ -17,14 +17,19 @@ const findOngoingGames = db => () =>
 	
 const addGame = db => (player_userid, room_name, player_cap, turn_max, bet_max) =>
 	db.ok_games.create({ room_name, player_cap, turn_max, bet_max, status: 'open' }).then(game =>
-		Promise.resolve(
-			db.ok_players.create({
-				player_userid,
-				player_gameid: game.game_id,
-				ready: true,
-				host: true,
+		db.ok_players.create({
+			player_userid,
+			player_gameid: game.game_id,
+			ready: true,
+			host: true,
+		}).then(() =>
+			db.ok_games.findByPk(game.game_id, {
+				include: {
+					model: db.ok_players,
+					as: 'Players',
+					attributes: ['player_id', 'player_gameid'],
+				},
 			})
-			.then(_ => Promise.resolve(game)),
 		),
 	);
 
