@@ -1,7 +1,7 @@
 import React from 'react';
 import './MakeBetForm.scss';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectTotalBetAmount, selectBetMax, selectPlayerAuth, selectCurrentlySelectedCard, selectGameId, postCardBet } from '../../../store/gameSlice';
+import { selectTotalBetAmount, selectBetMax, selectCurrentlySelectedCard, selectGameId, postCardBet } from '../../../store/gameSlice';
 import { modalActions } from '../../../store/modalSlice';
 import { useForm, Controller } from 'react-hook-form';
 import Slider from 'react-input-slider';
@@ -14,13 +14,13 @@ export default function MakeBetForm() {
     const dispatch = useDispatch();
     const totalBetAmount = useSelector(selectTotalBetAmount);
     const betMax = useSelector(selectBetMax);
-    const playerAuth = useSelector(selectPlayerAuth);
     const currentlySelectedCard = useSelector(selectCurrentlySelectedCard);
     const gameId = useSelector(selectGameId);
-    const { register, handleSubmit, control } = useForm();
+    const { handleSubmit, control } = useForm();
 
     const submitData = (data) => {
-        dispatch(postCardBet({ gameId, betData: data }));
+        const betData = { currentCard: currentlySelectedCard, ...data };
+        dispatch(postCardBet({ gameId, betData }));
         dispatch(modalActions.toggleModal());
     }
 
@@ -32,8 +32,6 @@ export default function MakeBetForm() {
                         How much would you like to bet on this card?
                     </h2>
                     <form onSubmit={handleSubmit(submitData)}>
-                        <input type="hidden" {...register("user_id", { value: playerAuth.id })} />
-                        <input type="hidden" {...register("current_card", { value: currentlySelectedCard })} />
                         <WatchedValue control={control}
                             name="betAmount"
                             defaultVal={100}

@@ -18,10 +18,10 @@ export default function Game() {
     const dispatch = useDispatch();
     const location = useLocation();
     const gameId = location.state.game_id;
+    const playerAuth = useSelector(selectPlayerAuth);
     const playerStatus = useSelector(selectPlayerStatus);
     const isPickDealer = useSelector(selectIsPickDealer);
     const currentPhase = useSelector(selectCurrentPhase);
-    const playerAuth = useSelector(selectPlayerAuth);
     const isError = useSelector(selectGameIsError);
     const errorMessage = useSelector(selectGameErrorMessage);
 
@@ -33,7 +33,6 @@ export default function Game() {
         gameId,
         currentPhase,
         playerChips: playerStatus?.chips,
-        playerAuth
     });
 
     const handleStartGame = useCallback(_ => {

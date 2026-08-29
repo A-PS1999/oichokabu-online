@@ -24,8 +24,8 @@ export default function Card({id, value, src, ownerColumn, defaultHidden, defaul
     const socket = useSocket();
 
     const handleMainGameCardClick = () => {
+        dispatch(setCurrentSelection({ id, ownerColumn }));
         dispatch(modalActions.toggleModal());
-        dispatch(setCurrentSelection({ id, ownerColumn }))
     }
 
     useEffect(() => {

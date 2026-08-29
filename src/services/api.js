@@ -12,8 +12,8 @@ API.interceptors.response.use(
 		return response.data;
 	},
 	(error) => {
-		const errStatus = error.response ? error.response.status : "API call error";
-		return Promise.reject(errStatus);
+		const data = error.response ? error.response.data : "API call error";
+		return Promise.reject(data);
 	}
 )
 

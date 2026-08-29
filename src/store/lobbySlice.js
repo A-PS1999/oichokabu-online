@@ -3,14 +3,18 @@ import { UserAPI, LobbyAPI, PregameAPI } from '../services/api-functions.js';
 
 export const fetchUserIdAndChips = createAsyncThunk(
 	"lobby/fetchUserId",
-	async () => {
-		const [idRes, chipsRes] = await Promise.all([
-			UserAPI.getUserId(),
-			LobbyAPI.getUserChips()
-		]);
-		const idVal = idRes.id;
+	async (_, thunkAPI) => {
+		try {
+			const [idRes, chipsRes] = await Promise.all([
+				UserAPI.getUserId(),
+				LobbyAPI.getUserChips()
+			]);
+			const idVal = idRes.id;
 
-		return { idVal, chipsRes };
+			return { idVal, chipsRes };
+		} catch (error) {
+			return thunkAPI.rejectWithValue(error.errorMsg);
+		}
 	}
 );
 
