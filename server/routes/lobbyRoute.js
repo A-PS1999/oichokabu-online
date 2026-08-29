@@ -16,7 +16,7 @@ router.post('/api/lobby/create-game', checkLoggedIn, (request, response) =>
 	.catch(error => response.json({ error })),
 );
 
-router.get('/api/lobby/lobbies', (request, response) => {
+router.get('/api/lobby/lobbies', (_, response) => {
 	return LobbyDB.findOngoingGames()
 	.then(ongoingGames => {
 		return response.json(ongoingGames);
@@ -24,7 +24,7 @@ router.get('/api/lobby/lobbies', (request, response) => {
 	.catch(error => response.json({ error }));
 });
 
-router.get('/api/lobby/user-chips', checkLoggedIn, (request, response) => {
+router.get('/api/lobby/user-chips', checkLoggedIn, (_, response) => {
 	const userId = response.locals.user.id;
 	return LobbyDB.getUserChips(userId).then(chips => {
 		return response.json(chips)

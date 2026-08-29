@@ -33,7 +33,11 @@ router.post('/api/game/:gameId/pickdealer-card-selected', checkLoggedIn, checkGa
 router.post('/api/game/:gameId/card-bet', checkLoggedIn, (request, response) => {
     const gameId = Number(request.params.gameId);
     const userId = response.locals.user.id;
-    const { betAmount: { current_card: { id: cardId, ownerColumn }, betAmount } } = request.body;
+    const { currentCard, betAmount } = request.body.betData;
+    if (!currentCard) {
+        return response.status(400).json({ error: "Card selection not present" });
+    }
+    const { id: cardId, ownerColumn } = currentCard;
     GameSockets.cardBetMade(gameId, userId, cardId, ownerColumn, betAmount);
     response.sendStatus(204);
 })
