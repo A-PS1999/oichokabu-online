@@ -1,0 +1,20 @@
+@use '../../sass/abstracts/variables' as var;
+
+.loading-spinner {
+  width: 80px;
+  aspect-ratio: 1;
+  --c:var.$japan-red 98%,var.$color-black;
+  background:
+    radial-gradient(50% 70% at 50% 120%, var(--c)) top,
+    radial-gradient(70% 50% at -20% 50%, var(--c)) right,
+    radial-gradient(50% 70% at 50% -20%, var(--c)) bottom,
+    radial-gradient(70% 50% at 120% 50%, var(--c)) left;
+  background-size: 100% 50.1%,50.1% 100%;
+  background-repeat: no-repeat;
+  mask: radial-gradient(circle 5px,var.$color-black 90%,var.$color-black);
+  -webkit-mask: radial-gradient(circle 5px,var.$color-black 90%,var.$color-black);
+  animation: l9 1.5s infinite linear;
+}
+@keyframes l9 { 
+  100%{transform: rotate(1turn)}
+}

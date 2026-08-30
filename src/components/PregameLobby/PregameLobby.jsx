@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import './PregameLobby.scss';
 import { useSelector, useDispatch } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { pregameSelector, fetchPlayerInfo, fetchPlayerStatuses, handleStartGame, toggleReady, leaveGame, pregameStateReset } from '../../store/pregameSlice';
 import { createToast } from '../../store/toastSlice.js';
 import { useSocket } from '../../hooks/useSocket.js';
@@ -11,11 +11,12 @@ export default function PregameLobby() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
+    const params = useParams();
     const socket = useSocket();
     const { playerInfo, playerStatuses, isError, errorMessage } = useSelector(pregameSelector);
 
     useEffect(() => {
-        socket.emit('pregame:rejoin', { gameId: location.state.game_id }, (res) => {
+        socket.emit('pregame:rejoin', { gameId: params.gameId }, (res) => {
             if (res && !res.ok) {
                 dispatch(createToast({
                     message: "Failed to join lobby",
@@ -23,23 +24,23 @@ export default function PregameLobby() {
                 }));
             }
         });
-        dispatch(fetchPlayerStatuses(location.state.game_id));
-        dispatch(fetchPlayerInfo(location.state.game_id));
+        dispatch(fetchPlayerStatuses(params.gameId));
+        dispatch(fetchPlayerInfo(params.gameId));
 
         const pregameSocketHandler = () => {
-            dispatch(fetchPlayerStatuses(location.state.game_id));
+            dispatch(fetchPlayerStatuses(params.gameId));
         }
-        socket.on(`pregame-lobby:${location.state.game_id}:enter-game`, pregameSocketHandler)
-        socket.on(`pregame-lobby:${location.state.game_id}:player-ready`, pregameSocketHandler);
-        socket.on(`pregame-lobby:${location.state.game_id}:player-unready`, pregameSocketHandler);
+        socket.on(`pregame-lobby:${params.gameId}:enter-game`, pregameSocketHandler)
+        socket.on(`pregame-lobby:${params.gameId}:player-ready`, pregameSocketHandler);
+        socket.on(`pregame-lobby:${params.gameId}:player-unready`, pregameSocketHandler);
 
         return () => {
-            socket.off(`pregame-lobby:${location.state.game_id}:enter-game`, pregameSocketHandler);
-            socket.off(`pregame-lobby:${location.state.game_id}:player-ready`, pregameSocketHandler);
-            socket.off(`pregame-lobby:${location.state.game_id}:player-unready`, pregameSocketHandler);
+            socket.off(`pregame-lobby:${params.gameId}:enter-game`, pregameSocketHandler);
+            socket.off(`pregame-lobby:${params.gameId}:player-ready`, pregameSocketHandler);
+            socket.off(`pregame-lobby:${params.gameId}:player-unready`, pregameSocketHandler);
             dispatch(pregameStateReset());
         }
-    }, [dispatch, location.state.game_id])
+    }, [dispatch, params.gameId])
 
     useEffect(() => {
         if (isError) {
@@ -52,7 +53,7 @@ export default function PregameLobby() {
 
     useEffect(() => {
         const leaveGameSocketHandler = (data) => {
-            dispatch(fetchPlayerStatuses(location.state.game_id));
+            dispatch(fetchPlayerStatuses(params.gameId));
             if (location.state.user_id === data.userId) {
                 navigate("/lobby");
             }
@@ -60,25 +61,21 @@ export default function PregameLobby() {
                 navigate("/lobby");
             }
         }
-        socket.on(`pregame-lobby:${location.state.game_id}:leave-game`, leaveGameSocketHandler)
+        socket.on(`pregame-lobby:${params.gameId}:leave-game`, leaveGameSocketHandler)
         return () => {
-            socket.off(`pregame-lobby:${location.state.game_id}:leave-game`, leaveGameSocketHandler);
+            socket.off(`pregame-lobby:${params.gameId}:leave-game`, leaveGameSocketHandler);
         }
-    }, [dispatch, location.state.user_id, navigate, location.state.game_id])
+    }, [dispatch, location.state.user_id, navigate, params.gameId])
 
     useEffect(() => {
         const startGameSocketHandler = () => {
-            navigate(`/game/${location.state.game_id}`, {
-                state: {
-                    game_id: location.state.game_id,
-                }
-            });
+            navigate(`/game/${params.gameId}`);
         }
-        socket.on(`pregame-lobby:${location.state.game_id}:start-game`, startGameSocketHandler)
+        socket.on(`pregame-lobby:${params.gameId}:start-game`, startGameSocketHandler)
         return () => {
-            socket.off(`pregame-lobby:${location.state.game_id}:start-game`, startGameSocketHandler);
+            socket.off(`pregame-lobby:${params.gameId}:start-game`, startGameSocketHandler);
         }
-    }, [navigate, location.state.game_id])
+    }, [navigate, params.gameId])
 
     const determineGameStartable = () => {
         let numReadyPlayers = 0;
@@ -128,13 +125,13 @@ export default function PregameLobby() {
                         }
                     </div>
                     <div className="pregame-options">
-                        <button className="pregame-options__button" onClick={() => dispatch(toggleReady(location.state.game_id))}>
+                        <button className="pregame-options__button" onClick={() => dispatch(toggleReady(params.gameId))}>
                             Toggle Ready
                         </button>
-                        <button className="pregame-options__button--start" disabled={!determineGameStartable()} onClick={async () => await dispatch(handleStartGame(location.state.game_id))}>
+                        <button className="pregame-options__button--start" disabled={!determineGameStartable()} onClick={async () => await dispatch(handleStartGame(params.gameId))}>
                             Start Game
                         </button>
-                        <button className="pregame-options__button" onClick={() => dispatch(leaveGame(location.state.game_id))}>
+                        <button className="pregame-options__button" onClick={() => dispatch(leaveGame(params.gameId))}>
                             Leave Game
                         </button>
                     </div>

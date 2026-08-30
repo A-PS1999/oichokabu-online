@@ -88,7 +88,7 @@ export const getSessID = createAsyncThunk(
 const initialUserSliceState = () => ({
 	username: "",
 	email: "",
-	isLoggedIn: false,
+	sessionStatus: "idle",
 	isFetching: false,
 	isSuccessful: false,
 	isError: false,
@@ -107,14 +107,12 @@ export const userSlice = createSlice({
 			state.isError = false;
 			state.errorMessage = "";
 		},
-		toggleLoggedIn(state) {
-			state.isLoggedIn = !state.isLoggedIn;
-		}
 	},
 	extraReducers: (builder) => {
 		builder.addCase(registerUser.fulfilled, (state, action) => {
 			state.isFetching = false;
 			state.isSuccessful = true;
+			state.sessionStatus = "authenticated";
 			state.username = action.payload.username;
 			state.email = action.payload.email;
 		})
@@ -127,6 +125,7 @@ export const userSlice = createSlice({
 			state.errorMessage = action.payload;
 		})
 		builder.addCase(loginUser.fulfilled, (state, action) => {
+			state.sessionStatus = "authenticated";
 			state.isFetching = false;
 			state.isSuccessful = true;
 			state.username = action.payload.username;
@@ -142,7 +141,7 @@ export const userSlice = createSlice({
 		builder.addCase(logoutUser.fulfilled, (state) => {
 			state.username = "";
 			state.email = "";
-			state.isLoggedIn = false;
+			state.sessionStatus = "unauthenticated";
 			state.isFetching = false;
 			state.isSuccessful = true;
 			state.isError = false;
@@ -192,17 +191,20 @@ export const userSlice = createSlice({
 			state.errorMessage = action.payload;
 		})
 		builder.addCase(getSessID.fulfilled, (state) => {
+			state.sessionStatus = "authenticated";
 			state.isFetching = false;
-			state.isLoggedIn = true;
 		})
 		builder.addCase(getSessID.pending, (state) => {
+			state.sessionStatus = "checking";
 			state.isFetching = true;
 		})
 		builder.addCase(getSessID.rejected, (state) => {
+			state.sessionStatus = "unauthenticated";
 			state.isFetching = false;
 		})
 	},
 });
 
-export const { userStateReset, toggleLoggedIn } = userSlice.actions;
+export const { userStateReset } = userSlice.actions;
 export const userSelector = state => state.user;
+export const sessionStatusSelector = state => state.user.sessionStatus

@@ -39,7 +39,6 @@ export default function Lobby() {
 			if (userId === data.userId) {
 				navigate(`/pregame-lobby/${gameId}`, {
 					state: {
-						game_id: gameId,
 						user_id: userId
 					}
 				});
@@ -54,7 +53,6 @@ export default function Lobby() {
 			if (userId === data.userId) {
 				navigate(`/pregame-lobby/${gameId}`, {
 					state: {
-						game_id: gameId,
 						user_id: userId
 					}
 				});
@@ -75,7 +73,6 @@ export default function Lobby() {
 				type: "error",
 			}));
 			dispatch(clearState());
-			navigate("/log-in");
 		}
 	}, [dispatch, isError, errorMessage])
 
