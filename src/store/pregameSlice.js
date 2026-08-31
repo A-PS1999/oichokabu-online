@@ -17,8 +17,12 @@ export const fetchPlayerStatuses = createAsyncThunk(
 
 export const handleStartGame = createAsyncThunk(
     "pregame/handleStartGame",
-    async (gameID) => {
-        return await PregameAPI.postGameStart(gameID);
+    async (gameID, thunkAPI) => {
+        try {
+            return await PregameAPI.postGameStart(gameID);
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error.errorMsg);
+        }
     }
 )
 
@@ -31,8 +35,12 @@ export const toggleReady = createAsyncThunk(
 
 export const leaveGame = createAsyncThunk(
     "pregame/leaveGame",
-    async (gameID) => {
-        return await PregameAPI.postLeaveGame(gameID);
+    async (gameID, thunkAPI) => {
+        try {
+            return await PregameAPI.postLeaveGame(gameID);
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error.errorMsg);
+        }
     }
 )
 

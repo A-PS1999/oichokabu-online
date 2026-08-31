@@ -43,9 +43,9 @@ io.on('connection', socket => {
 	}
 	userSockets.get(userId).add(socket.id);
 
-	socket.on('game:rejoin', ({ gameId }, ack) => gameHandler.rejoinGame(gameId, userId, socket, ack));
-	socket.on('pregame:rejoin', ({ gameId }, ack) => 
-		preGameHandler.rejoinPregame(gameId, userId, socket, ack)
+	socket.on('game:rejoin', ({ gameId }, ack) => gameHandler.rejoinGame(Number(gameId), userId, socket, ack));
+	socket.on('pregame:rejoin', ({ gameId }, ack) =>
+		preGameHandler.rejoinPregame(Number(gameId), userId, socket, ack)
 	);
 
 	socket.on('disconnect', () => {
