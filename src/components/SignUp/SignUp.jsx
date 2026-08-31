@@ -20,7 +20,6 @@ export default function SignUp() {
 		= useAuthForm({
 			thunk: registerUser,
 			successRedirect: "/lobby",
-			setLoggedInOnSuccess: true,
 		});
 
 	const passwordEntry = useWatch({ control, name: "password", defaultValue: "" });

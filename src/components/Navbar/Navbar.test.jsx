@@ -5,7 +5,7 @@ import { rest } from 'msw';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
 import { store } from '../../store/store';
-import { MemoryRouter, Routes, Route } from 'react-router-dom';
+import { MemoryRouter, Routes, Route } from 'react-router';
 import FrontPage from '../FrontPage/FrontPage';
 import Login from '../Login/Login';
 import Lobby from '../Lobby/Lobby';

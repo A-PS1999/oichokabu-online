@@ -1,6 +1,7 @@
-import React from 'react';
-import { Provider } from 'react-redux';
+import { useEffect } from 'react';
+import { Provider, useDispatch } from 'react-redux';
 import { store } from './store/store.js';
+import { getSessID } from './store/userSlice.js';
 import './App.scss';
 import FrontPage from './components/FrontPage/FrontPage.jsx';
 import RulesPage from './components/RulesPage/RulesPage.jsx';
@@ -13,13 +14,19 @@ import PregameLobby from './components/PregameLobby/PregameLobby.jsx';
 import Game from './components/Game/Game.jsx';
 import NotFound from './components/NotFound/NotFound.jsx';
 import ToastPortal from './components/Toast/ToastPortal.jsx';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute.jsx';
+import { BrowserRouter as Router, Route, Routes } from 'react-router';
 
-export default function App() {
-	
+function AppRoutes() {
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		dispatch(getSessID())
+	}, [dispatch])
+
 	return (
-		<Provider store={store}>
-		<ToastPortal />
+		<>
+			<ToastPortal />
 			<Router>
 				<Routes>
 					<Route exact path="/" element={<FrontPage />} />
@@ -28,12 +35,33 @@ export default function App() {
 					<Route path="/log-in" element={<Login />} />
 					<Route path="/forgot-password" element={<ForgotPassword />} />
 					<Route path="/reset-password/:token" element={<ResetPassword />} />
-					<Route path="/lobby" element={<Lobby />} />
-					<Route path="/pregame-lobby/:gameId" element={<PregameLobby />} />
-					<Route path="/game/:gameId" element={<Game />} />
+					<Route path="/lobby" element={
+						<ProtectedRoute>
+							<Lobby />
+						</ProtectedRoute>
+					} />
+					<Route path="/pregame-lobby/:gameId" element={
+						<ProtectedRoute>
+							<PregameLobby />
+						</ProtectedRoute>
+					} />
+					<Route path="/game/:gameId" element={
+						<ProtectedRoute>
+							<Game />
+						</ProtectedRoute>
+					} />
 					<Route path="*" element={<NotFound />} />
 				</Routes>
 			</Router>
+		</>
+	)
+}
+
+export default function App() {
+
+	return (
+		<Provider store={store}>
+			<AppRoutes />
 		</Provider>
 	)
 }

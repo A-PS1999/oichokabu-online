@@ -9,7 +9,6 @@ export default function Login() {
 	const { register, handleSubmit, submit } = useAuthForm({
 		thunk: loginUser,
 		successRedirect: "/lobby",
-		setLoggedInOnSuccess: true,
 	});
 
 	return (

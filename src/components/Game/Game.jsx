@@ -6,7 +6,7 @@ import {
     selectCurrentPhase, selectPlayerAuth,
     selectGameIsError, selectGameErrorMessage
 } from '../../store/gameSlice.js';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { GameAPI } from '../../services';
 import PickDealerScreen from './PickDealerScreen/PickDealerScreen.jsx';
 import GameBoard from './GameBoard/GameBoard.jsx';
@@ -16,8 +16,8 @@ import { useGame } from '../../hooks/useGame.js';
 export default function Game() {
 
     const dispatch = useDispatch();
-    const location = useLocation();
-    const gameId = location.state.game_id;
+    const params = useParams()
+    const gameId = params.gameId;
     const playerAuth = useSelector(selectPlayerAuth);
     const playerStatus = useSelector(selectPlayerStatus);
     const isPickDealer = useSelector(selectIsPickDealer);
@@ -37,8 +37,8 @@ export default function Game() {
 
     const handleStartGame = useCallback(_ => {
         const startFunction = async () => {
-            await GameAPI.postStartGame(location.state.game_id);
-            GameAPI.postUpdateGame(location.state.game_id);
+            await GameAPI.postStartGame(gameId);
+            GameAPI.postUpdateGame(gameId);
         };
 
         startFunction();

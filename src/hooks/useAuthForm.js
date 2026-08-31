@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { userSelector, userStateReset } from "../store/userSlice";
-import { toggleLoggedIn } from "../store/userSlice";
 import { createToast } from "../store/toastSlice.js";
 
 export function useAuthForm({ 
@@ -11,7 +10,6 @@ export function useAuthForm({
     formOptions,
     successToast,
     successRedirect,
-    setLoggedInOnSuccess = false,
     clearOnError = true
 }) {
     const navigate = useNavigate();
@@ -27,7 +25,6 @@ export function useAuthForm({
                     type: "success"
                 }))
             }
-            if (setLoggedInOnSuccess) { dispatch(toggleLoggedIn()) }
             dispatch(userStateReset());
             if (successRedirect) {
                 navigate(successRedirect);
@@ -40,7 +37,7 @@ export function useAuthForm({
             if (clearOnError) { dispatch(userStateReset()) }
         }
     }, [isSuccessful, isError, errorMessage, dispatch, navigate, 
-        successRedirect, setLoggedInOnSuccess, successToast, clearOnError
+        successRedirect, successToast, clearOnError
     ])
 
     const submit = (data) => dispatch(thunk(data));
