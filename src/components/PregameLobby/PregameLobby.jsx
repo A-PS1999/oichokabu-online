@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import './PregameLobby.scss';
 import { useSelector, useDispatch } from 'react-redux';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { pregameSelector, fetchPlayerInfo, fetchPlayerStatuses, handleStartGame, toggleReady, leaveGame, pregameStateReset } from '../../store/pregameSlice';
 import { createToast } from '../../store/toastSlice.js';
 import { useSocket } from '../../hooks/useSocket.js';

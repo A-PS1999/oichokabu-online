@@ -6,7 +6,7 @@ import {
     selectCurrentPhase, selectPlayerAuth,
     selectGameIsError, selectGameErrorMessage
 } from '../../store/gameSlice.js';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { GameAPI } from '../../services';
 import PickDealerScreen from './PickDealerScreen/PickDealerScreen.jsx';
 import GameBoard from './GameBoard/GameBoard.jsx';

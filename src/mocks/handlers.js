@@ -1,32 +1,20 @@
-import { rest } from "msw";
+import { http, HttpResponse } from "msw";
 import { serverAddress } from "../settings";
 
 export const handlers = [
-    rest.post(`${serverAddress}/api/log-in`, (req, res, ctx) => {
-        const user = {
-            id: 1,
-            username: "test_user",
-            user_chips: 8100
-        }
-        return res(
-            ctx.json({ user })
-        )
+    http.post(`${serverAddress}/api/log-in`, async () => {
+        return HttpResponse.json({
+            user: { id: 1, username: "test_user", user_chips: 8100 }
+        })
     }),
-    rest.post(`${serverAddress}/api/register`, (req, res, ctx) => {
-        const user = req.body;
-        return res (
-            ctx.json({ user })
-        )
+    http.post(`${serverAddress}/api/register`, async ({ request }) => {
+        const body = await request.json();
+        return HttpResponse.json({ auth: {}, user: body })
     }),
-    rest.post(`${serverAddress}/api/get-session`, (req, res, ctx) => {
-        const result = { sid: "exists" }
-        return res(
-            ctx.json({ result })
-        )
+    http.post(`${serverAddress}/api/get-session`, async () => {
+        return HttpResponse.json({ authenticated: true })
     }),
-    rest.post(`${serverAddress}/api/log-out`, (req, res, ctx) => {
-        return res(
-            ctx.status(200),
-        )
+    http.post(`${serverAddress}/api/log-out`, async () => {
+        return HttpResponse.json({})
     })
 ]

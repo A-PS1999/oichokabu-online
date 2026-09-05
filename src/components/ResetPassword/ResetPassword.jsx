@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { useWatch } from 'react-hook-form';
 import { resetPassword, verifyResetPassword } from '../../store/userSlice.js';

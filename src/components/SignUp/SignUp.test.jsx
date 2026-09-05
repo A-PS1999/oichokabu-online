@@ -1,24 +1,19 @@
-import { render, screen, cleanup } from '@testing-library/react';
+import { screen, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Provider } from 'react-redux';
-import { store } from '../../store/store';
-import { MemoryRouter, Routes, Route } from 'react-router';
+import { renderWithProviders } from '../../test-utils';
 import SignUp from './SignUp';
-import ToastPortal from '../../components/Toast/ToastPortal';
 import Lobby from '../Lobby/Lobby';
 
+const testRoutes = [
+    { path: "/register", element: <SignUp /> },
+    { path: "/lobby", element: <Lobby /> },
+];
+
 beforeEach(() => {
-    render(
-        <Provider store={store}>
-            <ToastPortal />
-            <MemoryRouter initialEntries={["/register"]}>
-                <Routes>
-                    <Route path="/register" element={<SignUp />} />
-                    <Route path="/lobby" element={<Lobby />} />
-                </Routes>
-            </MemoryRouter>
-        </Provider>
-    )
+    renderWithProviders(null, {
+        initialEntries: ["/register"],
+        routes: testRoutes,
+    })
 })
 afterEach(() => {
     cleanup()
@@ -62,7 +57,7 @@ describe('SignUp', () => {
 
     it('prompts a toast when the email is not in the correct format', async () => {
         await userEvent.type(getUserInput(), registerDetails.username);
-        await userEvent.type(getEmailInput(), "www.wrongformat.com");
+        await userEvent.type(getEmailInput(), "test@example");
         await userEvent.type(getPasswordInput(), registerDetails.password);
         await userEvent.type(getConfirmPasswordInput(), registerDetails.password);
 

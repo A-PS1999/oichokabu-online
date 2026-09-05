@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { sessionStatusSelector } from "../../store/userSlice";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router";
 import Loader from "../Loader/Loader";
 
 export default function ProtectedRoute({ children }) {
