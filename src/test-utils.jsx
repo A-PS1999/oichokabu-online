@@ -10,6 +10,31 @@ import { pregameSlice } from './store/pregameSlice';
 import { gameSlice } from './store/gameSlice';
 import { toastMiddleware } from './store/middleware';
 import ToastPortal from './components/Toast/ToastPortal';
+import Game from './components/Game/Game';
+
+export const authenticatedState = {
+    user: {
+        username: "test_user",
+        email: "",
+        sessionStatus: "authenticated",
+        isFetching: false,
+        isSuccessful: false,
+        isError: false,
+        errorMessage: "",
+    }
+};
+
+export const unauthenticatedState = {
+    user: {
+        username: "",
+        email: "",
+        sessionStatus: "unauthenticated",
+        isFetching: false,
+        isSuccessful: false,
+        isError: false,
+        errorMessage: "",
+    }
+};
 
 function createTestStore(preloadedState) {
     return configureStore({
@@ -45,4 +70,56 @@ export function renderWithProviders(ui, {
             </MemoryRouter>
         </Provider>
     )
+}
+
+export function createGameState(overrides = {}) {
+    return {
+        game: {
+            currentTurn: 1,
+            turnMax: 12,
+            betMax: 500,
+            totalBetAmount: 0,
+            Players: [],
+            cardBets: [],
+            currentlySelectedCard: null,
+            isPickDealer: null,
+            pickDealerCards: [],
+            cardsOnBoard: [],
+            currentPhase: null,
+            hasClicked: false,
+            currentPlayer: null,
+            currentDealer: null,
+            playerAuth: null,
+            gameId: null,
+            isFetching: false,
+            isError: false,
+            errorMessage: "",
+            ...overrides,
+        },
+    };
+}
+
+export function renderGame({
+    preloadedState = {},
+    gameId = "1",
+    routes = [],
+    initialEntries,
+    element = <Game />,
+} = {}) {
+    const gameState = createGameState(preloadedState.game || {});
+    const fullState = {
+        ...preloadedState,
+        game: gameState.game,
+    };
+    const defaultEntries = initialEntries || [`/game/${gameId}`];
+    const defaultRoutes = [
+        { path: "/game/:gameId", element },
+        { path: "/lobby", element: <div data-testid="lobby-nav">LOBBY</div> },
+        ...routes,
+    ];
+    return renderWithProviders(null, {
+        initialEntries: defaultEntries,
+        routes: defaultRoutes,
+        preloadedState: fullState,
+    });
 }

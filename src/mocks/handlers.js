@@ -16,5 +16,14 @@ export const handlers = [
     }),
     http.post(`${serverAddress}/api/log-out`, async () => {
         return HttpResponse.json({})
+    }),
+    http.get(`${serverAddress}/api/get-user-id`, async () => {
+        return HttpResponse.json({ id: 1 })
+    }),
+    http.get(`${serverAddress}/api/lobby/user-chips`, async () => {
+        return HttpResponse.json(8100)
+    }),
+    http.get(`${serverAddress}/api/lobby/lobbies`, async () => {
+        return HttpResponse.json([])
     })
 ]

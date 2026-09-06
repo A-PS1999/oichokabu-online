@@ -31,7 +31,7 @@ export default function Game() {
 
     useGame({
         gameId,
-        currentPhase,
+        gamePhase: currentPhase,
         playerChips: playerStatus?.chips,
     });
 
