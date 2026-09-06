@@ -1,60 +1,88 @@
-import { render, screen, cleanup } from '@testing-library/react';
+import { screen, cleanup } from '@testing-library/react';
 import { server } from '../../mocks/server';
 import { serverAddress } from '../../settings';
-import { rest } from 'msw';
+import { http, HttpResponse } from 'msw';
 import userEvent from '@testing-library/user-event';
-import { Provider } from 'react-redux';
-import { store } from '../../store/store';
-import { MemoryRouter, Routes, Route } from 'react-router';
+import { renderWithProviders } from '../../test-utils';
 import FrontPage from '../FrontPage/FrontPage';
 import Login from '../Login/Login';
 import Lobby from '../Lobby/Lobby';
 import SignUp from '../SignUp/SignUp';
 
-beforeEach(() => {
-    render(
-        <Provider store={store}>
-            <MemoryRouter initialEntries={["/"]}>
-                <Routes>
-                    <Route path="/" element={<FrontPage />} />
-                    <Route path="/log-in" element={<Login />} />
-                    <Route path="/lobby" element={<Lobby />} />
-                    <Route path="/register" element={<SignUp />} />
-                </Routes>
-            </MemoryRouter>
-        </Provider>
-    )
-})
-afterEach(() => {
-    cleanup();
-})
+const testRoutes = [
+    { path: "/", element: <FrontPage /> },
+    { path: "/log-in", element: <Login /> },
+    { path: "/lobby", element: <Lobby /> },
+    { path: "/register", element: <SignUp /> },
+];
+
+const authenticatedState = {
+    user: {
+        username: "test_user",
+        email: "",
+        sessionStatus: "authenticated",
+        isFetching: false,
+        isSuccessful: false,
+        isError: false,
+        errorMessage: "",
+    }
+};
+
+const unauthenticatedState = {
+    user: {
+        username: "",
+        email: "",
+        sessionStatus: "unauthenticated",
+        isFetching: false,
+        isSuccessful: false,
+        isError: false,
+        errorMessage: "",
+    }
+};
 
 describe('Navbar', () => {
 
     it("renders with 'Lobby' and 'Log Out' when session exists", async () => {
+        renderWithProviders(null, {
+            initialEntries: ["/"],
+            routes: testRoutes,
+            preloadedState: authenticatedState,
+        })
+
         await screen.findByText("Lobby");
         await screen.findByText("Log Out");
     })
 
     it("renders with 'Sign Up' and 'Log In' when no session exists", async () => {
-        server.use(
-            rest.post(`${serverAddress}/api/get-session`, (req, res, ctx) => {
-                return res(
-                    ctx.json({ session: 'No session' })
-                )
-            })
-        )
+        renderWithProviders(null, {
+            initialEntries: ["/"],
+            routes: testRoutes,
+            preloadedState: unauthenticatedState,
+        })
+
         await screen.findByText("Sign Up");
         await screen.findByText("Log In");
     })
 
     it("directs to lobby when 'Lobby' clicked", async () => {
+        renderWithProviders(null, {
+            initialEntries: ["/"],
+            routes: testRoutes,
+            preloadedState: authenticatedState,
+        })
+
         await userEvent.click(getLobbyLink());
 
         await screen.findByText("Create or join a game!");
     })
 
     it("directs to front page when 'Oicho Kabu Online' clicked", async () => {
+        renderWithProviders(null, {
+            initialEntries: ["/"],
+            routes: testRoutes,
+            preloadedState: authenticatedState,
+        })
+
         await userEvent.click(getLobbyLink());
         await screen.findByText("Create or join a game!");
 
@@ -63,22 +91,27 @@ describe('Navbar', () => {
     })
 
     it("directs to front page and changes navbar buttons when 'Log Out' clicked", async () => {
+        renderWithProviders(null, {
+            initialEntries: ["/"],
+            routes: testRoutes,
+            preloadedState: authenticatedState,
+        })
+
         await userEvent.click(getLobbyLink());
         await screen.findByText("Create or join a game!");
 
         await userEvent.click(getLogoutLink());
-        await screen.findByText("Log In");
         await screen.findByText("What is Oicho Kabu?");
+        await screen.findByText("Log In");
     })
 
     it('directs to login and sign up page when respective links clicked', async () => {
-        server.use(
-            rest.post(`${serverAddress}/api/get-session`, (req, res, ctx) => {
-                return res(
-                    ctx.json({ session: 'No session' })
-                )
-            })
-        )
+        renderWithProviders(null, {
+            initialEntries: ["/"],
+            routes: testRoutes,
+            preloadedState: unauthenticatedState,
+        })
+
         await userEvent.click(getLoginLink());
         await screen.findByText("Forgotten your password?");
 

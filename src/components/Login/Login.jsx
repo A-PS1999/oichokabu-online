@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { loginUser } from '../../store/userSlice.js';
 import { useAuthForm } from '../../hooks/useAuthForm.js';
 import AuthFormLayout from '../shared/AuthFormLayout.jsx';

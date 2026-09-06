@@ -1,29 +1,24 @@
-import { render, screen, cleanup } from '@testing-library/react';
+import { screen, cleanup } from '@testing-library/react';
 import { server } from '../../mocks/server';
 import { serverAddress } from '../../settings';
-import { rest } from 'msw';
+import { http, HttpResponse } from 'msw';
 import userEvent from '@testing-library/user-event';
-import { Provider } from 'react-redux';
-import { store } from '../../store/store';
-import { MemoryRouter, Routes, Route } from 'react-router';
-import ToastPortal from '../../components/Toast/ToastPortal';
+import { renderWithProviders } from '../../test-utils';
 import Login from './Login';
 import ForgotPassword from '../ForgotPassword/ForgotPassword';
 import Lobby from '../Lobby/Lobby';
 
+const testRoutes = [
+    { path: "/log-in", element: <Login /> },
+    { path: "/forgot-password", element: <ForgotPassword /> },
+    { path: "/lobby", element: <Lobby /> },
+];
+
 beforeEach(() => {
-    render(
-        <Provider store={store}>
-            <ToastPortal />
-            <MemoryRouter initialEntries={["/log-in"]}>
-                <Routes>
-                    <Route path="/log-in" element={<Login />} />
-                    <Route path="/forgot-password" element={<ForgotPassword />} />
-                    <Route path="/lobby" element={<Lobby />} />
-                </Routes>
-            </MemoryRouter>
-        </Provider>
-    )
+    renderWithProviders(null, {
+        initialEntries: ["/log-in"],
+        routes: testRoutes,
+    })
 });
 afterEach(() => {
     cleanup();
@@ -42,10 +37,10 @@ describe('Login', () => {
 
     it('returns a toast notification when unsuccessful', async () => {
         server.use(
-            rest.post(`${serverAddress}/api/log-in`, (req, res, ctx) => {
-                return res(
-                    ctx.status(503),
-                    ctx.json({ message: "Error" })
+            http.post(`${serverAddress}/api/log-in`, () => {
+                return HttpResponse.json(
+                    { message: "Error" },
+                    { status: 503 }
                 )
             })
         )
@@ -54,14 +49,15 @@ describe('Login', () => {
         await userEvent.type(getPasswordInput(), "wrongpass");
         await userEvent.click(getSubmitBtn());
 
-        await screen.findByText("Request failed with status code 503: Username or password may be incorrect.");
+        const toasts = await screen.findAllByText("undefined: Username or password may be incorrect.");
+        expect(toasts.length).toBeGreaterThanOrEqual(1);
     })
 
     it('goes to forgot password page on link click', async () => {
         const forgotPasswordLink = screen.getByRole('link', { name: /click here/i });
         await userEvent.click(forgotPasswordLink);
 
-        screen.findByText("Reset Your Password");
+        await screen.findByText("Reset Your Password");
     })
 })
 

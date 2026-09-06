@@ -11,7 +11,7 @@ import locale from 'rc-pagination/es/locale/en_US';
 import 'rc-pagination/assets/index.css';
 import usePagination from '../../hooks/usePagination.js';
 import CreateGameForm from './CreateGameForm/CreateGameForm.jsx';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { useSocket } from '../../hooks/useSocket.js';
 
 export default function Lobby() {

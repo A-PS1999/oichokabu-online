@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useSocket } from "./useSocket";
 import { fetchPlayerAuth, setGameState } from "../store/gameSlice";
 import { createToast } from "../store/toastSlice";

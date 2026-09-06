@@ -1,6 +1,6 @@
 import React from 'react';
 import './RulesPage.scss';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import Navbar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
 
