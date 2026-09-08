@@ -1,4 +1,14 @@
 const game_controls = require('./game_controls');
+const phases = require('./phases');
+
+const setPhase = (Game, phase) => {
+    if (!phases.canTransition(Game.currentPhase, phase)) {
+        throw new Error(`Invalid transition ${Game.currentPhase} -> ${phase}`);
+    }
+    Game.currentPhase = phase;
+    Game.phaseEnteredAt = Date.now();
+    Game.phaseDurationMs = phases.isTimed(phase) ? phases.PHASE_DURATIONS_MS[phase] : null;
+};
 
 const game_engine = {
     handleStartTurn: Game => {
@@ -52,7 +62,7 @@ const game_engine = {
     handleRemovePlayer: (Game, playerId) => {
         game_controls.removePlayer(Game, playerId);
         if (Game.players.length < 2) {
-            Game.currentPhase = "endGame";
+            setPhase(Game, 'endGame');
             Game.currentTurn = (Game.turnMax + 1);
         }
     },
@@ -80,6 +90,7 @@ const game_engine = {
         if (Game.cardBets.length === Game.players.length) {
             game_controls.determineFirstDealer(Game);
             game_controls.prepMainGameInitialState(Game);
+            setPhase(Game, 'bettingPhase');
         }
     },
     pushCardBet: (Game, betInfo) => {
@@ -87,12 +98,13 @@ const game_engine = {
         game_controls.handleCardBet(Game, player, betInfo);
         game_engine.handleEndTurn(Game);
 
-        if (Game.cardBets.length === (Game.players.length - 1)) {
+        if (Game.cardBets.length === (Game.players.length - 1) && Game.currentOverallBet !== Game.betMax) {
             game_engine.handlePlayerSecondCard(Game);
         }
     },
     handlePlayerSecondCard: (Game) => {
         game_controls.pushPlayerSecondCard({ Game });
+        setPhase(Game, 'decideThirdCardPhase');
         if (game_controls.checkPlayersThirdCardsStatus({ Game })) {
             game_engine.handleDealerSecondCard(Game);
         }
@@ -111,7 +123,7 @@ const game_engine = {
     },
     handleDealerSecondCard: (Game) => {
         let dealer = Game.currentDealer;
-        Game.currentPhase = 'dealerCardsPhase';
+        setPhase(Game, 'dealerCardsPhase');
         game_controls.pushDealerSecondCard({ Game, dealer });
         if (game_controls.checkAllThirdCardsStatus({ Game })) {
             game_engine.commenceResolvingBets(Game);
@@ -130,16 +142,22 @@ const game_engine = {
         }
     },
     commenceResolvingBets: (Game) => {
-        Game.currentPhase = 'scoringPhase';
+        setPhase(Game, 'scoringPhase');
         game_controls.resolveBets({ Game });
-        Game.currentPhase = 'checkForBustPlayers';
-        setTimeout(() => game_engine.prepareNextRound(Game), 1000);
-        Game.currentPhase = 'prepareNextRound';
+        setPhase(Game, 'checkForBustPlayers');
+        setPhase(Game, 'prepareNextRound');
     },
     prepareNextRound: (Game) => {
         game_controls.prepNextRound({ Game });
-        Game.currentPhase = 'bettingPhase';
+        setPhase(Game, 'bettingPhase');
         game_engine.handleStartTurn(Game);
+    },
+    advance: (Game) => {
+        if (Game.currentPhase !== 'prepareNextRound') {
+            console.log(`advance: no-op, ${Game.currentPhase} is not a timed phase in phase 1`);
+            return;
+        }
+        game_engine.prepareNextRound(Game);
     },
 };
 
