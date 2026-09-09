@@ -26,4 +26,18 @@
         color: var.$color-white;
         font-size: 2rem;
     }
+
+    &__reveal-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 1rem;
+
+        &__item {
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 0.4rem;
+            background-color: var.$color-white;
+            border-radius: 0.5rem;
+        }
+    }
 }

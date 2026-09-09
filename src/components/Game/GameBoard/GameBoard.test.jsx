@@ -61,6 +61,35 @@ describe("GameBoard", () => {
         await screen.findByText(/Would you like a third card/i);
     });
 
+    it("renders round results during roundResults phase", () => {
+        renderGame({
+            preloadedState: {
+                game: {
+                    playerAuth: { id: 1, host: { host: false } },
+                    Players: players,
+                    currentPlayer,
+                    currentDealer,
+                    cardsOnBoard: [{ cards: [{ id: 1, value: 7, src: "/c.jpg" }] }],
+                    currentPhase: "roundResults",
+                    lastRoundResult: {
+                        turn: 1,
+                        dealerId: 2,
+                        dealerUsername: "hamada",
+                        dealerHandValue: 5,
+                        dealerYaku: false,
+                        results: [
+                            { userId: 1, username: "hitoshi", betAmount: 100, handValue: 8, yaku: false, delta: 100 },
+                        ],
+                    },
+                },
+            },
+            element: <GameBoard />,
+        });
+        expect(screen.getByText(/Round 1 Results/)).toBeInTheDocument();
+        expect(screen.getByText("+100")).toBeInTheDocument();
+        expect(screen.queryByText(/How much would you like to bet on this card/i)).not.toBeInTheDocument();
+    });
+
     it("renders dealer cards, columns, and players", () => {
         renderGame({
             preloadedState: {

@@ -16,7 +16,7 @@ export default function CardsValueCounter({ cards, parentColumn }) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if ((currentPhase === 'scoringPhase') || (userBet && userBet.ownerColumn === parentColumn) || (parentColumn === 'D')) {
+        if ((currentPhase === 'scoringPhase' || currentPhase === 'roundResults') || (userBet && userBet.ownerColumn === parentColumn) || (parentColumn === 'D')) {
             setCountSecondCard(true);
         }
         if (currentPhase === 'bettingPhase') {

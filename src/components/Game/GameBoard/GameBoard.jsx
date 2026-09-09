@@ -10,6 +10,7 @@ import CardsValueCounter from '../CardsValueCounter/CardsValueCounter';
 import Card from '../Card/Card';
 import MakeBetForm from '../MakeBetForm/MakeBetForm';
 import ThirdCardModal from '../ThirdCardModal/ThirdCardModal';
+import RoundResults from '../RoundResults/RoundResults';
 import './GameBoard.scss';
 
 export default function GameBoard() {
@@ -23,7 +24,9 @@ export default function GameBoard() {
 
     return (
         <>
-            {currentPhase === "bettingPhase" ? <MakeBetForm /> : <ThirdCardModal />}
+            {currentPhase === "bettingPhase" ? <MakeBetForm /> : null}
+            {(currentPhase === "decideThirdCardPhase" || currentPhase === "dealerCardsPhase") ? <ThirdCardModal /> : null}
+            {currentPhase === "roundResults" ? <RoundResults /> : null}
             <div className="maingame">
                 <div className="maingame__turninfo">
                     <h2 className="maingame__turninfo__text">Turn: {currentTurn}/{turnMax}</h2>

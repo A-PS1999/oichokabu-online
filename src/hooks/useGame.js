@@ -51,7 +51,7 @@ export function useGame({
             GameAPI.postRemovePlayer(gameId);
         };
 
-        if ((gamePhase === "checkForBustPlayers" && playerChips < 100) ||
+        if ((gamePhase === "roundResults" && playerChips < 100) ||
             gamePhase === "endGame") {
             endBustHandler();
         }

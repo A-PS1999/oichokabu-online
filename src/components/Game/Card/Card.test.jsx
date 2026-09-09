@@ -47,12 +47,12 @@ describe("Card", () => {
         expect(screen.queryByText("7")).not.toBeInTheDocument();
     });
 
-    it("reveals and disables a card on matching pickdealer-card-selected", () => {
-        renderCard({ defaultHidden: true });
+    it("reveals the server-resolved value and disables a card on matching pickdealer-card-selected", () => {
+        renderCard({ defaultHidden: true, value: undefined });
         act(() =>
-            emitToClient("game:1:pickdealer-card-selected", { cardId: 1, userId: 2 })
+            emitToClient("game:1:pickdealer-card-selected", { cardId: 1, userId: 2, cardVal: 9 })
         );
-        expect(screen.getByText("7")).toBeInTheDocument();
+        expect(screen.getByText("9")).toBeInTheDocument();
         expect(screen.getByRole("button", { name: /front of an oicho kabu card/i })).toBeDisabled();
     });
 
@@ -68,11 +68,13 @@ describe("Card", () => {
         expect(screen.getByRole("button", { name: /front of an oicho kabu card/i })).not.toBeDisabled();
     });
 
-    it("dispatches postDealerCardSelected when clicked in pick-dealer mode", async () => {
+    it("dispatches postDealerCardSelected without cardVal when clicked in pick-dealer mode", async () => {
         let postCalls = 0;
+        let requestBody;
         server.use(
-            http.post(`${serverAddress}/api/game/:gameId/pickdealer-card-selected`, async () => {
+            http.post(`${serverAddress}/api/game/:gameId/pickdealer-card-selected`, async ({ request }) => {
                 postCalls += 1;
+                requestBody = await request.json();
                 return HttpResponse.json({});
             })
         );
@@ -82,6 +84,8 @@ describe("Card", () => {
         await waitFor(() => {
             expect(postCalls).toBe(1);
         });
+        expect(requestBody.cardId).toBe(1);
+        expect(requestBody.cardVal).toBeUndefined();
     });
 
     it("reveals the card in scoringPhase", () => {

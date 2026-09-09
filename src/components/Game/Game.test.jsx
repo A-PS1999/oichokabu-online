@@ -257,4 +257,43 @@ describe("Game", () => {
         expect(updateChipsCalls).toBe(1);
         expect(removePlayerCalls).toBe(1);
     });
+
+    it("busts a player with chips below 100 during roundResults", async () => {
+        let updateChipsCalls = 0;
+        let removePlayerCalls = 0;
+        server.use(
+            http.get(`${serverAddress}/api/game/:gameId/authenticate-player`, () => {
+                return HttpResponse.json(playerAuth);
+            }),
+            http.post(`${serverAddress}/api/game/update-player-chips`, () => {
+                updateChipsCalls += 1;
+                return HttpResponse.json({});
+            }),
+            http.post(`${serverAddress}/api/game/:gameId/remove-player`, () => {
+                removePlayerCalls += 1;
+                return HttpResponse.json({});
+            })
+        );
+        renderGame({
+            preloadedState: {
+                game: {
+                    isPickDealer: false,
+                    playerAuth,
+                    Players: [{ id: 1, username: "hitoshi", chips: 50, isDealer: false }],
+                    currentPlayer,
+                    currentDealer,
+                    cardsOnBoard: [
+                        { cards: [{ id: 1, value: 7, src: "/c.jpg" }] },
+                    ],
+                    currentPhase: "roundResults",
+                },
+            },
+        });
+
+        await waitFor(() => {
+            expect(screen.getByTestId("lobby-nav")).toBeInTheDocument();
+        });
+        expect(updateChipsCalls).toBe(1);
+        expect(removePlayerCalls).toBe(1);
+    });
 });
