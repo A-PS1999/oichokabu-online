@@ -19,7 +19,7 @@ export default function CardsValueCounter({ cards, parentColumn }) {
         if ((currentPhase === 'scoringPhase') || (userBet && userBet.ownerColumn === parentColumn) || (parentColumn === 'D')) {
             setCountSecondCard(true);
         }
-        if (currentPhase === 'prepareNextRound') {
+        if (currentPhase === 'bettingPhase') {
             setCountSecondCard(false);
         }
     }, [currentPhase, parentColumn, userBet])
@@ -31,7 +31,7 @@ export default function CardsValueCounter({ cards, parentColumn }) {
                 dispatch(modalActions.toggleModal());
             }
         }
-        if (currentPhase === 'prepareNextRound') {
+        if (currentPhase === 'bettingPhase') {
             setModalNotOpened(true);
         }
     }, [modalNotOpened, userBet, parentColumn, dispatch, cards, cardsValue, currentPhase, playerStatus])

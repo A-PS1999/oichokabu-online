@@ -5,6 +5,7 @@ module.exports = ({ Game }) => {
     Game.currentTurn++;
     Game.currentOverallBet = 0;
     Game.cardBets = [];
+    Game.lastRoundResult = null;
 
     for (let i = 0; i < Game.players.length; i++) {
         Game.players[i].cardBet = [];

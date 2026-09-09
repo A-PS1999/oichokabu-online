@@ -35,13 +35,21 @@ const game_engine = {
         data.general_data.betMax = Game.betMax;
         data.general_data.currentPlayer = Game.currentPlayer;
         data.general_data.isPickDealer = Game.isPickDealer;
-        data.general_data.cardBets = Game.cardBets;
-        if (Game.isPickDealer) {
-            data.general_data.pickDealerCardsArray = Game.pickDealerCardsArray;
+        if (Game.isPickDealer || Game.currentPhase === phases.PHASES.DEALER_REVEAL) {
+            data.general_data.pickDealerCardsArray = Game.pickDealerCardsArray.map(({ id, src }) => ({ id, src }));
+            data.general_data.pickDealerReveals = Game.pickDealerReveals;
+            data.general_data.cardBets = Game.cardBets.map(({ userId, cardId }) => ({ userId, cardId }));
+        } else {
+            data.general_data.cardBets = Game.cardBets;
         }
         data.general_data.cardsOnBoard = Game.cardsOnBoard;
+        data.general_data.phaseEnteredAt = Game.phaseEnteredAt;
+        data.general_data.phaseDurationMs = Game.phaseDurationMs;
         if (Game.currentDealer) {
             data.general_data.currentDealer = Game.currentDealer;
+        }
+        if (Game.lastRoundResult) {
+            data.general_data.lastRoundResult = Game.lastRoundResult;
         }
     },
     getPlayersData: (Game, playerId, data) => {
@@ -63,7 +71,6 @@ const game_engine = {
         game_controls.removePlayer(Game, playerId);
         if (Game.players.length < 2) {
             setPhase(Game, 'endGame');
-            Game.currentTurn = (Game.turnMax + 1);
         }
     },
     onEndTurn: (Game, playerId) => {
@@ -86,14 +93,26 @@ const game_engine = {
         }
     },
     pushPickDealerCardSelection: (Game, choiceInfo) => {
+        if (Game.currentPhase !== phases.PHASES.PICK_DEALER) return null;
+        if (Game.cardBets.some(bet => bet.userId === choiceInfo.userId)) return null;
+        const card = Game.pickDealerCardsArray.find(card => card.id === choiceInfo.cardId);
+        if (!card) return null;
+        choiceInfo.cardVal = card.value;
         Game.cardBets.push(choiceInfo);
         if (Game.cardBets.length === Game.players.length) {
+            Game.pickDealerReveals = Game.cardBets.map(bet => ({
+                userId: bet.userId,
+                cardId: bet.cardId,
+                cardVal: bet.cardVal,
+            }));
             game_controls.determineFirstDealer(Game);
-            game_controls.prepMainGameInitialState(Game);
-            setPhase(Game, 'bettingPhase');
+            setPhase(Game, phases.PHASES.DEALER_REVEAL);
         }
+        return choiceInfo;
     },
     pushCardBet: (Game, betInfo) => {
+        if (Game.currentPhase !== phases.PHASES.BETTING) return;
+        if (betInfo.userId !== Game.currentPlayer.id) return;
         let player = Game.currentPlayer;
         game_controls.handleCardBet(Game, player, betInfo);
         game_engine.handleEndTurn(Game);
@@ -104,12 +123,13 @@ const game_engine = {
     },
     handlePlayerSecondCard: (Game) => {
         game_controls.pushPlayerSecondCard({ Game });
-        setPhase(Game, 'decideThirdCardPhase');
+        setPhase(Game, phases.PHASES.DECIDE_THIRD_CARD);
         if (game_controls.checkPlayersThirdCardsStatus({ Game })) {
             game_engine.handleDealerSecondCard(Game);
         }
     },
     handleOptionalThirdPlayerCard: (Game, userId, choiceMade) => {
+        if (Game.currentPhase !== phases.PHASES.DECIDE_THIRD_CARD) return;
         let playerIndex = Game.players.findIndex(player => player.id === userId);
         if (choiceMade === 'no') {
             Game.players[playerIndex].thirdCardChosen = false;
@@ -123,13 +143,14 @@ const game_engine = {
     },
     handleDealerSecondCard: (Game) => {
         let dealer = Game.currentDealer;
-        setPhase(Game, 'dealerCardsPhase');
+        setPhase(Game, phases.PHASES.DEALER_CARDS);
         game_controls.pushDealerSecondCard({ Game, dealer });
         if (game_controls.checkAllThirdCardsStatus({ Game })) {
-            game_engine.commenceResolvingBets(Game);
+            game_engine.resolveRound(Game);
         }
     },
     handleOptionalThirdDealerCard: (Game, choiceMade) => {
+        if (Game.currentPhase !== phases.PHASES.DEALER_CARDS) return;
         let dealer = Game.currentDealer;
         if (choiceMade === 'no') {
             dealer.thirdCardChosen = false;
@@ -138,26 +159,31 @@ const game_engine = {
             game_controls.pushDealerThirdCard({ Game, dealer });
         }
         if (game_controls.checkAllThirdCardsStatus({ Game })) {
-            game_engine.commenceResolvingBets(Game);
+            game_engine.resolveRound(Game);
         }
     },
-    commenceResolvingBets: (Game) => {
-        setPhase(Game, 'scoringPhase');
+    resolveRound: (Game) => {
+        setPhase(Game, phases.PHASES.SCORING);
         game_controls.resolveBets({ Game });
-        setPhase(Game, 'checkForBustPlayers');
-        setPhase(Game, 'prepareNextRound');
-    },
-    prepareNextRound: (Game) => {
-        game_controls.prepNextRound({ Game });
-        setPhase(Game, 'bettingPhase');
-        game_engine.handleStartTurn(Game);
+        setPhase(Game, phases.PHASES.ROUND_RESULTS);
     },
     advance: (Game) => {
-        if (Game.currentPhase !== 'prepareNextRound') {
-            console.log(`advance: no-op, ${Game.currentPhase} is not a timed phase in phase 1`);
-            return;
+        if (Game.currentPhase === phases.PHASES.DEALER_REVEAL) {
+            game_controls.prepMainGameInitialState(Game);
+            game_engine.handleStartTurn(Game);
+            setPhase(Game, phases.PHASES.BETTING);
+            Game.pickDealerReveals = [];
+        } else if (Game.currentPhase === phases.PHASES.ROUND_RESULTS) {
+            if (Game.currentTurn >= Game.turnMax || Game.players.length < 2) {
+                setPhase(Game, phases.PHASES.END_GAME);
+            } else {
+                game_controls.prepNextRound({ Game });
+                game_engine.handleStartTurn(Game);
+                setPhase(Game, phases.PHASES.BETTING);
+            }
+        } else {
+            console.log(`advance: no-op, ${Game.currentPhase} is not a timed phase`);
         }
-        game_engine.prepareNextRound(Game);
     },
 };
 

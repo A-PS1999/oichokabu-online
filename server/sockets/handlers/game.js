@@ -43,6 +43,10 @@ module.exports = (gameSockets) => {
         if (!state.phaseDurationMs) return;
         if ((state.phaseEnteredAt + state.phaseDurationMs) > Date.now()) return;
         game_engine.advance(state);
+        if (state.currentPhase === 'endGame') {
+            endGame(gameId);
+            return;
+        }
         broadcastState(gameId);
     };
 
@@ -78,7 +82,7 @@ module.exports = (gameSockets) => {
 
         const sampleUserId = room.keys().next().value;
         const sample = game_engine.getGameData(state, sampleUserId);
-        if (sample.general_data.currentTurn > sample.general_data.turnMax) {
+        if (sample.general_data.currentTurn > sample.general_data.turnMax || state.currentPhase === 'endGame') {
             endGame(gameId);
             return;
         }
@@ -139,11 +143,13 @@ module.exports = (gameSockets) => {
         ack?.({ ok: true });
     };
 
-    const pickDealerCardSelected = (gameId, userId, cardId, cardVal) => {
-        const choiceInfo = { userId, cardId, cardVal };
-        game_engine.pushPickDealerCardSelection(gameGlobals.get(gameId), choiceInfo);
+    const pickDealerCardSelected = (gameId, userId, cardId) => {
+        const state = gameGlobals.get(gameId);
+        if (!state) return;
+        const choiceInfo = game_engine.pushPickDealerCardSelection(state, { userId, cardId });
+        if (!choiceInfo) return;
         broadcastToGame(gameId, (socket, uid) => {
-            socket.emit(`game:${gameId}:pickdealer-card-selected`, { userId, cardId, cardVal });
+            socket.emit(`game:${gameId}:pickdealer-card-selected`, { userId, cardId, cardVal: choiceInfo.cardVal });
         });
         syncGame(gameId);
     };
@@ -171,7 +177,11 @@ module.exports = (gameSockets) => {
         const game = gameGlobals.get(gameId);
         if (game) game_engine.handleRemovePlayer(game, userId);
         Game.removePlayer(gameId, userId).then(_ => {
-            broadcastState(gameId);
+            if (gameGlobals.get(gameId)?.currentPhase === 'endGame') {
+                endGame(gameId);
+            } else {
+                broadcastState(gameId);
+            }
         });
     };
 

@@ -35,10 +35,10 @@ export default function Card({id, value, src, ownerColumn, defaultHidden, defaul
     }, [currentPhase]);
 
     useEffect(() => {
-        if (currentPhase === 'prepareNextRound' && hasClicked === true) {
+        if (currentPhase === 'bettingPhase' && hasClicked === true) {
             dispatch(setHasClicked(false));
         }
-        if (currentPhase === 'prepareNextRound') {
+        if (currentPhase === 'bettingPhase') {
             setIsDisabled(false);
         }
     }, [dispatch, currentPhase, hasClicked])

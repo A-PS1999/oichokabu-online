@@ -23,10 +23,9 @@ router.post('/api/game/:gameId/update', checkLoggedIn, checkGamePlayer, (request
 
 router.post('/api/game/:gameId/pickdealer-card-selected', checkLoggedIn, checkGamePlayer, (request, response) => {
     const gameId = Number(request.params.gameId);
-    const cardValue = request.body.cardVal;
     const cardId = request.body.cardId;
     const userId = response.locals.user.id;
-    GameSockets.pickDealerCardSelected(gameId, userId, cardId, cardValue);
+    GameSockets.pickDealerCardSelected(gameId, userId, cardId);
     response.sendStatus(204);
 })
 
