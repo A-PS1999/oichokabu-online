@@ -119,6 +119,39 @@ describe("Game", () => {
         await screen.findByText(/game boom/);
     });
 
+    it("clears stale game state from a previous game when entering a new gameId", async () => {
+        useAuthHandler();
+        renderGame({
+            gameId: "4",
+            preloadedState: {
+                game: {
+                    gameId: "3",
+                    isPickDealer: false,
+                    currentPhase: "roundResults",
+                    currentTurn: 6,
+                    turnMax: 6,
+                    lastRoundResult: {
+                        turn: 6,
+                        dealerUsername: "hamada",
+                        dealerHandValue: 8,
+                        results: [],
+                    },
+                    playerAuth,
+                    Players: players,
+                    currentPlayer,
+                    currentDealer,
+                    cardsOnBoard: [
+                        { cards: [{ id: 1, value: 7, src: "/c.jpg" }] },
+                    ],
+                },
+            },
+        });
+
+        expect(screen.queryByText(/Round 6 Results/i)).not.toBeInTheDocument();
+        expect(screen.queryByText(/Turn: 6\/6/)).not.toBeInTheDocument();
+        await screen.findByText(/Waiting for the host to start the game/i);
+    });
+
     it("navigates to /lobby and toasts when game:rejoin ack is { ok: false }", async () => {
         useAuthHandler();
         setRejoinResponse(false, "bust");

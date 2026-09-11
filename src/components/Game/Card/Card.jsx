@@ -7,6 +7,7 @@ import {
     postDealerCardSelected
 } from '../../../store/gameSlice';
 import { modalActions } from '../../../store/modalSlice';
+import { createToast } from '../../../store/toastSlice';
 import { useSocket } from '../../../hooks/useSocket';
 import './Card.scss';
 
@@ -55,6 +56,18 @@ export default function Card({ id, value, src, ownerColumn, defaultHidden, defau
         }
     }
 
+    const handleCardClick = () => {
+        if (determineDisabled()) {
+            dispatch(createToast({ message: "You cannot currently select cards", type: "error" }));
+        } else {
+            if (isPickDealer) {
+                dispatch(postDealerCardSelected({ gameId, cardId: id }));
+            } else {
+                handleMainGameCardClick();
+            }
+        }
+    }
+
     useEffect(() => {
         const dealerDecideClickHandler = (data) => {
             if (data.cardId === id) {
@@ -97,8 +110,8 @@ export default function Card({ id, value, src, ownerColumn, defaultHidden, defau
                         </div>
                     </div>
                 }
-                <button className='game-card__button' disabled={determineDisabled()}
-                    onClick={() => { isPickDealer ? dispatch(postDealerCardSelected({ gameId, cardId: id })) : handleMainGameCardClick() }}>
+                <button className='game-card__button'
+                    onClick={() => handleCardClick()}>
                     <div className={isHidden ? "game-card__inner--hidden" : "game-card__inner"}>
                         <div className="game-card__side game-card__side--front">
                             <img src={src} alt="Front of an Oicho Kabu card" id={id} />

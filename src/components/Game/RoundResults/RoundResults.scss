@@ -48,13 +48,11 @@
             border-radius: 1rem;
             padding: 0.8rem 1.5rem;
             margin-bottom: 0.7rem;
+            align-items: center;
+            font-size: 1.2rem;
 
             &__name {
                 font-weight: 700;
-            }
-
-            &__stat {
-                font-size: 1rem;
             }
 
             &__delta--win {
@@ -63,7 +61,7 @@
             }
 
             &__delta--loss {
-                color: var.$color-blue;
+                color: var.$color-dark-blue;
                 font-weight: 700;
             }
         }

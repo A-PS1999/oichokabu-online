@@ -60,6 +60,9 @@ export const gameSlice = createSlice({
     initialState: initialGameState,
     reducers: {
         setGameId(state, action) {
+            if (state.gameId !== action.payload) {
+                return { ...initialGameState, gameId: action.payload };
+            }
             state.gameId = action.payload;
         },
         setCurrentSelection(state, action) {

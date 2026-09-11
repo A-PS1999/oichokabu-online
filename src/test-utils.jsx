@@ -106,7 +106,11 @@ export function renderGame({
     initialEntries,
     element = <Game />,
 } = {}) {
-    const gameState = createGameState(preloadedState.game || {});
+    const gameOverrides = preloadedState.game || {};
+    const gameState = createGameState({
+        ...gameOverrides,
+        gameId: gameOverrides.gameId ?? gameId,
+    });
     const fullState = {
         ...preloadedState,
         game: gameState.game,

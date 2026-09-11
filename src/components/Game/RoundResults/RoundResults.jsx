@@ -9,7 +9,6 @@ const yakuLabel = yaku => {
     return yaku;
 };
 
-// TODO: Improve layout and styling here
 export default function RoundResults() {
     const lastRoundResult = useSelector(selectLastRoundResult);
     if (!lastRoundResult) return null;
@@ -28,8 +27,8 @@ export default function RoundResults() {
                 {lastRoundResult.results.map(row => (
                     <li key={row.userId} className="roundresults__list__item">
                         <div className="roundresults__list__item__name">{row.username}</div>
-                        <div className="roundresults__list__item__stat">Bet: {row.betAmount}</div>
-                        <div className="roundresults__list__item__stat">Hand: {row.handValue}</div>
+                        <div className="roundresults__list__item">Bet: {row.betAmount}</div>
+                        <div className="roundresults__list__item">Hand: {row.handValue}</div>
                         {yakuLabel(row.yaku) ? (
                             <div className="roundresults__yaku">{yakuLabel(row.yaku)}</div>
                         ) : null}

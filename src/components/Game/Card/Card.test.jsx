@@ -47,19 +47,25 @@ describe("Card", () => {
         expect(screen.queryByText("7")).not.toBeInTheDocument();
     });
 
-    it("reveals the server-resolved value and disables a card on matching pickdealer-card-selected", () => {
+    it("reveals the server-resolved value and disables a card on matching pickdealer-card-selected", async () => {
         renderCard({ defaultHidden: true, value: undefined });
         act(() =>
             emitToClient("game:1:pickdealer-card-selected", { cardId: 1, userId: 2, cardVal: 9 })
         );
         expect(screen.getByText("9")).toBeInTheDocument();
-        expect(screen.getByRole("button", { name: /front of an oicho kabu card/i })).toBeDisabled();
+        const user = await userEvent.setup();
+        await user.click(screen.getByRole("button", { name: /front of an oicho kabu card/i }));
+        const toast = await screen.findByText(/You cannot currently select cards/i);
+        expect(toast).toBeVisible();
     });
 
-    it("disables own card on matching card-bet-made", () => {
+    it("emits a toast if clicking a card after card bet made", async () => {
         renderCard();
         act(() => emitToClient("game:1:card-bet-made", { userId: 1, cardId: 1 }));
-        expect(screen.getByRole("button", { name: /front of an oicho kabu card/i })).toBeDisabled();
+        const user = userEvent.setup();
+        await user.click(screen.getByRole("button", { name: /front of an oicho kabu card/i }));
+        const toast = await screen.findByText(/You cannot currently select cards/i);
+        expect(toast).toBeVisible();
     });
 
     it("does not disable other players' card on card-bet-made", () => {
