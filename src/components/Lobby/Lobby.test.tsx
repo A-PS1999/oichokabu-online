@@ -7,14 +7,18 @@ import { serverAddress } from "../../settings";
 import { renderWithProviders } from "../../test-utils";
 import { emitToClient } from "../../mocks/socketMock";
 import { useParams } from "react-router";
+import type { LobbyRoom } from "@shared/api";
 import Lobby from "./Lobby";
 
-const rooms = [
+const rooms: LobbyRoom[] = [
     {
         game_id: 1,
         room_name: "open-room",
         status: "open",
-        Players: [{ id: 1 }, { id: 2 }],
+        Players: [
+            { host: true, ready: true },
+            { host: false, ready: false },
+        ],
         player_cap: 2,
         turn_max: 12,
         bet_max: 500,
@@ -23,14 +27,22 @@ const rooms = [
         game_id: 2,
         room_name: "room-with-space",
         status: "open",
-        Players: [{ id: 1 }],
+        Players: [{ host: true, ready: true }],
         player_cap: 4,
         turn_max: 12,
         bet_max: 500,
     },
 ];
 
-function preloadedLobby({ userId, chips, roomsList = [] }) {
+function preloadedLobby({
+    userId,
+    chips,
+    roomsList = [],
+}: {
+    userId: number;
+    chips: number;
+    roomsList?: LobbyRoom[];
+}) {
     return {
         lobby: {
             userId,
@@ -44,7 +56,7 @@ function preloadedLobby({ userId, chips, roomsList = [] }) {
     };
 }
 
-function LobbyRoutes({ onNavigate }) {
+function LobbyRoutes({ onNavigate }: { onNavigate?: (gameId: string | undefined) => void }) {
     const { gameId } = useParams();
     return (
         <div data-testid="nav">
@@ -209,7 +221,7 @@ describe("Lobby", () => {
                 return HttpResponse.json([]);
             }),
             http.post(`${serverAddress}/api/lobby/reset-chips`, async ({ request }) => {
-                const body = await request.json();
+                const body: any = await request.json();
                 return HttpResponse.json(body.chips);
             }),
             http.get(`${serverAddress}/api/get-user-id`, () => {

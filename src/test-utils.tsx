@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { MemoryRouter, Routes, Route } from 'react-router';
+import { MemoryRouter, Routes, Route, type InitialEntry } from 'react-router';
 import { configureStore } from '@reduxjs/toolkit';
 import { userSlice } from './store/userSlice';
 import { lobbySlice } from './store/lobbySlice';
@@ -38,7 +38,11 @@ export const unauthenticatedState = {
 	},
 };
 
-function createTestStore(preloadedState?: Partial<RootState>) {
+export type PreloadedState = {
+	[K in keyof RootState]?: Partial<RootState[K]>;
+};
+
+function createTestStore(preloadedState?: PreloadedState) {
 	return configureStore({
 		reducer: {
 			user: userSlice.reducer,
@@ -60,9 +64,9 @@ export type TestRoute = {
 };
 
 export type RenderWithProvidersOptions = {
-	initialEntries?: string[];
+	initialEntries?: InitialEntry[];
 	routes?: TestRoute[];
-	preloadedState?: Partial<RootState>;
+	preloadedState?: PreloadedState;
 };
 
 export function renderWithProviders(
@@ -120,10 +124,10 @@ export function createGameState(overrides: Partial<GameSliceState> = {}): { game
 }
 
 export type RenderGameOptions = {
-	preloadedState?: Partial<RootState>;
+	preloadedState?: PreloadedState;
 	gameId?: string;
 	routes?: TestRoute[];
-	initialEntries?: string[];
+	initialEntries?: InitialEntry[];
 	element?: ReactElement | null;
 };
 
@@ -139,7 +143,7 @@ export function renderGame({
 		...gameOverrides,
 		gameId: gameOverrides.gameId ?? gameId,
 	});
-	const fullState: Partial<RootState> = {
+const fullState: PreloadedState = {
 		...preloadedState,
 		game: gameState.game,
 	};

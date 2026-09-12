@@ -4,13 +4,13 @@ import { renderGame } from "../../../test-utils";
 import GameBoard from "./GameBoard";
 
 const players = [
-    { id: 1, username: "hitoshi", chips: 500, isDealer: false },
-    { id: 2, username: "hamada", chips: 500, isDealer: true },
+    { id: 1, username: "hitoshi", chips: 500, isDealer: false, thirdCardChosen: null },
+    { id: 2, username: "hamada", chips: 500, isDealer: true, thirdCardChosen: null },
 ];
 
-const currentDealer = { id: 2, username: "hamada", cardBet: [{ id: 21, value: 5, src: "/d.jpg" }] };
+const currentDealer = { id: 2, username: "hamada", chips: 500, cardBet: [{ id: 21, value: 5, src: "/d.jpg" }], isDealer: true, thirdCardChosen: null, seat: 1 };
 
-const currentPlayer = { id: 1, username: "hitoshi" };
+const currentPlayer = { id: 1, username: "hitoshi", chips: 500, cardBet: [], isDealer: false, thirdCardChosen: null, seat: 0 };
 
 describe("GameBoard", () => {
     it("renders the betting form during bettingPhase", () => {
@@ -18,11 +18,11 @@ describe("GameBoard", () => {
             preloadedState: {
                 modal: { isOpen: true },
                 game: {
-                    playerAuth: { id: 1, host: { host: false } },
+                    playerAuth: { id: 1, host: { host: false, ready: false } },
                     Players: players,
                     currentPlayer,
                     currentDealer,
-                    cardsOnBoard: [{ cards: [{ id: 1, value: 7, src: "/c.jpg" }] }],
+                    cardsOnBoard: [{ columnId: 0, cards: [{ id: 1, value: 7, src: "/c.jpg" }] }],
                     currentPhase: "bettingPhase",
                 },
             },
@@ -36,16 +36,17 @@ describe("GameBoard", () => {
             preloadedState: {
                 modal: { isOpen: false },
                 game: {
-                    playerAuth: { id: 1, host: { host: false } },
+                    playerAuth: { id: 1, host: { host: false, ready: false } },
                     Players: [
                         { id: 1, username: "hitoshi", chips: 500, isDealer: false, thirdCardChosen: null },
-                        { id: 2, username: "hamada", chips: 500, isDealer: true },
+                        { id: 2, username: "hamada", chips: 500, isDealer: true, thirdCardChosen: null },
                     ],
                     currentPlayer,
                     currentDealer,
-                    cardBets: [{ userId: 1, ownerColumn: 0 }],
+                    cardBets: [{ userId: 1, cardId: 1, ownerColumn: 0, betAmount: 100, value: 5 }],
                     cardsOnBoard: [
                         {
+                            columnId: 0,
                             cards: [
                                 { id: 1, value: 4, src: "/c1.jpg" },
                                 { id: 2, value: 2, src: "/c2.jpg" },
@@ -65,11 +66,11 @@ describe("GameBoard", () => {
         renderGame({
             preloadedState: {
                 game: {
-                    playerAuth: { id: 1, host: { host: false } },
+                    playerAuth: { id: 1, host: { host: false, ready: false } },
                     Players: players,
                     currentPlayer,
                     currentDealer,
-                    cardsOnBoard: [{ cards: [{ id: 1, value: 7, src: "/c.jpg" }] }],
+                    cardsOnBoard: [{ columnId: 0, cards: [{ id: 1, value: 7, src: "/c.jpg" }] }],
                     currentPhase: "roundResults",
                     lastRoundResult: {
                         turn: 1,
@@ -77,6 +78,7 @@ describe("GameBoard", () => {
                         dealerUsername: "hamada",
                         dealerHandValue: 5,
                         dealerYaku: false,
+                        busted: [],
                         results: [
                             { userId: 1, username: "hitoshi", betAmount: 100, handValue: 8, yaku: false, delta: 100 },
                         ],
@@ -94,11 +96,11 @@ describe("GameBoard", () => {
         renderGame({
             preloadedState: {
                 game: {
-                    playerAuth: { id: 1, host: { host: false } },
+                    playerAuth: { id: 1, host: { host: false, ready: false } },
                     Players: players,
                     currentPlayer,
                     currentDealer,
-                    cardsOnBoard: [{ cards: [{ id: 1, value: 7, src: "/c.jpg" }] }],
+                    cardsOnBoard: [{ columnId: 0, cards: [{ id: 1, value: 7, src: "/c.jpg" }] }],
                     currentPhase: "bettingPhase",
                 },
             },
@@ -114,7 +116,7 @@ describe("GameBoard", () => {
         renderGame({
             preloadedState: {
                 game: {
-                    playerAuth: { id: 1, host: { host: false } },
+                    playerAuth: { id: 1, host: { host: false, ready: false } },
                     Players: players,
                     currentPlayer,
                     currentDealer,

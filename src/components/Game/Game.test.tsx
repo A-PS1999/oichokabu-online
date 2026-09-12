@@ -5,17 +5,35 @@ import { server } from "../../mocks/server";
 import { serverAddress } from "../../settings";
 import { renderGame } from "../../test-utils";
 import { emitToClient, setRejoinResponse } from "../../mocks/socketMock";
+import type { PlayerAuth } from "@shared/api";
+import type { Player, PlayerDataView, CardColumn, RoundResult } from "@shared/game";
 
-const playerAuth = { id: 1, host: { host: true } };
+const playerAuth: PlayerAuth = { id: 1, host: { host: true, ready: false } };
 
-const players = [
-    { id: 1, username: "hitoshi", chips: 500, isDealer: false },
-    { id: 2, username: "hamada", chips: 500, isDealer: true },
+const players: PlayerDataView[] = [
+    { id: 1, username: "hitoshi", chips: 500, isDealer: false, thirdCardChosen: null },
+    { id: 2, username: "hamada", chips: 500, isDealer: true, thirdCardChosen: null },
 ];
 
-const currentDealer = { id: 2, username: "hamada", cardBet: [{ id: 21, value: 5, src: "/d.jpg" }] };
+const currentDealer: Player = {
+    id: 2,
+    username: "hamada",
+    chips: 500,
+    cardBet: [{ id: 21, value: 5, src: "/d.jpg" }],
+    isDealer: true,
+    thirdCardChosen: null,
+    seat: 1,
+};
 
-const currentPlayer = { id: 1, username: "hitoshi" };
+const currentPlayer: Player = {
+    id: 1,
+    username: "hitoshi",
+    chips: 500,
+    cardBet: [],
+    isDealer: false,
+    thirdCardChosen: null,
+    seat: 0,
+};
 
 function useAuthHandler() {
     server.use(
@@ -56,7 +74,7 @@ describe("Game", () => {
                     currentPlayer,
                     currentDealer,
                     cardsOnBoard: [
-                        { cards: [{ id: 1, value: 7, src: "/c.jpg" }] },
+                        { columnId: 0, cards: [{ id: 1, value: 7, src: "/c.jpg" }] },
                     ],
                     currentPhase: "bettingPhase",
                 },
@@ -93,7 +111,7 @@ describe("Game", () => {
             preloadedState: {
                 game: {
                     isPickDealer: null,
-                    playerAuth: { id: 1, host: { host: false } },
+                    playerAuth: { id: 1, host: { host: false, ready: false } },
                     Players: players,
                 },
             },
@@ -132,8 +150,11 @@ describe("Game", () => {
                     turnMax: 6,
                     lastRoundResult: {
                         turn: 6,
+                        dealerId: 2,
                         dealerUsername: "hamada",
                         dealerHandValue: 8,
+                        dealerYaku: false,
+                        busted: [],
                         results: [],
                     },
                     playerAuth,
@@ -141,7 +162,7 @@ describe("Game", () => {
                     currentPlayer,
                     currentDealer,
                     cardsOnBoard: [
-                        { cards: [{ id: 1, value: 7, src: "/c.jpg" }] },
+                        { columnId: 0, cards: [{ id: 1, value: 7, src: "/c.jpg" }] },
                     ],
                 },
             },
@@ -182,7 +203,7 @@ describe("Game", () => {
                     currentPlayer,
                     currentDealer,
                     cardsOnBoard: [
-                        { cards: [{ id: 1, value: 7, src: "/c.jpg" }] },
+                        { columnId: 0, cards: [{ id: 1, value: 7, src: "/c.jpg" }] },
                     ],
                 },
             },
@@ -191,7 +212,7 @@ describe("Game", () => {
         await screen.findByText(/Turn: 1\/12/);
         act(() =>
             emitToClient("game:1:update-game", {
-                general_data: {
+general_data: {
                     betMax: 500,
                     currentTurn: 3,
                     turnMax: 12,
@@ -202,8 +223,10 @@ describe("Game", () => {
                     currentDealer,
                     cardBets: [],
                     cardsOnBoard: [
-                        { cards: [{ id: 1, value: 7, src: "/c.jpg" }] },
+                        { columnId: 0, cards: [{ id: 1, value: 7, src: "/c.jpg" }] },
                     ],
+                    phaseEnteredAt: 0,
+                    phaseDurationMs: null,
                 },
                 players_data: players,
             })
@@ -222,7 +245,7 @@ describe("Game", () => {
                     currentPlayer,
                     currentDealer,
                     cardsOnBoard: [
-                        { cards: [{ id: 1, value: 7, src: "/c.jpg" }] },
+                        { columnId: 0, cards: [{ id: 1, value: 7, src: "/c.jpg" }] },
                     ],
                 },
             },
@@ -247,7 +270,7 @@ describe("Game", () => {
                     currentPlayer,
                     currentDealer,
                     cardsOnBoard: [
-                        { cards: [{ id: 1, value: 7, src: "/c.jpg" }] },
+                        { columnId: 0, cards: [{ id: 1, value: 7, src: "/c.jpg" }] },
                     ],
                     currentPhase: "endGame",
                 },
@@ -270,7 +293,7 @@ describe("Game", () => {
                     currentPlayer,
                     currentDealer,
                     cardsOnBoard: [
-                        { cards: [{ id: 1, value: 7, src: "/c.jpg" }] },
+                        { columnId: 0, cards: [{ id: 1, value: 7, src: "/c.jpg" }] },
                     ],
                     currentPhase: "roundResults",
                 },

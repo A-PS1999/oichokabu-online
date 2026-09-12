@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { renderWithProviders } from '../../../../test-utils';
 import GameFormRadioGroup from './GameFormRadioGroup';
 
-function RadioHarness({ onChangeSpy }) {
+function RadioHarness({ onChangeSpy }: { onChangeSpy: (value: number) => void }) {
     const [currValue, setCurrValue] = useState("2");
 
     return (

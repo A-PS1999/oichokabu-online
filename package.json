@@ -33,7 +33,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "dev:server": "tsx watch server/initServer.ts",
+    "dev:server": "tsx watch --env-file=.env.development server/initServer.ts",
     "build": "vite build",
     "build:server": "tsc -p server/tsconfig.build.json",
     "start:server": "node server/dist/initServer.js",

@@ -9,8 +9,8 @@ const pickDealerCards = [
 ];
 
 const players = [
-    { id: 1, username: "hitoshi" },
-    { id: 2, username: "hamada" },
+    { id: 1, username: "hitoshi", chips: 500, isDealer: false, thirdCardChosen: null },
+    { id: 2, username: "hamada", chips: 500, isDealer: false, thirdCardChosen: null },
 ];
 
 describe("PickDealerScreen", () => {
@@ -18,7 +18,7 @@ describe("PickDealerScreen", () => {
         renderGame({
             preloadedState: {
                 game: {
-                    playerAuth: { id: 1, host: { host: false } },
+                    playerAuth: { id: 1, host: { host: false, ready: false } },
                     Players: players,
                     pickDealerCards,
                     hasClicked: false,
@@ -34,7 +34,7 @@ describe("PickDealerScreen", () => {
         renderGame({
             preloadedState: {
                 game: {
-                    playerAuth: { id: 1, host: { host: false } },
+                    playerAuth: { id: 1, host: { host: false, ready: false } },
                     Players: players,
                     pickDealerCards,
                     pickDealerReveals: [
@@ -42,7 +42,7 @@ describe("PickDealerScreen", () => {
                         { userId: 2, cardId: 11, cardVal: 3 },
                     ],
                     currentPhase: "dealerReveal",
-                    currentDealer: { id: 1, username: "hitoshi" },
+                    currentDealer: { id: 1, username: "hitoshi", chips: 500, cardBet: [], isDealer: false, thirdCardChosen: null, seat: 0 },
                     hasClicked: false,
                 },
             },
@@ -57,7 +57,7 @@ describe("PickDealerScreen", () => {
         renderGame({
             preloadedState: {
                 game: {
-                    playerAuth: { id: 1, host: { host: false } },
+                    playerAuth: { id: 1, host: { host: false, ready: false } },
                     Players: [],
                     pickDealerCards: [],
                     hasClicked: false,

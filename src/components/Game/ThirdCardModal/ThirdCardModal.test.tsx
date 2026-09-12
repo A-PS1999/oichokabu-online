@@ -9,7 +9,7 @@ import ThirdCardModal from "./ThirdCardModal";
 
 describe("ThirdCardModal", () => {
     it("dispatches postThirdCardChoice and closes the modal on Yes", async () => {
-        let received;
+        let received: any;
         server.use(
             http.post(`${serverAddress}/api/game/:gameId/decide-third-card`, async ({ request }) => {
                 const body = await request.json();
@@ -22,8 +22,8 @@ describe("ThirdCardModal", () => {
             preloadedState: {
                 modal: { isOpen: true },
                 game: {
-                    playerAuth: { id: 1, host: { host: false } },
-                    currentDealer: { id: 2, username: "hamada" },
+                    playerAuth: { id: 1, host: { host: false, ready: false } },
+                    currentDealer: { id: 2, username: "hamada", chips: 500, cardBet: [], isDealer: true, thirdCardChosen: null, seat: 1 },
                     gameId: "1",
                 },
             },
@@ -42,7 +42,7 @@ describe("ThirdCardModal", () => {
     });
 
     it("dispatches postThirdCardChoice with isDealer true for the dealer", async () => {
-        let received;
+        let received: any;
         server.use(
             http.post(`${serverAddress}/api/game/:gameId/decide-third-card`, async ({ request }) => {
                 const body = await request.json();
@@ -55,8 +55,8 @@ describe("ThirdCardModal", () => {
             preloadedState: {
                 modal: { isOpen: true },
                 game: {
-                    playerAuth: { id: 2, host: { host: false } },
-                    currentDealer: { id: 2, username: "hamada" },
+                    playerAuth: { id: 2, host: { host: false, ready: false } },
+                    currentDealer: { id: 2, username: "hamada", chips: 500, cardBet: [], isDealer: true, thirdCardChosen: null, seat: 1 },
                     gameId: "1",
                 },
             },

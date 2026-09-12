@@ -9,7 +9,7 @@ import MakeBetForm from "./MakeBetForm";
 
 describe("MakeBetForm", () => {
     it("dispatches postCardBet and closes the modal on submit", async () => {
-        let betReceived;
+        let betReceived: any;
         server.use(
             http.post(`${serverAddress}/api/game/:gameId/card-bet`, async ({ request }) => {
                 const body = await request.json();
@@ -22,7 +22,7 @@ describe("MakeBetForm", () => {
             preloadedState: {
                 modal: { isOpen: true },
                 game: {
-                    playerAuth: { id: 1, host: { host: false } },
+                    playerAuth: { id: 1, host: { host: false, ready: false } },
                     gameId: "1",
                     currentlySelectedCard: { id: 1, ownerColumn: 0 },
                     betMax: 500,

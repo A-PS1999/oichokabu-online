@@ -1,14 +1,16 @@
 import { describe, it, expect } from "vitest";
 import { screen } from "@testing-library/react";
 import { renderGame } from "../../../test-utils";
+import type { RoundResult } from "@shared/game";
 import RoundResults from "./RoundResults";
 
-const lastRoundResult = {
+const lastRoundResult: RoundResult = {
     turn: 3,
     dealerId: 2,
     dealerUsername: "hamada",
     dealerHandValue: 5,
     dealerYaku: "arashi",
+    busted: [],
     results: [
         { userId: 1, username: "hitoshi", betAmount: 100, handValue: 8, yaku: false, delta: 100 },
         { userId: 3, username: "matsumoto", betAmount: 200, handValue: 2, yaku: true, delta: -200 },
