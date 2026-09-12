@@ -20,5 +20,4 @@ module.exports = ({ Game }) => {
             Game.players[playerIndex].thirdCardChosen = false;
         }
     }
-    Game.currentPhase = "decideThirdCardPhase";
 }

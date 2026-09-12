@@ -1,3 +1,5 @@
+const handValue = cards => cards.reduce((sum, card) => (sum + card.value) % 10, 0);
+
 module.exports = ({ Game }) => {
     const checkForArashi = (cards) => {
         if (cards.length < 3) return false;
@@ -12,7 +14,7 @@ module.exports = ({ Game }) => {
         } else return false;
       }
     const checkForShippin = (cards) => {
-        if (cards.length > 2) return false;
+        if (cards.length != 2) return false;
         if ((cards[0].value === 4 && cards[1].value === 1) || (cards[0].value === 1 && cards[1].value === 4)) {
             return true;
         } else return false;
@@ -42,12 +44,17 @@ module.exports = ({ Game }) => {
     const nonDealerPlayers = Game.players.filter(player => player.isDealer !== true);
 
     const dealerCards = Game.currentDealer.cardBet;
-    const dealerCardsValue = Game.currentDealer.cardBet.reduce((sum, card) => (sum + card.value) % 10, 0);
+    const dealerCardsValue = handValue(dealerCards);
     const dealerYakuBool = checkForYaku(dealerCards);
+
+    const chipsBefore = {};
+    for (let i = 0; i < nonDealerPlayers.length; i++) {
+        chipsBefore[nonDealerPlayers[i].id] = nonDealerPlayers[i].chips;
+    }
 
     for (let i = 0; i < nonDealerPlayers.length; i++) {
         let playerCards = nonDealerPlayers[i].cardBet;
-        let playerCardsValue = nonDealerPlayers[i].cardBet.reduce((sum, card) => (sum + card.value) % 10, 0);
+        let playerCardsValue = handValue(playerCards);
         let playerBet = Game.cardBets.find(bet => bet.userId === nonDealerPlayers[i].id);
         let playerYakuBool = checkForYaku(playerCards);
         
@@ -107,4 +114,24 @@ module.exports = ({ Game }) => {
             }
         }
     }
+
+    Game.lastRoundResult = {
+        turn: Game.currentTurn,
+        dealerId: Game.currentDealer.id,
+        dealerUsername: Game.currentDealer.username,
+        dealerHandValue: dealerCardsValue,
+        dealerYaku: dealerYakuBool,
+        results: nonDealerPlayers.map(player => {
+            let playerBet = Game.cardBets.find(bet => bet.userId === player.id);
+            let betAmount = playerBet ? playerBet.betAmount : 0;
+            return {
+                userId: player.id,
+                username: player.username,
+                betAmount,
+                handValue: handValue(player.cardBet),
+                yaku: checkForYaku(player.cardBet),
+                delta: (player.chips - chipsBefore[player.id]) - betAmount,
+            };
+        }),
+    };
 }

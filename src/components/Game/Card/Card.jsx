@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentSelection, setHasClicked,
+import {
+    setCurrentSelection, setHasClicked,
     selectPlayerAuth, selectHasClicked, selectIsPickDealer,
     selectCurrentDealerData, selectCurrentPlayer, selectCurrentPhase, selectGameId,
     postDealerCardSelected
 } from '../../../store/gameSlice';
 import { modalActions } from '../../../store/modalSlice';
+import { createToast } from '../../../store/toastSlice';
 import { useSocket } from '../../../hooks/useSocket';
 import './Card.scss';
 
-export default function Card({id, value, src, ownerColumn, defaultHidden, defaultDisabled}) {
+export default function Card({ id, value, src, ownerColumn, defaultHidden, defaultDisabled }) {
 
     const [isHidden, setIsHidden] = useState(defaultHidden);
     const [isDisabled, setIsDisabled] = useState(defaultDisabled);
+    const [revealedValue, setRevealedValue] = useState(value);
     const playerAuth = useSelector(selectPlayerAuth);
     const hasClicked = useSelector(selectHasClicked);
     const isPickDealer = useSelector(selectIsPickDealer);
@@ -35,10 +38,10 @@ export default function Card({id, value, src, ownerColumn, defaultHidden, defaul
     }, [currentPhase]);
 
     useEffect(() => {
-        if (currentPhase === 'prepareNextRound' && hasClicked === true) {
+        if (currentPhase === 'bettingPhase' && hasClicked === true) {
             dispatch(setHasClicked(false));
         }
-        if (currentPhase === 'prepareNextRound') {
+        if (currentPhase === 'bettingPhase') {
             setIsDisabled(false);
         }
     }, [dispatch, currentPhase, hasClicked])
@@ -53,9 +56,22 @@ export default function Card({id, value, src, ownerColumn, defaultHidden, defaul
         }
     }
 
+    const handleCardClick = () => {
+        if (determineDisabled()) {
+            dispatch(createToast({ message: "You cannot currently select cards", type: "error" }));
+        } else {
+            if (isPickDealer) {
+                dispatch(postDealerCardSelected({ gameId, cardId: id }));
+            } else {
+                handleMainGameCardClick();
+            }
+        }
+    }
+
     useEffect(() => {
         const dealerDecideClickHandler = (data) => {
             if (data.cardId === id) {
+                setRevealedValue(data.cardVal);
                 setIsHidden(false);
                 setIsDisabled(true);
             }
@@ -87,15 +103,15 @@ export default function Card({id, value, src, ownerColumn, defaultHidden, defaul
     return (
         <>
             <div className="game-card">
-                { isHidden ? null : 
+                {isHidden ? null :
                     <div className='game-card__value-container'>
                         <div className="game-card__value-container__value">
-                            {value}
+                            {revealedValue}
                         </div>
-                    </div> 
+                    </div>
                 }
-                <button className='game-card__button' disabled={determineDisabled()} 
-                    onClick={() => { isPickDealer ? dispatch(postDealerCardSelected({ gameId, cardId: id, cardVal: value })) : handleMainGameCardClick() }}>
+                <button className='game-card__button'
+                    onClick={() => handleCardClick()}>
                     <div className={isHidden ? "game-card__inner--hidden" : "game-card__inner"}>
                         <div className="game-card__side game-card__side--front">
                             <img src={src} alt="Front of an Oicho Kabu card" id={id} />

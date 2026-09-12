@@ -32,6 +32,27 @@ describe("CardsValueCounter", () => {
         expect(screen.getByText("2")).toBeInTheDocument();
     });
 
+    it("keeps counting through roundResults", () => {
+        renderGame({
+            preloadedState: {
+                game: {
+                    playerAuth: { id: 1, host: { host: false } },
+                    currentDealer: { id: 2, username: "hamada" },
+                    cardBets: [],
+                    Players: [{ id: 1, username: "hitoshi", chips: 500, isDealer: false }],
+                    currentPhase: "roundResults",
+                },
+            },
+            element: (
+                <CardsValueCounter
+                    cards={[{ id: 1, value: 7 }, { id: 2, value: 5 }]}
+                    parentColumn={0}
+                />
+            ),
+        });
+        expect(screen.getByText("2")).toBeInTheDocument();
+    });
+
     it("opens the modal for a player's column when value is 4-6 with no third card", async () => {
         renderGame({
             preloadedState: {

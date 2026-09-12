@@ -1,7 +1,9 @@
+const nextPlayerBySeat = require('./nextPlayerBySeat');
+
 module.exports = ({ Game }) => {
+    const oldDealerSeat = Game.currentDealer.seat;
     Game.currentDealer.isDealer = null;
-    Game.currentDealerIndex = (Game.currentDealerIndex + 1) % Game.playerCount;
-    Game.currentDealer = Game.players[Game.currentDealerIndex];
+    Game.currentDealer = nextPlayerBySeat(Game, oldDealerSeat);
     Game.currentDealer.isDealer = true;
     Game.currentDealer.cardBet.push(Game.deck.pop());
 }

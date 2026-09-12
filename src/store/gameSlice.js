@@ -13,6 +13,10 @@ const initialGameState = {
     pickDealerCards: [],
     cardsOnBoard: [],
     currentPhase: null,
+    phaseEnteredAt: null,
+    phaseDurationMs: null,
+    pickDealerReveals: [],
+    lastRoundResult: null,
     hasClicked: false,
     currentPlayer: null,
     currentDealer: null,
@@ -46,8 +50,8 @@ export const postThirdCardChoice = createAsyncThunk(
 
 export const postDealerCardSelected = createAsyncThunk(
     "game/postDealerCardSelected",
-    async ({ gameId, cardId, cardVal }) => {
-        return await GameAPI.postDealerCardSelected(gameId, cardId, cardVal);
+    async ({ gameId, cardId }) => {
+        return await GameAPI.postDealerCardSelected(gameId, cardId);
     }
 )
 
@@ -56,6 +60,9 @@ export const gameSlice = createSlice({
     initialState: initialGameState,
     reducers: {
         setGameId(state, action) {
+            if (state.gameId !== action.payload) {
+                return { ...initialGameState, gameId: action.payload };
+            }
             state.gameId = action.payload;
         },
         setCurrentSelection(state, action) {
@@ -78,6 +85,10 @@ export const gameSlice = createSlice({
             }
             state.cardBets = action.payload.general_data.cardBets;
             state.cardsOnBoard = action.payload.general_data.cardsOnBoard;
+            state.phaseEnteredAt = action.payload.general_data.phaseEnteredAt;
+            state.phaseDurationMs = action.payload.general_data.phaseDurationMs;
+            state.pickDealerReveals = action.payload.general_data.pickDealerReveals || [];
+            state.lastRoundResult = action.payload.general_data.lastRoundResult || null;
             if (action.payload.general_data.pickDealerCardsArray && action.payload.general_data.pickDealerCardsArray.length > 0) {
                 state.pickDealerCards = action.payload.general_data.pickDealerCardsArray;
             } else {
@@ -115,6 +126,10 @@ export const selectIsPickDealer = state => state.game.isPickDealer;
 export const selectPickDealerCards = state => state.game.pickDealerCards;
 export const selectCardsOnBoard = state => state.game.cardsOnBoard;
 export const selectCurrentPhase = state => state.game.currentPhase;
+export const selectPhaseEnteredAt = state => state.game.phaseEnteredAt;
+export const selectPhaseDurationMs = state => state.game.phaseDurationMs;
+export const selectPickDealerReveals = state => state.game.pickDealerReveals;
+export const selectLastRoundResult = state => state.game.lastRoundResult;
 export const selectHasClicked = state => state.game.hasClicked;
 export const selectCurrentPlayer = state => state.game.currentPlayer;
 export const selectCurrentDealerData = state => state.game.currentDealer;

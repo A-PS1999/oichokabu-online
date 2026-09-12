@@ -47,19 +47,25 @@ describe("Card", () => {
         expect(screen.queryByText("7")).not.toBeInTheDocument();
     });
 
-    it("reveals and disables a card on matching pickdealer-card-selected", () => {
-        renderCard({ defaultHidden: true });
+    it("reveals the server-resolved value and disables a card on matching pickdealer-card-selected", async () => {
+        renderCard({ defaultHidden: true, value: undefined });
         act(() =>
-            emitToClient("game:1:pickdealer-card-selected", { cardId: 1, userId: 2 })
+            emitToClient("game:1:pickdealer-card-selected", { cardId: 1, userId: 2, cardVal: 9 })
         );
-        expect(screen.getByText("7")).toBeInTheDocument();
-        expect(screen.getByRole("button", { name: /front of an oicho kabu card/i })).toBeDisabled();
+        expect(screen.getByText("9")).toBeInTheDocument();
+        const user = await userEvent.setup();
+        await user.click(screen.getByRole("button", { name: /front of an oicho kabu card/i }));
+        const toast = await screen.findByText(/You cannot currently select cards/i);
+        expect(toast).toBeVisible();
     });
 
-    it("disables own card on matching card-bet-made", () => {
+    it("emits a toast if clicking a card after card bet made", async () => {
         renderCard();
         act(() => emitToClient("game:1:card-bet-made", { userId: 1, cardId: 1 }));
-        expect(screen.getByRole("button", { name: /front of an oicho kabu card/i })).toBeDisabled();
+        const user = userEvent.setup();
+        await user.click(screen.getByRole("button", { name: /front of an oicho kabu card/i }));
+        const toast = await screen.findByText(/You cannot currently select cards/i);
+        expect(toast).toBeVisible();
     });
 
     it("does not disable other players' card on card-bet-made", () => {
@@ -68,11 +74,13 @@ describe("Card", () => {
         expect(screen.getByRole("button", { name: /front of an oicho kabu card/i })).not.toBeDisabled();
     });
 
-    it("dispatches postDealerCardSelected when clicked in pick-dealer mode", async () => {
+    it("dispatches postDealerCardSelected without cardVal when clicked in pick-dealer mode", async () => {
         let postCalls = 0;
+        let requestBody;
         server.use(
-            http.post(`${serverAddress}/api/game/:gameId/pickdealer-card-selected`, async () => {
+            http.post(`${serverAddress}/api/game/:gameId/pickdealer-card-selected`, async ({ request }) => {
                 postCalls += 1;
+                requestBody = await request.json();
                 return HttpResponse.json({});
             })
         );
@@ -82,6 +90,8 @@ describe("Card", () => {
         await waitFor(() => {
             expect(postCalls).toBe(1);
         });
+        expect(requestBody.cardId).toBe(1);
+        expect(requestBody.cardVal).toBeUndefined();
     });
 
     it("reveals the card in scoringPhase", () => {

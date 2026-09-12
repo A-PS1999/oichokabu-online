@@ -4,20 +4,19 @@ import { useNavigate } from "react-router";
 import { useSocket } from "./useSocket";
 import { fetchPlayerAuth, setGameState } from "../store/gameSlice";
 import { createToast } from "../store/toastSlice";
-import { GameAPI } from "../services";
 
 const JOIN_FAIL_MSG = "Failed to join game. Game has ended or " +
     "an error occurred. Redirecting...";
+const BUST_MSG = "You busted — returning to the lobby.";
 
 export function useGame({
     gameId,
     gamePhase,
-    playerChips,
 }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const socket = useSocket();
-    const endBustFired = useRef(false);
+    const exitFired = useRef(false);
 
     const handleUpdateGameState = useCallback((data) => {
         dispatch(setGameState(data));
@@ -43,23 +42,31 @@ export function useGame({
     }, [dispatch, socket, gameId, handleUpdateGameState]);
 
     useEffect(() => {
-        const endBustHandler = () => {
-            if (endBustFired.current) return;
-            endBustFired.current = true;
-            GameAPI.postUpdateChips(playerChips);
+        const exitGame = () => {
+            if (exitFired.current) return;
+            exitFired.current = true;
             navigate("/lobby");
-            GameAPI.postRemovePlayer(gameId);
+        };
+        const exitGameBusted = () => {
+            if (exitFired.current) return;
+            exitFired.current = true;
+            dispatch(createToast({
+                message: BUST_MSG,
+                type: "error"
+            }));
+            navigate("/lobby");
         };
 
-        if ((gamePhase === "checkForBustPlayers" && playerChips < 100) ||
-            gamePhase === "endGame") {
-            endBustHandler();
-        }
+        socket.on(`game:${gameId}:end-game`, exitGame);
+        socket.on(`game:${gameId}:player-busted`, exitGameBusted);
 
-        socket.on(`game:${gameId}:end-game`, endBustHandler);
+        if (gamePhase === "endGame") {
+            exitGame();
+        }
 
         return () => {
-            socket.off(`game:${gameId}:end-game`, endBustHandler);
+            socket.off(`game:${gameId}:end-game`, exitGame);
+            socket.off(`game:${gameId}:player-busted`, exitGameBusted);
         }
-    }, [navigate, socket, gameId, gamePhase, playerChips]);
+    }, [dispatch, navigate, socket, gameId, gamePhase]);
 };

@@ -119,6 +119,39 @@ describe("Game", () => {
         await screen.findByText(/game boom/);
     });
 
+    it("clears stale game state from a previous game when entering a new gameId", async () => {
+        useAuthHandler();
+        renderGame({
+            gameId: "4",
+            preloadedState: {
+                game: {
+                    gameId: "3",
+                    isPickDealer: false,
+                    currentPhase: "roundResults",
+                    currentTurn: 6,
+                    turnMax: 6,
+                    lastRoundResult: {
+                        turn: 6,
+                        dealerUsername: "hamada",
+                        dealerHandValue: 8,
+                        results: [],
+                    },
+                    playerAuth,
+                    Players: players,
+                    currentPlayer,
+                    currentDealer,
+                    cardsOnBoard: [
+                        { cards: [{ id: 1, value: 7, src: "/c.jpg" }] },
+                    ],
+                },
+            },
+        });
+
+        expect(screen.queryByText(/Round 6 Results/i)).not.toBeInTheDocument();
+        expect(screen.queryByText(/Turn: 6\/6/)).not.toBeInTheDocument();
+        await screen.findByText(/Waiting for the host to start the game/i);
+    });
+
     it("navigates to /lobby and toasts when game:rejoin ack is { ok: false }", async () => {
         useAuthHandler();
         setRejoinResponse(false, "bust");
@@ -178,22 +211,8 @@ describe("Game", () => {
         await screen.findByText(/Turn: 3\/12/);
     });
 
-    it("navigates to /lobby and posts chips/remove-player on end-game event, idempotently", async () => {
-        let updateChipsCalls = 0;
-        let removePlayerCalls = 0;
-        server.use(
-            http.get(`${serverAddress}/api/game/:gameId/authenticate-player`, () => {
-                return HttpResponse.json(playerAuth);
-            }),
-            http.post(`${serverAddress}/api/game/update-player-chips`, () => {
-                updateChipsCalls += 1;
-                return HttpResponse.json({});
-            }),
-            http.post(`${serverAddress}/api/game/:gameId/remove-player`, () => {
-                removePlayerCalls += 1;
-                return HttpResponse.json({});
-            })
-        );
+    it("navigates to /lobby on end-game event, idempotently", async () => {
+        useAuthHandler();
         renderGame({
             preloadedState: {
                 game: {
@@ -215,26 +234,10 @@ describe("Game", () => {
         await waitFor(() => {
             expect(screen.getByTestId("lobby-nav")).toBeInTheDocument();
         });
-        expect(updateChipsCalls).toBe(1);
-        expect(removePlayerCalls).toBe(1);
     });
 
-    it("triggers endBustHandler when currentPhase is endGame", async () => {
-        let updateChipsCalls = 0;
-        let removePlayerCalls = 0;
-        server.use(
-            http.get(`${serverAddress}/api/game/:gameId/authenticate-player`, () => {
-                return HttpResponse.json(playerAuth);
-            }),
-            http.post(`${serverAddress}/api/game/update-player-chips`, () => {
-                updateChipsCalls += 1;
-                return HttpResponse.json({});
-            }),
-            http.post(`${serverAddress}/api/game/:gameId/remove-player`, () => {
-                removePlayerCalls += 1;
-                return HttpResponse.json({});
-            })
-        );
+    it("navigates to /lobby when currentPhase is endGame", async () => {
+        useAuthHandler();
         renderGame({
             preloadedState: {
                 game: {
@@ -254,7 +257,31 @@ describe("Game", () => {
         await waitFor(() => {
             expect(screen.getByTestId("lobby-nav")).toBeInTheDocument();
         });
-        expect(updateChipsCalls).toBe(1);
-        expect(removePlayerCalls).toBe(1);
+    });
+
+    it("navigates to /lobby and toasts on player-busted event", async () => {
+        useAuthHandler();
+        renderGame({
+            preloadedState: {
+                game: {
+                    isPickDealer: false,
+                    playerAuth,
+                    Players: players,
+                    currentPlayer,
+                    currentDealer,
+                    cardsOnBoard: [
+                        { cards: [{ id: 1, value: 7, src: "/c.jpg" }] },
+                    ],
+                    currentPhase: "roundResults",
+                },
+            },
+        });
+
+        await screen.findByText(/Turn: 1\/12/);
+        act(() => emitToClient("game:1:player-busted", { userId: 1, username: "hitoshi", chips: 50 }));
+        await waitFor(() => {
+            expect(screen.getByTestId("lobby-nav")).toBeInTheDocument();
+        });
+        expect(screen.getByText(/You busted/)).toBeInTheDocument();
     });
 });

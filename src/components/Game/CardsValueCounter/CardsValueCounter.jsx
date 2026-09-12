@@ -16,10 +16,10 @@ export default function CardsValueCounter({ cards, parentColumn }) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if ((currentPhase === 'scoringPhase') || (userBet && userBet.ownerColumn === parentColumn) || (parentColumn === 'D')) {
+        if ((currentPhase === 'scoringPhase' || currentPhase === 'roundResults') || (userBet && userBet.ownerColumn === parentColumn) || (parentColumn === 'D')) {
             setCountSecondCard(true);
         }
-        if (currentPhase === 'prepareNextRound') {
+        if (currentPhase === 'bettingPhase') {
             setCountSecondCard(false);
         }
     }, [currentPhase, parentColumn, userBet])
@@ -31,7 +31,7 @@ export default function CardsValueCounter({ cards, parentColumn }) {
                 dispatch(modalActions.toggleModal());
             }
         }
-        if (currentPhase === 'prepareNextRound') {
+        if (currentPhase === 'bettingPhase') {
             setModalNotOpened(true);
         }
     }, [modalNotOpened, userBet, parentColumn, dispatch, cards, cardsValue, currentPhase, playerStatus])

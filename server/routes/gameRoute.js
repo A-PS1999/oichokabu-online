@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const { Game: GameSockets } = require('../sockets');
-const { Game: GameDB } = require('../db/api');
 const checkLoggedIn = require('./middleware/checkLoggedIn');
 const checkGamePlayer = require('./middleware/checkGamePlayer');
 const checkGameHost = require('./middleware/checkGameHost');
@@ -23,14 +22,13 @@ router.post('/api/game/:gameId/update', checkLoggedIn, checkGamePlayer, (request
 
 router.post('/api/game/:gameId/pickdealer-card-selected', checkLoggedIn, checkGamePlayer, (request, response) => {
     const gameId = Number(request.params.gameId);
-    const cardValue = request.body.cardVal;
     const cardId = request.body.cardId;
     const userId = response.locals.user.id;
-    GameSockets.pickDealerCardSelected(gameId, userId, cardId, cardValue);
+    GameSockets.pickDealerCardSelected(gameId, userId, cardId);
     response.sendStatus(204);
 })
 
-router.post('/api/game/:gameId/card-bet', checkLoggedIn, (request, response) => {
+router.post('/api/game/:gameId/card-bet', checkLoggedIn, checkGamePlayer, (request, response) => {
     const gameId = Number(request.params.gameId);
     const userId = response.locals.user.id;
     const { currentCard, betAmount } = request.body.betData;
@@ -42,7 +40,7 @@ router.post('/api/game/:gameId/card-bet', checkLoggedIn, (request, response) => 
     response.sendStatus(204);
 })
 
-router.post('/api/game/:gameId/decide-third-card', checkLoggedIn, (request, response) => {
+router.post('/api/game/:gameId/decide-third-card', checkLoggedIn, checkGamePlayer, (request, response) => {
     const gameId = Number(request.params.gameId);
     const userId = response.locals.user.id;
     const choiceMade = request.body.choiceMade;
@@ -50,22 +48,5 @@ router.post('/api/game/:gameId/decide-third-card', checkLoggedIn, (request, resp
     GameSockets.thirdCardChoice(gameId, userId, choiceMade, isDealer);
     response.sendStatus(204);
 })
-
-router.post('/api/game/:gameId/remove-player', checkLoggedIn, checkGamePlayer, (request, response) => {
-    const gameId = Number(request.params.gameId);
-    const userId = response.locals.user.id;
-    GameSockets.removePlayer(gameId, userId);
-    response.sendStatus(204);
-})
-
-router.post('/api/game/update-player-chips', checkLoggedIn, (request, response) => {
-    const newChips = request.body.newChips;
-    const id = response.locals.user.id;
-
-    GameDB.updateChips(id, newChips).then(result => {
-        return response.json(result)
-    })
-    .catch(error => console.log(error));
-});
 
 module.exports = router;
