@@ -5,7 +5,7 @@ import { http, HttpResponse } from "msw";
 import { server } from "../../../mocks/server";
 import { serverAddress } from "../../../settings";
 import { renderGame } from "../../../test-utils";
-import ThirdCardModal from "./ThirdCardModal.jsx";
+import ThirdCardModal from "./ThirdCardModal";
 
 describe("ThirdCardModal", () => {
     it("dispatches postThirdCardChoice and closes the modal on Yes", async () => {

@@ -6,7 +6,7 @@ import { server } from "../../../mocks/server";
 import { serverAddress } from "../../../settings";
 import { renderGame } from "../../../test-utils";
 import { emitToClient } from "../../../mocks/socketMock";
-import Card from "./Card.jsx";
+import Card from "./Card";
 
 function renderCard(cardProps, gameOverrides = {}) {
     return renderGame({

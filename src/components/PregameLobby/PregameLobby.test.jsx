@@ -6,7 +6,7 @@ import { server } from "../../mocks/server";
 import { serverAddress } from "../../settings";
 import { renderWithProviders } from "../../test-utils";
 import { emitToClient, setRejoinResponse } from "../../mocks/socketMock";
-import PregameLobby from "./PregameLobby.jsx";
+import PregameLobby from "./PregameLobby";
 
 const playerInfo = {
     room_name: "my-game",

@@ -5,7 +5,7 @@ import { http, HttpResponse } from "msw";
 import { server } from "../../../mocks/server";
 import { serverAddress } from "../../../settings";
 import { renderGame } from "../../../test-utils";
-import MakeBetForm from "./MakeBetForm.jsx";
+import MakeBetForm from "./MakeBetForm";
 
 describe("MakeBetForm", () => {
     it("dispatches postCardBet and closes the modal on submit", async () => {

@@ -1,3 +1,7 @@
+import type { Phase } from '@shared/game';
+
+export type { Phase };
+
 export const PHASES = {
     PICK_DEALER: 'pickDealer',
     DEALER_REVEAL: 'dealerReveal',
@@ -7,9 +11,7 @@ export const PHASES = {
     SCORING: 'scoringPhase',
     ROUND_RESULTS: 'roundResults',
     END_GAME: 'endGame',
-} as const;
-
-export type Phase = (typeof PHASES)[keyof typeof PHASES];
+} as const satisfies Record<string, Phase>;
 
 export const PHASE_DURATIONS_MS: Partial<Record<Phase, number>> = {
     [PHASES.DEALER_REVEAL]: 4000,

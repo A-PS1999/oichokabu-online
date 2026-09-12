@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["vite/client", "vitest/globals"],
+    "paths": {
+      "@shared/*": ["./shared/*"]
+    },
+    "noEmit": true
+  },
+  "include": ["src", "shared"],
+  "exclude": ["src/**/*.test.jsx", "src/**/*.test.js", "node_modules", "build"]
+}

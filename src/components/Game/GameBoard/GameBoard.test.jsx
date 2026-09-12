@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { screen } from "@testing-library/react";
 import { renderGame } from "../../../test-utils";
-import GameBoard from "./GameBoard.jsx";
+import GameBoard from "./GameBoard";
 
 const players = [
     { id: 1, username: "hitoshi", chips: 500, isDealer: false },

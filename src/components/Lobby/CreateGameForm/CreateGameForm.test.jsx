@@ -5,7 +5,7 @@ import { http, HttpResponse } from "msw";
 import { server } from "../../../mocks/server";
 import { serverAddress } from "../../../settings";
 import { renderWithProviders } from "../../../test-utils";
-import CreateGameForm from "./CreateGameForm.jsx";
+import CreateGameForm from "./CreateGameForm";
 
 function renderCreateGameForm() {
     return renderWithProviders(<CreateGameForm />, {

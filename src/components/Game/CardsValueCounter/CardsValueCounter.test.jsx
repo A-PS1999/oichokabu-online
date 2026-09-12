@@ -3,7 +3,7 @@ import { screen, waitFor } from "@testing-library/react";
 import { useSelector } from "react-redux";
 import { renderGame } from "../../../test-utils";
 import { modalSelector } from "../../../store/modalSlice";
-import CardsValueCounter from "./CardsValueCounter.jsx";
+import CardsValueCounter from "./CardsValueCounter";
 
 function ModalProbe() {
     const { isOpen } = useSelector(modalSelector);

@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { screen } from "@testing-library/react";
 import { renderGame } from "../../../test-utils";
-import PickDealerScreen from "./PickDealerScreen.jsx";
+import PickDealerScreen from "./PickDealerScreen";
 
 const pickDealerCards = [
     { id: 10, src: "/c1.jpg" },

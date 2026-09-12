@@ -1,5 +1,5 @@
 import type { Socket } from 'socket.io';
-import game_engine from '../../game_logic';
+import { game_engine } from '../../game_logic';
 import type { GameState, NewCardBet } from '../../game_logic/types';
 import { Game } from '../../db/api';
 import type { AckCallback, GameId, UserId, UserSocketMap } from '../types';

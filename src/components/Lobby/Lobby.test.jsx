@@ -7,7 +7,7 @@ import { serverAddress } from "../../settings";
 import { renderWithProviders } from "../../test-utils";
 import { emitToClient } from "../../mocks/socketMock";
 import { useParams } from "react-router";
-import Lobby from "./Lobby.jsx";
+import Lobby from "./Lobby";
 
 const rooms = [
     {

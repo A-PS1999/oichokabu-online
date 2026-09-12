@@ -232,4 +232,4 @@ const game_engine = {
     },
 };
 
-export = game_engine;
+export { game_engine };

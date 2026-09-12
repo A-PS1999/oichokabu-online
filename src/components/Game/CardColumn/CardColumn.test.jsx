@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { screen } from "@testing-library/react";
 import { renderGame } from "../../../test-utils";
-import CardColumn from "./CardColumn.jsx";
+import CardColumn from "./CardColumn";
 
 const column = {
     cards: [

@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest';
-import engine from './index.js';
+import { game_engine as engine } from './index.js';
 import * as game_controls from './game_controls/index.js';
 import type { Card, GameConstants, GameState, OkUser } from './types.js';
 
