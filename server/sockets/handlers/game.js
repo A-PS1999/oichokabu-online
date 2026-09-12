@@ -112,11 +112,20 @@ module.exports = (gameSockets) => {
         const game = ongoingGames[gameId];
         if (!game) return;
 
+        const state = gameGlobals.get(gameId);
+
         clearInterval(game.timer);
         game.timers.forEach(clearTimeout);
         delete ongoingGames[gameId];
 
         broadcastToGame(gameId, (socket, _userId) => socket.emit(`game:${gameId}:end-game`));
+
+        if (state) {
+            Game.updateChipsBulk(state.players.map(player => ({
+                player_userid: player.id,
+                new_chips: player.chips,
+            }))).catch(err => console.error('persist chips at endGame', err));
+        }
 
         gameGlobals.delete(gameId);
         gameSockets.delete(gameId);
@@ -175,7 +184,12 @@ module.exports = (gameSockets) => {
 
     const removePlayer = (gameId, userId) => {
         const game = gameGlobals.get(gameId);
-        if (game) game_engine.handleRemovePlayer(game, userId);
+        let removedChips = null;
+        if (game) {
+            const player = game.players.find(player => player.id === userId);
+            if (player) removedChips = player.chips;
+            game_engine.handleRemovePlayer(game, userId);
+        }
         Game.removePlayer(gameId, userId).then(_ => {
             if (gameGlobals.get(gameId)?.currentPhase === 'endGame') {
                 endGame(gameId);
@@ -183,6 +197,10 @@ module.exports = (gameSockets) => {
                 broadcastState(gameId);
             }
         });
+        if (removedChips !== null) {
+            Game.updateChipsBulk([{ player_userid: userId, new_chips: removedChips }])
+                .catch(err => console.error('persist chips at removePlayer', err));
+        }
     };
 
     return {

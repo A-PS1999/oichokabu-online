@@ -28,17 +28,19 @@ const endGame = db => game_id =>
 const getStatus = db => game_id =>
 	db.ok_games.findByPk(game_id).then(game => game.status);
 
-const updateChips = db => (player_userid, new_chips) =>
-	db.ok_users.findByPk(player_userid).then(user => 
-		user.update({ user_chips: new_chips })
-	);
-	
+const updateChipsBulk = db => entries =>
+	Promise.all(entries.map(({ player_userid, new_chips }) =>
+		db.ok_users.findByPk(player_userid).then(user =>
+			user.update({ user_chips: new_chips })
+		)
+	));
+
 module.exports = db => ({
 	getUserIdsAndUsernames: getUserIdsAndUsernames(db),
 	removePlayer: removePlayer(db),
 	runGame: runGame(db),
 	endGame: endGame(db),
 	getStatus: getStatus(db),
-	updateChips: updateChips(db),
+	updateChipsBulk: updateChipsBulk(db),
 	getGameConstants: getGameConstants(db),
 });

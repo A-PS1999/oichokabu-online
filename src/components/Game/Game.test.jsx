@@ -211,16 +211,11 @@ describe("Game", () => {
         await screen.findByText(/Turn: 3\/12/);
     });
 
-    it("navigates to /lobby and posts chips/remove-player on end-game event, idempotently", async () => {
-        let updateChipsCalls = 0;
+    it("navigates to /lobby and posts remove-player on end-game event, idempotently", async () => {
         let removePlayerCalls = 0;
         server.use(
             http.get(`${serverAddress}/api/game/:gameId/authenticate-player`, () => {
                 return HttpResponse.json(playerAuth);
-            }),
-            http.post(`${serverAddress}/api/game/update-player-chips`, () => {
-                updateChipsCalls += 1;
-                return HttpResponse.json({});
             }),
             http.post(`${serverAddress}/api/game/:gameId/remove-player`, () => {
                 removePlayerCalls += 1;
@@ -248,20 +243,14 @@ describe("Game", () => {
         await waitFor(() => {
             expect(screen.getByTestId("lobby-nav")).toBeInTheDocument();
         });
-        expect(updateChipsCalls).toBe(1);
         expect(removePlayerCalls).toBe(1);
     });
 
     it("triggers endBustHandler when currentPhase is endGame", async () => {
-        let updateChipsCalls = 0;
         let removePlayerCalls = 0;
         server.use(
             http.get(`${serverAddress}/api/game/:gameId/authenticate-player`, () => {
                 return HttpResponse.json(playerAuth);
-            }),
-            http.post(`${serverAddress}/api/game/update-player-chips`, () => {
-                updateChipsCalls += 1;
-                return HttpResponse.json({});
             }),
             http.post(`${serverAddress}/api/game/:gameId/remove-player`, () => {
                 removePlayerCalls += 1;
@@ -287,20 +276,14 @@ describe("Game", () => {
         await waitFor(() => {
             expect(screen.getByTestId("lobby-nav")).toBeInTheDocument();
         });
-        expect(updateChipsCalls).toBe(1);
         expect(removePlayerCalls).toBe(1);
     });
 
     it("busts a player with chips below 100 during roundResults", async () => {
-        let updateChipsCalls = 0;
         let removePlayerCalls = 0;
         server.use(
             http.get(`${serverAddress}/api/game/:gameId/authenticate-player`, () => {
                 return HttpResponse.json(playerAuth);
-            }),
-            http.post(`${serverAddress}/api/game/update-player-chips`, () => {
-                updateChipsCalls += 1;
-                return HttpResponse.json({});
             }),
             http.post(`${serverAddress}/api/game/:gameId/remove-player`, () => {
                 removePlayerCalls += 1;
@@ -326,7 +309,6 @@ describe("Game", () => {
         await waitFor(() => {
             expect(screen.getByTestId("lobby-nav")).toBeInTheDocument();
         });
-        expect(updateChipsCalls).toBe(1);
         expect(removePlayerCalls).toBe(1);
     });
 });

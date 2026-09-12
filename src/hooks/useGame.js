@@ -46,7 +46,6 @@ export function useGame({
         const endBustHandler = () => {
             if (endBustFired.current) return;
             endBustFired.current = true;
-            GameAPI.postUpdateChips(playerChips);
             navigate("/lobby");
             GameAPI.postRemovePlayer(gameId);
         };
