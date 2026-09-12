@@ -211,17 +211,8 @@ describe("Game", () => {
         await screen.findByText(/Turn: 3\/12/);
     });
 
-    it("navigates to /lobby and posts remove-player on end-game event, idempotently", async () => {
-        let removePlayerCalls = 0;
-        server.use(
-            http.get(`${serverAddress}/api/game/:gameId/authenticate-player`, () => {
-                return HttpResponse.json(playerAuth);
-            }),
-            http.post(`${serverAddress}/api/game/:gameId/remove-player`, () => {
-                removePlayerCalls += 1;
-                return HttpResponse.json({});
-            })
-        );
+    it("navigates to /lobby on end-game event, idempotently", async () => {
+        useAuthHandler();
         renderGame({
             preloadedState: {
                 game: {
@@ -243,20 +234,10 @@ describe("Game", () => {
         await waitFor(() => {
             expect(screen.getByTestId("lobby-nav")).toBeInTheDocument();
         });
-        expect(removePlayerCalls).toBe(1);
     });
 
-    it("triggers endBustHandler when currentPhase is endGame", async () => {
-        let removePlayerCalls = 0;
-        server.use(
-            http.get(`${serverAddress}/api/game/:gameId/authenticate-player`, () => {
-                return HttpResponse.json(playerAuth);
-            }),
-            http.post(`${serverAddress}/api/game/:gameId/remove-player`, () => {
-                removePlayerCalls += 1;
-                return HttpResponse.json({});
-            })
-        );
+    it("navigates to /lobby when currentPhase is endGame", async () => {
+        useAuthHandler();
         renderGame({
             preloadedState: {
                 game: {
@@ -276,26 +257,16 @@ describe("Game", () => {
         await waitFor(() => {
             expect(screen.getByTestId("lobby-nav")).toBeInTheDocument();
         });
-        expect(removePlayerCalls).toBe(1);
     });
 
-    it("busts a player with chips below 100 during roundResults", async () => {
-        let removePlayerCalls = 0;
-        server.use(
-            http.get(`${serverAddress}/api/game/:gameId/authenticate-player`, () => {
-                return HttpResponse.json(playerAuth);
-            }),
-            http.post(`${serverAddress}/api/game/:gameId/remove-player`, () => {
-                removePlayerCalls += 1;
-                return HttpResponse.json({});
-            })
-        );
+    it("navigates to /lobby and toasts on player-busted event", async () => {
+        useAuthHandler();
         renderGame({
             preloadedState: {
                 game: {
                     isPickDealer: false,
                     playerAuth,
-                    Players: [{ id: 1, username: "hitoshi", chips: 50, isDealer: false }],
+                    Players: players,
                     currentPlayer,
                     currentDealer,
                     cardsOnBoard: [
@@ -306,9 +277,11 @@ describe("Game", () => {
             },
         });
 
+        await screen.findByText(/Turn: 1\/12/);
+        act(() => emitToClient("game:1:player-busted", { userId: 1, username: "hitoshi", chips: 50 }));
         await waitFor(() => {
             expect(screen.getByTestId("lobby-nav")).toBeInTheDocument();
         });
-        expect(removePlayerCalls).toBe(1);
+        expect(screen.getByText(/You busted/)).toBeInTheDocument();
     });
 });

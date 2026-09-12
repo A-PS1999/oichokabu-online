@@ -48,4 +48,21 @@ describe("RoundResults", () => {
         expect(screen.getByText("-200")).toBeInTheDocument();
         expect(screen.getByText("Yaku")).toBeInTheDocument();
     });
+
+    it("renders busted players when lastRoundResult includes busted", () => {
+        renderGame({
+            preloadedState: {
+                game: {
+                    lastRoundResult: {
+                        ...lastRoundResult,
+                        busted: [
+                            { userId: 3, username: "matsumoto", chips: 50 },
+                        ],
+                    },
+                },
+            },
+            element: <RoundResults />,
+        });
+        expect(screen.getByText(/matsumoto busted/i)).toBeInTheDocument();
+    });
 });

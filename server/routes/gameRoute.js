@@ -28,7 +28,7 @@ router.post('/api/game/:gameId/pickdealer-card-selected', checkLoggedIn, checkGa
     response.sendStatus(204);
 })
 
-router.post('/api/game/:gameId/card-bet', checkLoggedIn, (request, response) => {
+router.post('/api/game/:gameId/card-bet', checkLoggedIn, checkGamePlayer, (request, response) => {
     const gameId = Number(request.params.gameId);
     const userId = response.locals.user.id;
     const { currentCard, betAmount } = request.body.betData;
@@ -40,19 +40,12 @@ router.post('/api/game/:gameId/card-bet', checkLoggedIn, (request, response) => 
     response.sendStatus(204);
 })
 
-router.post('/api/game/:gameId/decide-third-card', checkLoggedIn, (request, response) => {
+router.post('/api/game/:gameId/decide-third-card', checkLoggedIn, checkGamePlayer, (request, response) => {
     const gameId = Number(request.params.gameId);
     const userId = response.locals.user.id;
     const choiceMade = request.body.choiceMade;
     const isDealer = request.body.isDealer;
     GameSockets.thirdCardChoice(gameId, userId, choiceMade, isDealer);
-    response.sendStatus(204);
-})
-
-router.post('/api/game/:gameId/remove-player', checkLoggedIn, checkGamePlayer, (request, response) => {
-    const gameId = Number(request.params.gameId);
-    const userId = response.locals.user.id;
-    GameSockets.removePlayer(gameId, userId);
     response.sendStatus(204);
 })
 

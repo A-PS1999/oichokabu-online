@@ -1,6 +1,9 @@
 const game_controls = require('./game_controls');
 const phases = require('./phases');
 
+// A player busts when their chips drop below the minimum bet.
+const BUST_CHIPS_THRESHOLD = 100;
+
 const setPhase = (Game, phase) => {
     if (!phases.canTransition(Game.currentPhase, phase)) {
         throw new Error(`Invalid transition ${Game.currentPhase} -> ${phase}`);
@@ -164,6 +167,9 @@ const game_engine = {
     resolveRound: (Game) => {
         setPhase(Game, phases.PHASES.SCORING);
         game_controls.resolveBets({ Game });
+        Game.lastRoundResult.busted = Game.players
+            .filter(player => player.chips < BUST_CHIPS_THRESHOLD)
+            .map(({ id, username, chips }) => ({ userId: id, username, chips }));
         setPhase(Game, phases.PHASES.ROUND_RESULTS);
     },
     advance: (Game) => {
@@ -176,6 +182,15 @@ const game_engine = {
             if (Game.currentTurn >= Game.turnMax || Game.players.length < 2) {
                 setPhase(Game, phases.PHASES.END_GAME);
             } else {
+                const bustedPlayers = Game.players.filter(player => player.chips < BUST_CHIPS_THRESHOLD);
+                Game.pendingBusts = bustedPlayers.map(({ id, username, chips }) => ({ userId: id, username, chips }));
+                for (const player of bustedPlayers) {
+                    game_engine.handleRemovePlayer(Game, player.id);
+                    if (Game.currentPhase === phases.PHASES.END_GAME) break;
+                }
+                if (Game.currentPhase === phases.PHASES.END_GAME) {
+                    return;
+                }
                 game_controls.prepNextRound({ Game });
                 game_engine.handleStartTurn(Game);
                 setPhase(Game, phases.PHASES.BETTING);

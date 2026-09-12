@@ -140,13 +140,16 @@ describe('full round flow with seating', () => {
         CARD(2, 2),  // dealer first card
     ];
 
-    it('runs a round and rotates the dealer to the next seat', () => {
+    // Drives a full round to roundResults. The dealer (user 4) always wins
+    // (hand 5 beats every player hand of 4), so each non-dealer loses their
+    // 100 bet. Optional starting-chips override for bust scenarios.
+    const setupGame = (chips = {}) => {
         const Game = startGame();
         Game.players = [
-            { id: 1, username: 'alice', chips: 1000, cardBet: [], isDealer: null, thirdCardChosen: null, seat: 0 },
-            { id: 2, username: 'bob', chips: 1000, cardBet: [], isDealer: null, thirdCardChosen: null, seat: 1 },
-            { id: 3, username: 'carol', chips: 1000, cardBet: [], isDealer: null, thirdCardChosen: null, seat: 2 },
-            { id: 4, username: 'dave', chips: 1000, cardBet: [], isDealer: null, thirdCardChosen: null, seat: 3 },
+            { id: 1, username: 'alice', chips: chips[1] ?? 1000, cardBet: [], isDealer: null, thirdCardChosen: null, seat: 0 },
+            { id: 2, username: 'bob', chips: chips[2] ?? 1000, cardBet: [], isDealer: null, thirdCardChosen: null, seat: 1 },
+            { id: 3, username: 'carol', chips: chips[3] ?? 1000, cardBet: [], isDealer: null, thirdCardChosen: null, seat: 2 },
+            { id: 4, username: 'dave', chips: chips[4] ?? 1000, cardBet: [], isDealer: null, thirdCardChosen: null, seat: 3 },
         ];
         Game.currentPlayer = Game.players[0];
         Game.deck = rigDeck();
@@ -180,10 +183,46 @@ describe('full round flow with seating', () => {
         expect(Game.lastRoundResult.turn).toBe(1);
         expect(Game.lastRoundResult.results).toHaveLength(3);
 
+        return Game;
+    };
+
+    it('runs a round and rotates the dealer to the next seat', () => {
+        const Game = setupGame();
+        expect(Game.lastRoundResult.busted).toEqual([]);
+
         engine.advance(Game);
         expect(Game.currentPhase).toBe('bettingPhase');
         expect(Game.currentTurn).toBe(2);
         expect(Game.currentDealer.id).toBe(1);
         expect(Game.currentDealer.seat).toBe(0);
+        expect(Game.pendingBusts).toEqual([]);
+    });
+
+    it('records busted players on the lastRoundResult', () => {
+        const Game = setupGame({ 3: 150 }); // carol 150 -> 50 after losing
+        expect(Game.players.find(p => p.id === 3).chips).toBe(50);
+        expect(Game.lastRoundResult.busted).toEqual([{ userId: 3, username: 'carol', chips: 50 }]);
+    });
+
+    it('removes busted players and continues to the next round on advance', () => {
+        const Game = setupGame({ 3: 150 });
+        engine.advance(Game);
+        expect(Game.currentPhase).toBe('bettingPhase');
+        expect(Game.players.map(p => p.id)).toEqual([1, 2, 4]);
+        expect(Game.pendingBusts).toEqual([{ userId: 3, username: 'carol', chips: 50 }]);
+        expect(Game.currentTurn).toBe(2);
+        // dealer (seat 3) rotates to the next seat (0)
+        expect(Game.currentDealer.id).toBe(1);
+        expect(Game.currentDealer.seat).toBe(0);
+    });
+
+    it('ends the game when a bust leaves fewer than two players', () => {
+        const Game = setupGame();
+        engine.handleRemovePlayer(Game, 1);
+        engine.handleRemovePlayer(Game, 2);
+        Game.players.find(p => p.id === 3).chips = 50;
+        engine.advance(Game);
+        expect(Game.currentPhase).toBe('endGame');
+        expect(Game.players.map(p => p.id)).toEqual([4]);
     });
 });

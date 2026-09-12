@@ -43,11 +43,34 @@ module.exports = (gameSockets) => {
         if (!state.phaseDurationMs) return;
         if ((state.phaseEnteredAt + state.phaseDurationMs) > Date.now()) return;
         game_engine.advance(state);
+        enforceBusts(gameId);
         if (state.currentPhase === 'endGame') {
             endGame(gameId);
             return;
         }
         broadcastState(gameId);
+    };
+
+    // Server-side bust enforcement: consumes Game.pendingBusts (set by the
+    // engine when advancing out of roundResults) and performs the IO side —
+    // DB membership removal, chip persistence, and targeted notifications.
+    // The engine has already removed busted players from in-memory state.
+    const enforceBusts = (gameId) => {
+        const state = gameGlobals.get(gameId);
+        if (!state || !state.pendingBusts || state.pendingBusts.length === 0) return;
+        const busted = state.pendingBusts;
+        state.pendingBusts = [];
+        const gameEnding = state.currentPhase === 'endGame';
+        for (const { userId, username, chips } of busted) {
+            if (!gameEnding) {
+                broadcastToGame(gameId, (socket, uid) => {
+                    if (uid === userId) socket.emit(`game:${gameId}:player-busted`, { userId, username, chips });
+                });
+            }
+            Game.removePlayer(gameId, userId).catch(err => console.error('remove busted player DB', err));
+            Game.updateChipsBulk([{ player_userid: userId, new_chips: chips }])
+                .catch(err => console.error('persist chips at bust', err));
+        }
     };
 
     // Schedules one advance per timed-phase window for a game.
@@ -142,12 +165,18 @@ module.exports = (gameSockets) => {
             socket.emit(`game:${gameId}:end-game`);
             return ack?.({ ok: false, reason: 'GAME_ENDED' });
         }
+        const state = gameGlobals.get(gameId);
+        if (state && !state.players.some(player => player.id === userId)) {
+            // Player has been removed (e.g. busted) and may not rejoin.
+            socket.emit(`game:${gameId}:end-game`);
+            return ack?.({ ok: false, reason: 'NOT_IN_GAME' });
+        }
         if (gameStatus === 'started') {
             setGameSockets(gameId, userId, socket);
             return ack?.({ ok: true });
         }
         setGameSockets(gameId, userId, socket);
-        const data = game_engine.getGameData(gameGlobals.get(gameId), userId);
+        const data = game_engine.getGameData(state, userId);
         socket.emit(`game:${gameId}:update-game`, data);
         ack?.({ ok: true });
     };
@@ -182,27 +211,6 @@ module.exports = (gameSockets) => {
         syncGame(gameId);
     };
 
-    const removePlayer = (gameId, userId) => {
-        const game = gameGlobals.get(gameId);
-        let removedChips = null;
-        if (game) {
-            const player = game.players.find(player => player.id === userId);
-            if (player) removedChips = player.chips;
-            game_engine.handleRemovePlayer(game, userId);
-        }
-        Game.removePlayer(gameId, userId).then(_ => {
-            if (gameGlobals.get(gameId)?.currentPhase === 'endGame') {
-                endGame(gameId);
-            } else {
-                broadcastState(gameId);
-            }
-        });
-        if (removedChips !== null) {
-            Game.updateChipsBulk([{ player_userid: userId, new_chips: removedChips }])
-                .catch(err => console.error('persist chips at removePlayer', err));
-        }
-    };
-
     return {
         setGameSockets,
         pickDealerCardSelected,
@@ -211,7 +219,6 @@ module.exports = (gameSockets) => {
         startGame,
         updateGame,
         rejoinGame,
-        removePlayer,
         endGame,
     };
 };

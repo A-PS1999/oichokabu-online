@@ -23,7 +23,8 @@ const runGame = db => game_id =>
 	});
 	
 const endGame = db => game_id =>
-	db.ok_games.update({ status: 'ended' }, { where: { game_id } });
+	db.ok_players.destroy({ where: { player_gameid: game_id } })
+	.then(_ => db.ok_games.update({ status: 'ended' }, { where: { game_id } }));
 	
 const getStatus = db => game_id =>
 	db.ok_games.findByPk(game_id).then(game => game.status);

@@ -38,6 +38,15 @@ export default function RoundResults() {
                     </li>
                 ))}
             </ul>
+            {lastRoundResult.busted && lastRoundResult.busted.length > 0 ? (
+                <div className="roundresults__busted">
+                    {lastRoundResult.busted.map(busted => (
+                        <p key={busted.userId} className="roundresults__busted__item">
+                            {busted.username} busted
+                        </p>
+                    ))}
+                </div>
+            ) : null}
         </div>
     )
 }

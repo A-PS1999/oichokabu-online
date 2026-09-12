@@ -27,5 +27,4 @@ export const GameAPI = {
 	postDealerCardSelected: (gameId, cardId) => API.post(`/game/${gameId}/pickdealer-card-selected`, { cardId }),
 	postCardBet: (gameId, betData) => API.post(`/game/${gameId}/card-bet`, { betData }),
 	postThirdCardChoice: (gameId, choiceMade, isDealer) => API.post(`/game/${gameId}/decide-third-card`, { choiceMade, isDealer }),
-	postRemovePlayer: gameId => API.post(`/game/${gameId}/remove-player`, {}),
 }

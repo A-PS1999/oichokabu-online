@@ -2,7 +2,7 @@ import { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { createToast } from '../../store/toastSlice.js';
 import {
-    setGameId, selectPlayerStatus, selectIsPickDealer,
+    setGameId, selectIsPickDealer,
     selectCurrentPhase, selectPlayerAuth,
     selectGameIsError, selectGameErrorMessage
 } from '../../store/gameSlice.js';
@@ -19,7 +19,6 @@ export default function Game() {
     const params = useParams()
     const gameId = params.gameId;
     const playerAuth = useSelector(selectPlayerAuth);
-    const playerStatus = useSelector(selectPlayerStatus);
     const isPickDealer = useSelector(selectIsPickDealer);
     const currentPhase = useSelector(selectCurrentPhase);
     const isError = useSelector(selectGameIsError);
@@ -32,7 +31,6 @@ export default function Game() {
     useGame({
         gameId,
         gamePhase: currentPhase,
-        playerChips: playerStatus?.chips,
     });
 
     const handleStartGame = useCallback(_ => {
