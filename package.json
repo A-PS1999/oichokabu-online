@@ -33,7 +33,11 @@
   },
   "scripts": {
     "dev": "vite",
+    "dev:server": "tsx watch server/initServer.ts",
     "build": "vite build",
+    "build:server": "tsc -p server/tsconfig.build.json",
+    "start:server": "node server/dist/initServer.js",
+    "typecheck": "tsc -p server/tsconfig.json",
     "preview": "vite preview",
     "test": "vitest",
     "test:run": "vitest run",
@@ -46,9 +50,20 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^7.0.1",
+    "@types/bcrypt": "^6.0.0",
+    "@types/connect-pg-simple": "^7.0.3",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/express-session": "^1.19.0",
+    "@types/node": "^22.20.2",
+    "@types/nodemailer": "^8.0.1",
+    "@types/passport": "^1.0.17",
+    "@types/passport-local": "^1.0.38",
     "@vitejs/plugin-react": "^6.1.1",
     "jsdom": "^30.0.1",
     "msw": "^2.15.0",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2",
     "vite": "^8.2.2",
     "vitest": "^4.1.11"
   }

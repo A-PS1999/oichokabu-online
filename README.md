@@ -46,15 +46,19 @@ npm install
 npx sequelize-cli db:migrate
 ``` 
 
-5. Start the server with:
+5. Start the server (backend, TypeScript via tsx) with:
 ```
-cd server
-node initServer.js
+npm run dev:server
 ```
+or from the root directory:
+```
+npm run start:server
+```
+(after `npm run build:server` compiles `server/` to `server/dist/`).
 
 6. Start up the frontend from the root directory with:
 ```
-npm run start
+npm run dev
 ```
 ### License
 GPL-3.0 license
