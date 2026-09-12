@@ -83,8 +83,7 @@ const game_engine = {
         }
     },
     handleEndTurn: (Game) => {
-        Game.currentPlayerIndex = (Game.currentPlayerIndex + 1) % Game.playerCount;
-        Game.currentPlayer = Game.players[Game.currentPlayerIndex];
+        Game.currentPlayer = game_controls.nextPlayerBySeat(Game, Game.currentPlayer.seat);
         if (Game.currentOverallBet !== Game.betMax) {
             game_engine.handleStartTurn(Game);
         } else {

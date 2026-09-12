@@ -44,9 +44,8 @@ const initPlayers = (Game, ok_users) => {
         players.push(player);
     }
     Game.players = shuffle(players).splice(0, ok_users.length);
-    Game.currentPlayerIndex = 0;
-    Game.currentPlayer = Game.players[Game.currentPlayerIndex];
-    Game.currentDealerIndex = null;
+    Game.players.forEach((player, index) => { player.seat = index; });
+    Game.currentPlayer = Game.players[0];
     Game.currentDealer = null;
 }
 
@@ -58,7 +57,6 @@ const initGameVariables = (Game, ok_users, constants) => {
     Game.pickDealerReveals = [];
     Game.lastRoundResult = null;
     Game.cardsOnBoard = [];
-    Game.playerCount = ok_users.length;
     Game.isPickDealer = true;
     Game.currentPhase = 'pickDealer';
     Game.phaseEnteredAt = Date.now();

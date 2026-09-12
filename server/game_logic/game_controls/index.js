@@ -1,5 +1,6 @@
 const startGame = require('./startGame');
 const startTurn = require('./startTurn');
+const nextPlayerBySeat = require('./nextPlayerBySeat');
 const determineFirstDealer = require('./determineFirstDealer');
 const prepMainGameInitialState = require('./prepMainGameInitialState');
 const handleCardBet = require('./handleCardBet');
@@ -19,6 +20,7 @@ const determineNextDealer = require('./determineNextDealer');
 module.exports = {
     startGame,
     startTurn,
+    nextPlayerBySeat,
     determineFirstDealer,
     prepMainGameInitialState,
     handleCardBet,
