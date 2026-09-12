@@ -44,7 +44,7 @@ describe('Modal', () => {
         renderWithProviders(<ModalHarness />);
         fireEvent.click(screen.getByRole('button', { name: /open modal/i }));
 
-        fireEvent.mouseDown(document.querySelector('.modal--backdrop'));
+        fireEvent.mouseDown(document.querySelector<HTMLElement>('.modal--backdrop')!);
 
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     });

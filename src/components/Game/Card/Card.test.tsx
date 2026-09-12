@@ -6,14 +6,15 @@ import { server } from "../../../mocks/server";
 import { serverAddress } from "../../../settings";
 import { renderGame } from "../../../test-utils";
 import { emitToClient } from "../../../mocks/socketMock";
-import Card from "./Card";
+import type { GameSliceState } from "../../../store/gameSlice";
+import Card, { type CardProps } from "./Card";
 
-function renderCard(cardProps, gameOverrides = {}) {
+function renderCard(cardProps: Partial<CardProps> = {}, gameOverrides: Partial<GameSliceState> = {}) {
     return renderGame({
         preloadedState: {
             game: {
-                playerAuth: { id: 1, host: { host: false } },
-                currentPlayer: { id: 1, username: "hitoshi" },
+                playerAuth: { id: 1, host: { host: false, ready: false } },
+                currentPlayer: { id: 1, username: "hitoshi", chips: 500, cardBet: [], isDealer: false, thirdCardChosen: null, seat: 0 },
                 currentDealer: null,
                 currentPhase: null,
                 gameId: "1",
@@ -76,7 +77,7 @@ describe("Card", () => {
 
     it("dispatches postDealerCardSelected without cardVal when clicked in pick-dealer mode", async () => {
         let postCalls = 0;
-        let requestBody;
+        let requestBody: any;
         server.use(
             http.post(`${serverAddress}/api/game/:gameId/pickdealer-card-selected`, async ({ request }) => {
                 postCalls += 1;

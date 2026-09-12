@@ -36,7 +36,7 @@ describe("CreateGameForm", () => {
     });
 
     it("dispatches createNewGame on submit with a valid room name", async () => {
-        let received;
+        let received: any;
         server.use(
             http.post(`${serverAddress}/api/lobby/create-game`, async ({ request }) => {
                 received = await request.json();

@@ -6,16 +6,19 @@ import { server } from "../../mocks/server";
 import { serverAddress } from "../../settings";
 import { renderWithProviders } from "../../test-utils";
 import { emitToClient, setRejoinResponse } from "../../mocks/socketMock";
+import type { PlayerInfo, PlayerStatus } from "@shared/api";
 import PregameLobby from "./PregameLobby";
 
-const playerInfo = {
+const playerInfo: PlayerInfo = {
+    game_id: 3,
     room_name: "my-game",
+    status: "open",
     player_cap: 2,
     turn_max: 12,
     bet_max: 500,
 };
 
-const playerStatuses = [
+const playerStatuses: PlayerStatus[] = [
     {
         id: 1,
         username: "hitoshi",
@@ -44,7 +47,7 @@ function preloadedPregame() {
     };
 }
 
-function renderPregame(gameId = "3", userId = 5) {
+function renderPregame(gameId: string = "3", userId: number = 5) {
     return renderWithProviders(<PregameLobby />, {
         initialEntries: [{ pathname: `/pregame-lobby/${gameId}`, state: { user_id: userId } }],
         routes: [

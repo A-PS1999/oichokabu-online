@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { renderWithProviders } from '../../test-utils';
 import { createToast } from '../../store/toastSlice';
 
-function ToastTrigger({ message }) {
+function ToastTrigger({ message }: { message: string }) {
     const dispatch = useDispatch();
 
     useEffect(() => {

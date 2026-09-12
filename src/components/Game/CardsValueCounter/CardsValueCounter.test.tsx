@@ -15,16 +15,16 @@ describe("CardsValueCounter", () => {
         renderGame({
             preloadedState: {
                 game: {
-                    playerAuth: { id: 1, host: { host: false } },
-                    currentDealer: { id: 2, username: "hamada" },
+                    playerAuth: { id: 1, host: { host: false, ready: false } },
+                    currentDealer: { id: 2, username: "hamada", chips: 500, cardBet: [], isDealer: true, thirdCardChosen: null, seat: 1 },
                     cardBets: [],
-                    Players: [{ id: 1, username: "hitoshi", chips: 500, isDealer: false }],
+                    Players: [{ id: 1, username: "hitoshi", chips: 500, isDealer: false, thirdCardChosen: null }],
                     currentPhase: "scoringPhase",
                 },
             },
             element: (
                 <CardsValueCounter
-                    cards={[{ id: 1, value: 7 }, { id: 2, value: 5 }]}
+                    cards={[{ value: 7 }, { value: 5 }]}
                     parentColumn={0}
                 />
             ),
@@ -36,16 +36,16 @@ describe("CardsValueCounter", () => {
         renderGame({
             preloadedState: {
                 game: {
-                    playerAuth: { id: 1, host: { host: false } },
-                    currentDealer: { id: 2, username: "hamada" },
+                    playerAuth: { id: 1, host: { host: false, ready: false } },
+                    currentDealer: { id: 2, username: "hamada", chips: 500, cardBet: [], isDealer: true, thirdCardChosen: null, seat: 1 },
                     cardBets: [],
-                    Players: [{ id: 1, username: "hitoshi", chips: 500, isDealer: false }],
+                    Players: [{ id: 1, username: "hitoshi", chips: 500, isDealer: false, thirdCardChosen: null }],
                     currentPhase: "roundResults",
                 },
             },
             element: (
                 <CardsValueCounter
-                    cards={[{ id: 1, value: 7 }, { id: 2, value: 5 }]}
+                    cards={[{ value: 7 }, { value: 5 }]}
                     parentColumn={0}
                 />
             ),
@@ -58,9 +58,9 @@ describe("CardsValueCounter", () => {
             preloadedState: {
                 modal: { isOpen: false },
                 game: {
-                    playerAuth: { id: 1, host: { host: false } },
-                    currentDealer: { id: 2, username: "hamada" },
-                    cardBets: [{ userId: 1, ownerColumn: 0 }],
+                    playerAuth: { id: 1, host: { host: false, ready: false } },
+                    currentDealer: { id: 2, username: "hamada", chips: 500, cardBet: [], isDealer: true, thirdCardChosen: null, seat: 1 },
+                    cardBets: [{ userId: 1, cardId: 1, ownerColumn: 0, betAmount: 100, value: 5 }],
                     Players: [
                         { id: 1, username: "hitoshi", chips: 500, isDealer: false, thirdCardChosen: null },
                     ],
@@ -70,7 +70,7 @@ describe("CardsValueCounter", () => {
             element: (
                 <>
                     <CardsValueCounter
-                        cards={[{ id: 1, value: 4 }, { id: 2, value: 2 }]}
+                        cards={[{ value: 4 }, { value: 2 }]}
                         parentColumn={0}
                     />
                     <ModalProbe />
@@ -89,9 +89,9 @@ describe("CardsValueCounter", () => {
             preloadedState: {
                 modal: { isOpen: false },
                 game: {
-                    playerAuth: { id: 1, host: { host: false } },
-                    currentDealer: { id: 2, username: "hamada" },
-                    cardBets: [{ userId: 1, ownerColumn: 0 }],
+                    playerAuth: { id: 1, host: { host: false, ready: false } },
+                    currentDealer: { id: 2, username: "hamada", chips: 500, cardBet: [], isDealer: true, thirdCardChosen: null, seat: 1 },
+                    cardBets: [{ userId: 1, cardId: 1, ownerColumn: 0, betAmount: 100, value: 5 }],
                     Players: [
                         { id: 1, username: "hitoshi", chips: 500, isDealer: false, thirdCardChosen: null },
                     ],
@@ -101,7 +101,7 @@ describe("CardsValueCounter", () => {
             element: (
                 <>
                     <CardsValueCounter
-                        cards={[{ id: 1, value: 9 }, { id: 2, value: 2 }]}
+                        cards={[{ value: 9 }, { value: 2 }]}
                         parentColumn={0}
                     />
                     <ModalProbe />
