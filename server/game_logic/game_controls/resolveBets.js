@@ -14,7 +14,7 @@ module.exports = ({ Game }) => {
         } else return false;
       }
     const checkForShippin = (cards) => {
-        if (cards.length > 2) return false;
+        if (cards.length != 2) return false;
         if ((cards[0].value === 4 && cards[1].value === 1) || (cards[0].value === 1 && cards[1].value === 4)) {
             return true;
         } else return false;
