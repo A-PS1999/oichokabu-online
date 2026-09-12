@@ -1,8 +1,14 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      '@shared': fileURLToPath(new URL('./shared', import.meta.url)),
+    },
+  },
   server: {
     port: 3000,
     proxy: {
@@ -13,7 +19,7 @@ export default defineConfig({
   build: { outDir: 'build' },
   test: {
     environment: 'jsdom',
-    setupFiles: './src/setupTests.js',
+    setupFiles: './src/setupTests.ts',
     globals: true,
     env: { VITE_API_URL: 'http://localhost:5000' },
   },

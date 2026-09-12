@@ -1,0 +1,183 @@
+import { Router } from 'express';
+import bcrypt from 'bcrypt';
+import nodemailer from 'nodemailer';
+import { checkLoggedIn } from './middleware/checkLoggedIn';
+import { checkNotLoggedIn } from './middleware/checkNotLoggedIn';
+import { sendUserId } from './middleware/sendUserId';
+import { Auth } from '../db/api';
+
+const router = Router();
+
+router.get('/api/get-user-id', checkLoggedIn, sendUserId);
+
+router.post('/api/get-session', async (request, response) => {
+    if (request.isAuthenticated()) {
+        return response.json({ authenticated: true });
+    }
+    return response.json({ authenticated: false });
+});
+
+router.post('/api/register', async (request, response) => {
+    const { username, email, password } = request.body;
+
+    try {
+        return Auth.addUser(username, email, password)
+            .then(user => request.login(user, error => {
+                if (error) {
+                    throw error;
+                }
+
+                const { password, ...auth } = user.dataValues;
+                return response.json({ auth });
+            }));
+    } catch (error) {
+        response.status(403).send({ error: new Error('Username or email already in use.') });
+    }
+});
+
+router.post('/api/log-in', (request, response) => {
+    const { username, password } = request.body;
+
+    return Auth.findByUsername(username).then(user => {
+        if (!user) {
+            return response.status(401).send({ error: new Error('Username not found') });
+        }
+        return bcrypt.compare(password, user.password).then(isEqual => {
+            if (!isEqual) {
+                return response.status(401).send({ error: new Error('Password is invalid') });
+            }
+            return request.login(user, error => {
+                if (error) {
+                    return error;
+                }
+
+                const { password, ...auth } = user.dataValues;
+                return response.json({ auth });
+            });
+        });
+    });
+});
+
+router.post('/api/log-out', (request, response, next) => {
+    if (!request.session) {
+        return response.sendStatus(200);
+    }
+    request.session.destroy(err => {
+        if (err) return next(err);
+        request.user = undefined;
+        response.clearCookie('connect.sid');
+        response.sendStatus(200);
+    });
+});
+
+router.post('/api/forgot-password', checkNotLoggedIn, (request, response) => {
+    const { email } = request.body;
+    const SALT = 10;
+
+    return Auth.findByEmail(email)
+        .then(user => {
+            if (!user) {
+                return response.sendStatus(401);
+            }
+
+            const { email, password } = user.dataValues;
+
+            let today = new Date();
+            let expire = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+
+            return bcrypt.hash(email + password + today, SALT, (error, hash) => {
+                if (error) {
+                    throw error;
+                }
+
+                const sid = hash.replace('/', '-');
+                const sess = { sid: sid, email: email };
+
+                return Auth.addSession(sid, sess, expire)
+                    .then(session => {
+                        if (!session) {
+                            return response.sendStatus(401);
+                        }
+
+                        let passwordResetUrl;
+                        if (process.env.NODE_ENV === 'development') {
+                            passwordResetUrl = `http://localhost:3000/reset-password/${sid}`;
+                        } else {
+                            passwordResetUrl = `http://${request.headers.host}/reset-password/${sid}`;
+                        }
+
+                        const mailTransport = nodemailer.createTransport({
+                            service: 'Gmail',
+                            auth: {
+                                user: process.env.NODEMAILER_EMAIL,
+                                pass: process.env.NODEMAILER_PASS,
+                            },
+                        });
+
+                        const mailData = {
+                            from: process.env.NODEMAILER_EMAIL,
+                            to: email,
+                            subject: 'Reset your password',
+                            html: `Click <a href="${passwordResetUrl}">here</a> to reset your password`,
+                        };
+
+                        mailTransport.sendMail(mailData, (error, _) => {
+                            if (error) {
+                                throw error;
+                            }
+                            return response.sendStatus(204);
+                        });
+                    })
+                    .catch(error => {
+                        throw error;
+                    });
+            });
+        })
+        .catch(error => response.sendStatus(500).send({ error }));
+});
+
+router.get('/api/reset-password/:sessionId', checkNotLoggedIn, (request, response) => {
+    const sessionId = String(request.params.sessionId);
+
+    return Auth.findSessionById(sessionId)
+        .then(session => {
+            if (!session) {
+                return response.sendStatus(401);
+            }
+
+            return response.sendStatus(200);
+        })
+        .catch(error => response.status(500).send({ error }));
+});
+
+router.post('/api/reset-password/:sessionId', checkNotLoggedIn, (request, response) => {
+    const { password } = request.body;
+    const sessionId = String(request.params.sessionId);
+
+    return Auth.findSessionById(sessionId)
+        .then(session => {
+            if (!session) {
+                return response.sendStatus(401);
+            }
+
+            const { sid, sess, expire } = session.dataValues;
+            const { email } = sess as { email: string };
+            const today = new Date();
+
+            if (sid === sessionId && today < expire) {
+                return Auth.removeSession(sid)
+                    .then(() => Auth.updatePassword(email, password))
+                    .then(user => {
+                        if (!user) {
+                            return response.sendStatus(401);
+                        }
+                        return response.sendStatus(201);
+                    });
+            }
+
+            return response.sendStatus(401);
+        })
+        .catch(error => response.status(500).send({ error }));
+});
+
+export default router;
