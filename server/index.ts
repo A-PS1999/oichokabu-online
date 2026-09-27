@@ -29,7 +29,7 @@ app.use(passport.session());
 app.use(routes);
 
 app.get(/(.*)/, function (req, res) {
-    res.sendFile(path.join(repoRoot, 'public/index.html'));
+    res.sendFile(path.join(repoRoot, 'build/index.html'));
 });
 
 app.use(function (req, res) {

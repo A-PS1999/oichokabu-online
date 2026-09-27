@@ -7,6 +7,9 @@ const envFile = path.resolve(root, `.env.${env}`);
 dotenv.config({ path: envFile });
 dotenv.config({ path: path.resolve(root, '.env'), override: false });
 
+const useDatabaseSsl = process.env.DATABASE_SSL === 'true'
+  || (process.env.DATABASE_SSL !== 'false' && env === 'production');
+
 module.exports = {
   development: {
     username: process.env.DB_USER,
@@ -25,6 +28,8 @@ module.exports = {
   production: {
     use_env_variable: 'DATABASE_URL',
     dialect: 'postgresql',
-    dialectOptions: { ssl: { require: true, rejectUnauthorized: false } }
+    dialectOptions: useDatabaseSsl
+      ? { ssl: { require: true, rejectUnauthorized: false } }
+      : {},
   }
 }

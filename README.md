@@ -49,6 +49,7 @@ An implementation of the traditional Japanese card game, oicho kabu (おいち�
    * `NODEMAILER_EMAIL`, `NODEMAILER_PASS` - account used for Nodemailer emails
    * `PORT` - port the backend listens on (default `5000`)
    * `VITE_API_URL` - address of the backend, read by the frontend at build/dev time
+   * Optional: `DATABASE_SSL` - set to `true` to enable TLS or `false` to disable it; defaults to enabled in production and disabled otherwise
    * Optional: `DB_HOST` (default `127.0.0.1`), `DB_NAME` (default `oichokabu`)
 
 5. Run database migrations:
